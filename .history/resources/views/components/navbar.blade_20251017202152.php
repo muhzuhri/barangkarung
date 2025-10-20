@@ -15,6 +15,8 @@
     <div class="nav-right">
         <div class="dropdown">
             <a href="#"><span class="material-icons">notifications</span></a>
+
+            <!-- Dropdown Menu -->
             <div class="dropdown-menu">
                 <a href="#">Tidak ada Notifikasi !</a>
             </div>
@@ -24,15 +26,14 @@
 
         <div class="dropdown">
             <a href="#"><span class="material-icons">account_circle</span></a>
+
+            <!-- Dropdown Menu -->
             <div class="dropdown-menu">
                 <a href="login.html"><span class="material-icons">login</span>Masuk</a>
                 <a href="#"><span class="material-icons">inventory_2</span>Pesanan</a>
                 <a href="#"><span class="material-icons">help_outline</span>FAQ</a>
             </div>
         </div>
-
-        <!-- Tombol garis tiga -->
-        <span class="material-icons menu-toggle">menu</span>
     </div>
 </header>
 
@@ -43,13 +44,3 @@
     <a href="pesanan.html">Pesanan</a>
     <a href="profile.html">Profile</a>
 </nav>
-
-<!-- js toogle menu nav -->
-<script>
-    const toggle = document.querySelector('.menu-toggle');
-    const categoryMenu = document.querySelector('.category-menu');
-
-    toggle.addEventListener('click', () => {
-        categoryMenu.classList.toggle('show');
-    });
-</script>

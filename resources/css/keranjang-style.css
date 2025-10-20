@@ -1,0 +1,163 @@
+/* Container utama */
+.keranjang-container {
+    padding: 35px 40px;
+    background-color: #f7f7f7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-bottom: 120px;
+    /* beri ruang agar item tidak tertutup checkout bar */
+}
+
+/* Setiap item di keranjang */
+.keranjang-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px 20px;
+    box-shadow:
+        0 1px 3px 0 rgb(0 0 0 / 0.1),
+        0 1px 2px -1px rgb(0 0 0 / 0.1);
+    transition: 0.3s ease;
+}
+
+.keranjang-item:hover {
+    transform: scale(1.01);
+}
+
+/* Checkbox item */
+.item-check {
+    margin-right: 15px;
+    transform: scale(1.2);
+}
+
+/* Gambar produk */
+.keranjang-item img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 15px;
+}
+
+/* Info produk */
+.item-info {
+    flex: 1;
+}
+
+.item-info h4 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.item-info p {
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 3px;
+}
+
+.item-info small {
+    color: #777;
+}
+
+/* Tombol quantity */
+.item-qty {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.qty-btn {
+    background: #f0f0f0;
+    border: none;
+    padding: 5px 10px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.qty-btn:hover {
+    background: #ddd;
+}
+
+.qty {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Checkout bar (menempel di bawah) */
+.checkout-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow:
+        0 1px 3px 0 rgb(0 0 0 / 0.1),
+        0 1px 2px -1px rgb(0 0 0 / 0.1);
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Checkbox semua */
+.checkout-bar input[type="checkbox"] {
+    transform: scale(1.2);
+    margin-right: 8px;
+}
+
+/* Kanan checkout */
+.checkout-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Harga total */
+.total-harga {
+    font-weight: bold;
+    font-size: 18px;
+    color: #222;
+}
+
+/* Tombol checkout */
+.checkout-btn {
+    background-color: #000000;
+    border: none;
+    color: #fff;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.checkout-btn:hover {
+    background-color: #2c2b2b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .keranjang-container {
+        padding: 25px 20px;
+    }
+
+    .checkout-bar {
+        padding: 15px 20px;
+    }
+
+    .checkout-btn {
+        font-size: 14px;
+        padding: 10px 18px;
+    }
+
+    .total-harga {
+        font-size: 16px;
+    }
+}

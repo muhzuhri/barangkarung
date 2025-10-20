@@ -19,7 +19,6 @@
 </head>
 
 <body>
-    <!-- ===== NAVBAR ===== -->
     <x-navbar />
 
     <!-- ===== PROMO SECTION ===== -->

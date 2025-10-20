@@ -19,8 +19,7 @@
 </head>
 
 <body>
-    <!-- ===== NAVBAR ===== -->
-    <x-navbar />
+    <x-nav-bae>
 
     <!-- ===== PROMO SECTION ===== -->
     <section class="promo-section">

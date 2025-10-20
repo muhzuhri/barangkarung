@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
@@ -66,7 +66,7 @@ body {
     border: none;
     outline: none;
     flex: 1;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 /* Toggle password */
@@ -83,7 +83,7 @@ body {
 
 /* Note dan tombol */
 .note {
-    font-size: 13px;
+    font-size: 12px;
     color: #555;
     margin-bottom: 25px;
     text-align: center;
@@ -133,7 +133,7 @@ body {
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 8px;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 .brand-section p {

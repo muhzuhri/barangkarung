@@ -43,13 +43,3 @@
     <a href="pesanan.html">Pesanan</a>
     <a href="profile.html">Profile</a>
 </nav>
-
-<!-- js toogle menu nav -->
-<script>
-    const toggle = document.querySelector('.menu-toggle');
-    const categoryMenu = document.querySelector('.category-menu');
-
-    toggle.addEventListener('click', () => {
-        categoryMenu.classList.toggle('show');
-    });
-</script>
