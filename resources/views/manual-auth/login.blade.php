@@ -9,7 +9,7 @@
     <!-- Google Font & Font Awesome -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    
+
     <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('css/login-style.css') }}">
 </head>
@@ -34,7 +34,7 @@
 
             <p class="note">Cek dulu apakah sudah dengan benar</p>
             <!-- <button class="btn-login">MASUK</button> -->
-            <a href="beranda.html" class="btn-login-a">MASUK</a>
+            <a href="{{ route('beranda') }}" class="btn-login-a">MASUK</a>
         </div>
 
         <!-- Kanan: Brand dan Gambar -->

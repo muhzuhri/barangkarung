@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ asset('css/beranda-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/katalog-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/pesanan-style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/profil-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/profile-style.css') }}">
 </head>
 
 <body>
@@ -31,7 +31,7 @@
                 <p>Thrift berkualitas yang ramah kantong dan penuh karakter. Lorem ipsum dolor sit amet consectetur
                     adipisicing elit. Expedita iusto atque odit ex accusantium consequuntur incidunt aliquam. Nesciunt,
                     ex quibusdam. Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, non.</p>
-                <a href="katalog.html" class="promo-btn">Jelajahi pakaian terbaikmu !!!
+                <a href="{{ route('katalog') }}" class="promo-btn">Jelajahi pakaian terbaikmu !!!
                     <span class="material-icons">arrow_forward</span></a>
             </div>
             <div class="promo-image">
@@ -137,7 +137,7 @@
                         Rp150.000
                     </li>
                 </ul>
-                <a href="katalog.html" class="attention-btn">Jelajahi Sekarang</a>
+                <a href="{{ route('katalog') }}" class="attention-btn">Jelajahi Sekarang</a>
             </div>
         </div>
     </section>

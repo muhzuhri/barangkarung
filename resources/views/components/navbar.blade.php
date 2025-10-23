@@ -20,13 +20,13 @@
             </div>
         </div>
 
-        <a href="keranjang.html"><span class="material-icons">shopping_cart</span></a>
+        <a href="{{ route('keranjang') }}"><span class="material-icons">shopping_cart</span></a>
 
         <div class="dropdown">
             <a href="#"><span class="material-icons">account_circle</span></a>
             <div class="dropdown-menu">
-                <a href="login.html"><span class="material-icons">login</span>Masuk</a>
-                <a href="#"><span class="material-icons">inventory_2</span>Pesanan</a>
+                <a href="{{ route('login') }}"><span class="material-icons">login</span>Masuk</a>
+                <a href="{{ route('pesanan') }}"><span class="material-icons">inventory_2</span>Pesanan</a>
                 <a href="#"><span class="material-icons">help_outline</span>FAQ</a>
             </div>
         </div>
@@ -38,10 +38,10 @@
 
 <!-- ===== CATEGORY MENU ===== -->
 <nav class="category-menu">
-    <a href="beranda.html" class="active">Beranda</a>
-    <a href="katalog.html">Katalog</a>
-    <a href="pesanan.html">Pesanan</a>
-    <a href="profile.html">Profile</a>
+    <a href="{{ route('beranda') }}">Beranda</a>
+    <a href="{{ route('katalog') }}">Katalog</a>
+    <a href="{{ route('pesanan') }}">Pesanan</a>
+    <a href="{{ route('profile') }}">Profile</a>
 </nav>
 
 <!-- js toogle menu nav -->

@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ asset('css/beranda-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/katalog-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/pesanan-style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/profil-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/profile-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/keranjang-style.css') }}">
 </head>
 

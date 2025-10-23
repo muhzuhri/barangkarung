@@ -1,0 +1,57 @@
+/* ===== DATA PENGGUNA ===== */
+.data-pengguna {
+    background-color: #fff;
+    padding: 45px 50px;
+    margin: 30px 32px;
+    border-radius: 11px;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    /* box-shadow:
+        0 1px 3px 0 rgb(0 0 0 / 0.1),
+        0 1px 2px -1px rgb(0 0 0 / 0.1); */
+}
+
+.data-pengguna h2 {
+    font-size: 23px;
+    font-weight: 500;
+    color: #111;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #585858;
+    padding-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.data-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 40px;
+}
+
+.data-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.data-group label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #222;
+    margin-bottom: 6px;
+}
+
+.data-group input {
+    background-color: #d0cbcb; /* warna label */
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #0f0f0f;
+    outline: none;
+    cursor: default;
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+    .data-container {
+        grid-template-columns: 1fr;
+    }
+}
