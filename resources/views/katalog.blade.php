@@ -318,7 +318,7 @@
                     // Tampilkan notifikasi sukses dengan efek
                     notifications.success(data.message, {
                         title: 'Berhasil!',
-                        duration: 2000,
+                        duration: 5000,
                         sound: true,
                         vibration: true
                     });

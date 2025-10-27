@@ -15,7 +15,7 @@ class CheckoutController extends Controller
     /**
      * Tampilkan halaman checkout
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
@@ -23,16 +23,23 @@ class CheckoutController extends Controller
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        // Ambil item keranjang beserta produk (tampilkan semua agar user dapat memilih)
+        $selectedIds = $request->query('selected_items', '');
+        $selectedIds = $selectedIds ? explode(',', $selectedIds) : [];
+
+        if (empty($selectedIds)) {
+            return redirect()->route('keranjang')->with('error', 'Pilih minimal satu item untuk checkout.');
+        }
+
         $cartItems = Cart::with('product')
             ->where('user_id', $user->id)
+            ->whereIn('id', $selectedIds)
             ->get();
 
         if ($cartItems->isEmpty()) {
-            return redirect()->route('keranjang')->with('error', 'Keranjang Anda kosong.');
+            return redirect()->route('keranjang')->with('error', 'Item yang dipilih tidak ditemukan.');
         }
 
-        // Hitung total (untuk tampilan bisa tetap total semua, atau kosongkan - di sini tampilkan total semua)
+        // Hitung total
         $subtotal = $cartItems->sum(fn($item) => $item->product->price * $item->quantity);
         $shippingCost = 12000;
         $serviceFee = 2000;
@@ -41,6 +48,7 @@ class CheckoutController extends Controller
 
         return view('checkout', compact('cartItems', 'subtotal', 'shippingCost', 'serviceFee', 'discount', 'total', 'user'));
     }
+
 
     /**
      * Proses checkout dan buat pesanan

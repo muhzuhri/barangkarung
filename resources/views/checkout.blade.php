@@ -8,305 +8,8 @@
     <title>Pembayaran - BarangKarung ID</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <style>
-
-        /* Main Content */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
-
-        /* Address Card */
-        .address-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            cursor: pointer;
-            transition: box-shadow 0.3s ease;
-        }
-
-        .address-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .location-icon {
-            width: 24px;
-            height: 24px;
-            background: #333;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.8rem;
-            flex-shrink: 0;
-        }
-
-        .address-info {
-            flex: 1;
-        }
-
-        .address-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #333;
-            margin-bottom: 0.25rem;
-        }
-
-        .address-text {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .arrow-icon {
-            color: #666;
-            font-size: 1.2rem;
-        }
-
-        /* Main Layout */
-        .checkout-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            align-items: start;
-        }
-
-        /* Left Column - Order Details */
-        .order-details {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .seller-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .product-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .product-item:last-child {
-            border-bottom: none;
-        }
-
-        .product-image {
-            width: 60px;
-            height: 60px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            color: #666;
-            flex-shrink: 0;
-        }
-
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .product-info {
-            flex: 1;
-        }
-
-        .product-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 0.25rem;
-        }
-
-        .product-price {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .product-quantity {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* Options */
-        .option-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .option-item:hover {
-            background: #f8f9fa;
-        }
-
-        .option-item:last-child {
-            border-bottom: none;
-        }
-
-        .option-label {
-            font-weight: 500;
-            color: #333;
-        }
-
-        .option-value {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .option-arrow {
-            color: #666;
-            font-size: 1rem;
-        }
-
-        /* Right Column - Payment Summary */
-        .payment-summary {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 2rem;
-        }
-
-        .summary-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #333;
-            margin-bottom: 1.5rem;
-        }
-
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            color: #666;
-        }
-
-        .summary-item.total {
-            border-top: 1px solid #f0f0f0;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #333;
-        }
-
-        .summary-label {
-            font-size: 0.9rem;
-        }
-
-        .summary-value {
-            font-weight: 500;
-        }
-
-        .summary-item.total .summary-value {
-            font-weight: 700;
-            color: #e74c3c;
-        }
-
-        /* Checkout Button */
-        .checkout-button {
-            width: 100%;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 1rem;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            margin-top: 1.5rem;
-        }
-
-        .checkout-button:hover {
-            background: #c0392b;
-        }
-
-        .checkout-button:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .checkout-layout {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .container {
-                padding: 1rem;
-            }
-
-            .header-content {
-                padding: 0 0.5rem;
-            }
-
-            .header-title {
-                font-size: 1.2rem;
-            }
-
-            .address-card {
-                padding: 1rem;
-            }
-
-            .order-details,
-            .payment-summary {
-                padding: 1rem;
-            }
-
-            .product-item {
-                gap: 0.75rem;
-            }
-
-            .product-image {
-                width: 50px;
-                height: 50px;
-            }
-        }
-
-        /* Alert Messages */
-        .alert {
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            font-weight: 500;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-    </style>  
+        
+    </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons" />
 
@@ -317,11 +20,12 @@
     <link rel="stylesheet" href="{{ asset('css/profile-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/keranjang-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/notifications.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/checkout-style.css') }}">
 </head>
 
 <body>
     <x-navbar />
-    
+
     <div class="container">
         @if (session('success'))
             <div class="alert alert-success">
@@ -344,6 +48,19 @@
             </div>
             <div class="arrow-icon">→</div>
         </div>
+        <!-- Modal Edit Alamat -->
+        <div id="editAddressModal" class="modal">
+            <div class="modal-content">
+                <h2>Edit Alamat</h2>
+                <textarea id="addressInput" placeholder="Masukkan alamat baru"></textarea>
+                <div class="modal-buttons">
+                    <button id="cancelBtn" class="btn btn-cancel">Batal</button>
+                    <button id="saveBtn" class="btn btn-save">Simpan</button>
+                </div>
+            </div>
+        </div>
+        
+
 
         <!-- Main Layout -->
         <div class="checkout-layout">
@@ -448,8 +165,60 @@
 
     <script>
         function editAddress() {
-            alert('Fitur edit alamat akan ditambahkan');
+            // Ambil elemen teks alamat
+            const addressText = document.querySelector('.address-text');
+
+            // Tampilkan prompt untuk edit alamat
+            const newAddress = prompt('Masukkan alamat baru:', addressText.textContent);
+
+            // Jika ada input baru dan tidak kosong
+            if (newAddress !== null && newAddress.trim() !== '') {
+                addressText.textContent = newAddress.trim();
+
+                // Update hidden input form untuk checkout
+                const shippingInput = document.querySelector('input[name="shipping_address"]');
+                shippingInput.value = newAddress.trim();
+            }
         }
+        // Element
+        const modal = document.getElementById('editAddressModal');
+        const addressText = document.querySelector('.address-text');
+        const shippingInput = document.querySelector('input[name="shipping_address"]');
+        const addressInput = document.getElementById('addressInput');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const saveBtn = document.getElementById('saveBtn');
+
+        // Buka modal saat klik alamat
+        function editAddress() {
+            addressInput.value = addressText.textContent.trim();
+            modal.style.display = 'flex';
+        }
+
+        // Tutup modal
+        cancelBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Simpan alamat baru
+        saveBtn.addEventListener('click', () => {
+            const newAddress = addressInput.value.trim();
+            if (newAddress !== '') {
+                addressText.textContent = newAddress;
+                shippingInput.value = newAddress;
+                modal.style.display = 'none';
+            } else {
+                alert('Alamat tidak boleh kosong!');
+            }
+        });
+
+        // Tutup modal jika klik di luar box
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+
 
         function selectShipping() {
             alert('Fitur pilih pengiriman akan ditambahkan');
