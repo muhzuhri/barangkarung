@@ -1,0 +1,493 @@
+/* Modern Notification System */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+.notification {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    margin-bottom: 12px;
+    min-width: 300px;
+    max-width: 400px;
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification.hide {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+/* Success notification */
+.notification.success {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    border-left: 4px solid #00d4aa;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2), 0 0 20px rgba(79, 172, 254, 0.3);
+}
+
+/* Error notification */
+.notification.error {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    border-left: 4px solid #ff3838;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(255, 107, 107, 0.3);
+}
+
+/* Warning notification */
+.notification.warning {
+    background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+    border-left: 4px solid #ffa502;
+    color: #2c2c54;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2), 0 0 20px rgba(254, 202, 87, 0.3);
+}
+
+/* Info notification */
+.notification.info {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    border-left: 4px solid #0984e3;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(116, 185, 255, 0.3);
+}
+
+/* Notification content */
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+.notification-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    flex-shrink: 0;
+    animation: iconPulse 2s infinite;
+}
+
+@keyframes iconPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.notification.success .notification-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.notification.error .notification-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.notification.warning .notification-icon {
+    background: rgba(44, 44, 84, 0.2);
+}
+
+.notification.info .notification-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.notification-text {
+    flex: 1;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.notification-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.notification-message {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* Close button */
+.notification-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+}
+
+.notification-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Progress bar */
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 0 0 12px 12px;
+    transition: width linear;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Animation for progress bar */
+.notification.progressing .notification-progress {
+    animation: progress 5s linear forwards; /* Ubah dari 3s ke 5s */
+}
+
+@keyframes progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+/* Pulse animation for success notifications */
+.notification.success {
+    animation: pulseSuccess 0.6s ease-out;
+}
+
+@keyframes pulseSuccess {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Shake animation for error notifications */
+.notification.error {
+    animation: shakeError 0.6s ease-out;
+}
+
+@keyframes shakeError {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+/* Bounce animation for warning notifications */
+.notification.warning {
+    animation: bounceWarning 0.6s ease-out;
+}
+
+@keyframes bounceWarning {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Slide in animation for info notifications */
+.notification.info {
+    animation: slideInInfo 0.6s ease-out;
+}
+
+@keyframes slideInInfo {
+    0% {
+        transform: translateX(100%) rotate(5deg);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+/* Hover effects */
+.notification:hover {
+    transform: translateX(-5px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.notification:hover .notification-progress {
+    animation-play-state: paused;
+}
+
+/* Floating animation for notifications */
+.notification {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
+/* Glow effect for notifications */
+.notification::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    border-radius: 14px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.notification:hover::before {
+    opacity: 1;
+}
+
+/* Particle effect for success notifications */
+.notification.success::after {
+    content: "✨";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 20px;
+    animation: sparkle 2s ease-in-out infinite;
+    z-index: 3;
+}
+
+@keyframes sparkle {
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 1;
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .notification-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+    }
+
+    .notification {
+        min-width: auto;
+        max-width: none;
+        width: 100%;
+    }
+}
+
+/* Custom confirmation modal */
+.confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.confirmation-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.confirmation-content {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.confirmation-modal.show .confirmation-content {
+    transform: scale(1);
+}
+
+.confirmation-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 24px;
+    color: white;
+}
+
+.confirmation-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #2c2c54;
+}
+
+.confirmation-message {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.confirmation-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.confirmation-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+}
+
+.confirmation-btn.cancel {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.confirmation-btn.cancel:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.confirmation-btn.confirm {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    color: white;
+}
+
+.confirmation-btn.confirm:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+}
+
+/* Ripple effect for buttons */
+.confirmation-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.confirmation-btn::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.confirmation-btn:active::before {
+    width: 300px;
+    height: 300px;
+}

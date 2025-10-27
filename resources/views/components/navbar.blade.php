@@ -25,9 +25,21 @@
         <div class="dropdown">
             <a href="#"><span class="material-icons">account_circle</span></a>
             <div class="dropdown-menu">
-                <a href="{{ route('login') }}"><span class="material-icons">login</span>Masuk</a>
-                <a href="{{ route('pesanan') }}"><span class="material-icons">inventory_2</span>Pesanan</a>
-                <a href="#"><span class="material-icons">help_outline</span>FAQ</a>
+                @auth
+                    <a href="{{ route('profile') }}"><span class="material-icons">person</span>Profile</a>
+                    <a href="{{ route('pesanan') }}"><span class="material-icons">inventory_2</span>Pesanan</a>
+                    <a href="#"><span class="material-icons">help_outline</span>FAQ</a>
+                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" style="background: none; border: none; color: #000; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 12px; padding: 12px 20px; width: 100%; text-align: left; cursor: pointer; transition: background 0.3s;">
+                            <span class="material-icons">logout</span>Logout
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}"><span class="material-icons">login</span>Masuk</a>
+                    <a href="{{ route('register') }}"><span class="material-icons">person_add</span>Daftar</a>
+                    <a href="#"><span class="material-icons">help_outline</span>FAQ</a>
+                @endauth
             </div>
         </div>
 
