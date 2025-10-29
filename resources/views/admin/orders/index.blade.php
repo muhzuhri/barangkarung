@@ -24,6 +24,7 @@
     <table>
         <thead>
             <tr>
+                <th>No</th>
                 <th>No. Pesanan</th>
                 <th>Customer</th>
                 <th>Total</th>
@@ -35,6 +36,7 @@
         <tbody>
             @foreach ($orders as $order)
                 <tr>
+                    <td>{{ $loop->iteration + ($orders->currentPage() - 1) * $orders->perPage() }}</td>
                     <td>{{ $order->order_code ?? $order->id }}</td>
                     <td>{{ $order->user->name ?? $order->user_id }}</td>
                     <td>Rp {{ number_format($order->total ?? 0, 0, ',', '.') }}</td>

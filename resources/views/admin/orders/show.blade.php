@@ -146,6 +146,7 @@
     <table>
         <thead>
             <tr>
+                <th>No</th>
                 <th>Produk</th>
                 <th>Jumlah</th>
                 <th>Ukuran</th>
@@ -156,6 +157,7 @@
         <tbody>
             @foreach ($order->items as $item)
                 <tr>
+                    <td>{{ $loop->iteration }}</td>
                     <td>{{ $item->product->name ?? 'Produk dihapus' }}</td>
                     <td>{{ $item->quantity }}</td>
                     <td>{{ $item->size ?? '-' }}</td>

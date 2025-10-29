@@ -23,6 +23,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>Bulan</th>
                         <th>Pendapatan</th>
                         <th>Pesanan</th>
@@ -31,6 +32,7 @@
                 <tbody>
                     @foreach ($monthly as $row)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ \Carbon\Carbon::parse($row->month . '-01')->translatedFormat('F Y') }}</td>
                             <td>Rp {{ number_format($row->revenue, 0, ',', '.') }}</td>
                             <td>{{ $row->orders_count }}</td>
@@ -49,6 +51,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>No. Pesanan</th>
                         <th>Customer</th>
                         <th>Total</th>
@@ -58,6 +61,7 @@
                 <tbody>
                     @foreach ($completedOrders as $order)
                         <tr>
+                            <td>{{ $loop->iteration + ($completedOrders->currentPage() - 1) * $completedOrders->perPage() }}</td>
                             <td>{{ $order->order_code }}</td>
                             <td>{{ $order->user->name ?? 'User #' . $order->user_id }}</td>
                             <td>Rp {{ number_format($order->total, 0, ',', '.') }}</td>

@@ -5,7 +5,6 @@
 @if (session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
->>>>>>> 33474cbc824934a8a5e5b4c7836c568b9a04a9f3
     </div>
 @endif
 
@@ -37,6 +36,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>No</th>
                     <th>User</th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -48,6 +48,7 @@
             <tbody>
                 @foreach ($users as $user)
                     <tr>
+                        <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
                         <td>
                             <div class="user-info">
                                 <div class="user-avatar">
