@@ -745,6 +745,7 @@
                     <input type="text" id="brand" name="brand" class="form-input">
                 </div>
 
+
                 <div class="form-group">
                     <label for="description" class="form-label">Deskripsi</label>
                     <textarea id="description" name="description" class="form-textarea" rows="4"></textarea>

@@ -23,12 +23,13 @@ class CartController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'integer|min:1',
-            'size' => 'string|in:S,M,L,XL,XXL'
+            'size' => 'nullable|string|max:10'
         ]);
 
         $productId = $request->product_id;
         $quantity = $request->quantity ?? 1;
-        $size = $request->size ?? 'M';
+        $product = Product::findOrFail($productId);
+        $size = $product->size ?? ($request->size ?? 'M');
         $userId = Auth::id();
 
         // Cek apakah produk dengan ukuran yang sama sudah ada di keranjang

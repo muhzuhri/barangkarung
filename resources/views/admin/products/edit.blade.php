@@ -326,6 +326,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="size">Ukuran (opsional)</label>
+                        <input type="text" id="size" name="size" maxlength="10" value="{{ old('size', $product->size) }}">
+                    </div>
+
+                    <div class="form-group">
                         <label for="price">Harga (Rp) *</label>
                         <input type="number" id="price" name="price" step="0.01"
                             value="{{ old('price', $product->price) }}" required>

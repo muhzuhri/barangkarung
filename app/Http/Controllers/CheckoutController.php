@@ -42,7 +42,8 @@ class CheckoutController extends Controller
 
         // Hitung total
         $subtotal = $cartItems->sum(fn($item) => $item->product->price * $item->quantity);
-        $shippingCost = 25000;
+        // Sesuaikan biaya pengiriman berdasarkan opsi
+        $shippingCost = $request->shipping_method === 'kargo' ? 12000 : 25000;
         $serviceFee = 2000;
         $discount = 0;
         $total = $subtotal + $shippingCost + $serviceFee - $discount;
@@ -87,7 +88,9 @@ class CheckoutController extends Controller
 
         // Hitung total berdasarkan item yang dipilih
         $subtotal = $cartItems->sum(fn($item) => $item->product->price * $item->quantity);
-        $shippingCost = 25000;
+        // Sesuaikan biaya pengiriman berdasarkan opsi yang dipilih user
+        $shippingMethod = $request->shipping_method;
+        $shippingCost = $shippingMethod === 'kargo' ? 12000 : 25000;
         $serviceFee = 2000;
         $discount = 0;
         $total = $subtotal + $shippingCost + $serviceFee - $discount;
@@ -98,7 +101,7 @@ class CheckoutController extends Controller
             'order_code' => 'ORD-' . strtoupper(uniqid()), // generate kode unik
             'shipping_address' => $request->shipping_address ?? $user->address ?? '',
             'phone' => $request->phone,
-            'shipping_method' => $request->shipping_method,
+            'shipping_method' => $shippingMethod,
             'payment_method' => $request->payment_method,
             'notes' => $request->notes,
             'subtotal' => $subtotal,

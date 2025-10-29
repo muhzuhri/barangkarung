@@ -56,10 +56,19 @@
                 <strong>Stok:</strong> {{ $product->stock > 0 ? $product->stock : 'Habis' }}
             </p>
 
+            @if($product->size)
+            <p class="product-stock">
+                <strong>Ukuran:</strong> {{ $product->size }}
+            </p>
+            @endif
+
             <div class="product-actions">
                 <form action="{{ route('cart.add') }}" method="POST">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    @if($product->size)
+                        <input type="hidden" name="size" value="{{ $product->size }}">
+                    @endif
                     <button type="submit" class="btn btn-primary">
                         <span class="material-icons">shopping_cart</span> Masukkan ke Keranjang
                     </button>

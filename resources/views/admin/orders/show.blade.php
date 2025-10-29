@@ -148,11 +148,11 @@
 			</table>
 		</div>
 
-		<form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="form-inline" style="margin-top:16px;">
+		<form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="form-inline" style="margin-top:16px; gap:12px; align-items:center;">
 			@csrf
 			@method('PATCH')
 			<label for="status" style="min-width:110px;">Ubah Status</label>
-			<select id="status" name="status">
+			<select id="status" name="status" style="padding:8px 10px; border-radius:8px; border:1px solid #e5e7eb;">
 				<option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Pending</option>
 				<option value="Sedang Diproses" {{ $order->status === 'Sedang Diproses' ? 'selected' : '' }}>Sedang Diproses</option>
 				<option value="dikirim" {{ $order->status === 'dikirim' ? 'selected' : '' }}>Dikirim</option>
@@ -160,8 +160,8 @@
 				<option value="dibatalkan" {{ $order->status === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
 			</select>
 			<div class="btn-group">
-				<button type="submit" class="btn">Simpan</button>
-				<a class="btn btn-secondary" href="{{ route('admin.orders.index') }}">Kembali</a>
+				<button type="submit" class="btn" style="background:#667eea; color:#fff; padding:10px 14px; border-radius:8px;">Update Status</button>
+				<a class="btn btn-secondary" href="{{ route('admin.orders.index') }}" style="background:#6b7280; color:#fff; padding:10px 14px; border-radius:8px;">Kembali</a>
 			</div>
 		</form>
 	</div>
