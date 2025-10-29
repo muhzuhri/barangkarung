@@ -409,3 +409,24 @@
 }
 
 
+.option-select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: 'Poppins', sans-serif;
+    margin-top: 6px;
+}
+
+.option-textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: 'Poppins', sans-serif;
+    margin-top: 6px;
+    resize: vertical;
+}
+
+

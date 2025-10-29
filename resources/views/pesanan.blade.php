@@ -2,84 +2,70 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Barang Karung ID</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesanan Saya - BarangKarung ID</title>
 
-    <!-- Google Fonts & Material Icons -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons" />
-
-    <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('css/nav_menu-style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/beranda-style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/katalog-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/pesanan-style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/profile-style.css') }}">
 </head>
 
 <body>
-    <!-- ===== NAVBAR ===== -->
     <x-navbar />
 
-    <!-- ===== PESANAN SAYA ===== -->
     <main class="orders-container">
         <h1>Pesanan Saya</h1>
 
-        <!-- ===== ORDER CARD 1 ===== -->
-        <div class="order-card">
-            <div class="order-header">
-                <div>
-                    <p class="order-id">ID Pesanan: <span>#ORD-20251019-01</span></p>
-                    <p class="order-date">Tanggal: 19 Oktober 2025</p>
+        @forelse ($orders as $order)
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <p class="order-id">
+                            ID Pesanan:
+                            <span>#ORD-{{ $order->created_at->format('Ymd') }}-{{ sprintf('%02d', $order->id) }}</span>
+                        </p>
+                        <p class="order-date">Tanggal: {{ $order->created_at->translatedFormat('d F Y') }}</p>
+                    </div>
+
+                    @php
+                        $statusClass = [
+                            'pending' => 'pending',
+                            'processing' => 'processing',
+                            'shipped' => 'shipping',
+                            'delivered' => 'delivered',
+                            'cancelled' => 'cancelled',
+                        ][$order->status] ?? 'pending';
+                    @endphp
+
+                    <div class="order-status {{ $statusClass }}">
+                        {{ ucfirst($order->status) }}
+                    </div>
                 </div>
-                <div class="order-status delivered">Selesai</div>
-            </div>
 
-            <div class="order-body">
-                <img src="img/baju-img/polo1.png" alt="Produk">
-                <div class="order-details">
-                    <h3>Kaos Oversize Hitam</h3>
-                    <p>Ukuran: L</p>
-                    <p>Jumlah: 2</p>
-                    <p>Harga: Rp150.000</p>
+                @foreach ($order->items as $item)
+                    <div class="order-body">
+                        <img src="{{ $item->product->image_url ?? asset('img/no-image.png') }}" alt="{{ $item->product->name }}">
+                        <div class="order-details">
+                            <h3>{{ $item->product->name }}</h3>
+                            @if ($item->size)
+                                <p>Ukuran: {{ $item->size }}</p>
+                            @endif
+                            <p>Jumlah: {{ $item->quantity }}</p>
+                            <p>Harga: Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                        </div>
+                    </div>
+                @endforeach
+
+                <div class="order-footer">
+                    <p><strong>Total Pembayaran:</strong> Rp{{ number_format($order->total, 0, ',', '.') }}</p>
+                    <a href="{{ route('pesanan.detail', $order->id) }}" class="btn-detail">Lihat Detail</a>
                 </div>
             </div>
-
-            <div class="order-footer">
-                <p><strong>Total Pembayaran:</strong> Rp300.000</p>
-                <a href="#" class="btn-detail">Lihat Detail</a>
-            </div>
-        </div>
-
-        <!-- ===== ORDER CARD 2 ===== -->
-        <div class="order-card">
-            <div class="order-header">
-                <div>
-                    <p class="order-id">ID Pesanan: <span>#ORD-20251018-02</span></p>
-                    <p class="order-date">Tanggal: 18 Oktober 2025</p>
-                </div>
-                <div class="order-status pending">Sedang Dikirim</div>
-            </div>
-
-            <div class="order-body">
-                <img src="img/baju-img/polo3.png" alt="Produk">
-                <div class="order-details">
-                    <h3>Hoodie Streetwear Abu</h3>
-                    <p>Ukuran: XL</p>
-                    <p>Jumlah: 1</p>
-                    <p>Harga: Rp250.000</p>
-                </div>
-            </div>
-
-            <div class="order-footer">
-                <p><strong>Total Pembayaran:</strong> Rp250.000</p>
-                <a href="#" class="btn-detail">Lihat Detail</a>
-            </div>
-        </div>
+        @empty
+            <p class="no-orders">Belum ada pesanan 😔</p>
+        @endforelse
     </main>
-
-
 </body>
-
 </html>

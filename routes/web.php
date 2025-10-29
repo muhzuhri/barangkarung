@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\OrderController;
 
 // Authentication Routes
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
@@ -33,9 +34,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 
-    Route::get('/pesanan', function () {
-        return view('pesanan');
-    })->name('pesanan');
+    Route::get('/pesanan', [OrderController::class, 'index'])->name('pesanan');
+    Route::get('/pesanan/{id}', [OrderController::class, 'show'])->name('pesanan.detail');
+
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+
 
     Route::get('/profile', function () {
         return view('profile');

@@ -10,6 +10,7 @@ use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
+
 class CheckoutController extends Controller
 {
     /**
@@ -41,7 +42,7 @@ class CheckoutController extends Controller
 
         // Hitung total
         $subtotal = $cartItems->sum(fn($item) => $item->product->price * $item->quantity);
-        $shippingCost = 12000;
+        $shippingCost = 25000;
         $serviceFee = 2000;
         $discount = 0;
         $total = $subtotal + $shippingCost + $serviceFee - $discount;
@@ -86,7 +87,7 @@ class CheckoutController extends Controller
 
         // Hitung total berdasarkan item yang dipilih
         $subtotal = $cartItems->sum(fn($item) => $item->product->price * $item->quantity);
-        $shippingCost = 12000;
+        $shippingCost = 25000;
         $serviceFee = 2000;
         $discount = 0;
         $total = $subtotal + $shippingCost + $serviceFee - $discount;
@@ -94,6 +95,7 @@ class CheckoutController extends Controller
         // Buat pesanan baru
         $order = Order::create([
             'user_id' => $user->id,
+            'order_code' => 'ORD-' . strtoupper(uniqid()), // generate kode unik
             'shipping_address' => $request->shipping_address ?? $user->address ?? '',
             'phone' => $request->phone,
             'shipping_method' => $request->shipping_method,
@@ -106,6 +108,7 @@ class CheckoutController extends Controller
             'total' => $total,
             'status' => 'pending',
         ]);
+
 
         // Simpan item pesanan hanya untuk item yang dipilih
         foreach ($cartItems as $item) {

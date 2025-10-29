@@ -8,7 +8,7 @@
     <title>Pembayaran - BarangKarung ID</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <style>
-        
+
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons" />
@@ -59,7 +59,7 @@
                 </div>
             </div>
         </div>
-        
+
 
 
         <!-- Main Layout -->
@@ -85,37 +85,29 @@
                     </div>
                 @endforeach
 
-                <div class="option-item" onclick="selectShipping()">
-                    <div>
-                        <div class="option-label">Opsi Pengiriman</div>
-                        <div class="option-value">Reguler</div>
-                    </div>
-                    <div class="option-arrow">→</div>
+                <!-- Opsi Pengiriman -->
+                <div class="option-item">
+                    <div class="option-label">Opsi Pengiriman</div>
+                    <select id="shippingMethod" name="shipping_method" class="option-select">
+                        <option value="reguler" selected>Reguler (Rp 25.000)</option>
+                        <option value="kargo">Kargo (Rp 12.000)</option>
+                    </select>
                 </div>
 
-                <div class="option-item" onclick="selectPayment()">
-                    <div>
-                        <div class="option-label">Metode Pembayaran</div>
-                        <div class="option-value">COD</div>
-                    </div>
-                    <div class="option-arrow">→</div>
+                <!-- Metode Pembayaran -->
+                <div class="option-item">
+                    <div class="option-label">Metode Pembayaran</div>
+                    <select id="paymentMethod" name="payment_method" class="option-select">
+                        <option value="cod" selected>COD (Bayar di Tempat)</option>
+                    </select>
                 </div>
 
-                <div class="option-item" onclick="addMessage()">
-                    <div>
-                        <div class="option-label">Pesan Untuk Penjual</div>
-                        <div class="option-value">Tinggalkan Pesan</div>
-                    </div>
-                    <div class="option-arrow">→</div>
+                <!-- Pesan untuk Penjual -->
+                <div class="option-item">
+                    <div class="option-label">Pesan Untuk Penjual</div>
+                    <textarea id="notesInput" name="notes" class="option-textarea" placeholder="Tulis pesan untuk penjual..."></textarea>
                 </div>
 
-                <div class="option-item" onclick="selectVoucher()">
-                    <div>
-                        <div class="option-label">Voucher Diskon</div>
-                        <div class="option-value">Pilih</div>
-                    </div>
-                    <div class="option-arrow">→</div>
-                </div>
             </div>
 
             <!-- Right Column - Payment Summary -->
@@ -147,18 +139,20 @@
                     <span class="summary-value">Rp {{ number_format($total, 0, ',', '.') }}</span>
                 </div>
 
-                <form method="POST" action="{{ route('checkout.process') }}">
+
+                <form id="checkoutForm" method="POST" action="{{ route('checkout.process') }}">
                     @csrf
+                    @foreach ($cartItems as $item)
+                        <input type="hidden" name="selected_items[]" value="{{ $item->id }}">
+                    @endforeach
                     <input type="hidden" name="shipping_address" value="{{ $user->address ?? '' }}">
                     <input type="hidden" name="phone" value="{{ $user->phone ?? '' }}">
                     <input type="hidden" name="shipping_method" value="reguler">
                     <input type="hidden" name="payment_method" value="cod">
                     <input type="hidden" name="notes" value="">
-
-                    <button type="submit" class="checkout-button">
-                        Buat Pesanan
-                    </button>
+                    <button type="submit" class="checkout-button">Buat Pesanan</button>
                 </form>
+
             </div>
         </div>
     </div>
@@ -219,18 +213,24 @@
         });
 
 
+        // Ubah biaya pengiriman secara dinamis berdasarkan pilihan user
+        const shippingSelect = document.getElementById('shippingMethod');
+        const summaryShipping = document.querySelectorAll('.summary-item span.summary-value')[1]; // urutan ke-2
+        const totalSummary = document.querySelector('.summary-item.total .summary-value');
 
-        function selectShipping() {
-            alert('Fitur pilih pengiriman akan ditambahkan');
-        }
+        let subtotal = {{ $subtotal }};
+        let serviceFee = {{ $serviceFee }};
+        let discount = {{ $discount }};
+        let shippingCost = {{ $shippingCost }};
 
-        function selectPayment() {
-            alert('Fitur pilih pembayaran akan ditambahkan');
-        }
+        shippingSelect.addEventListener('change', () => {
+            shippingCost = (shippingSelect.value === 'kargo') ? 12000 : 25000;
+            summaryShipping.textContent = 'Rp ' + shippingCost.toLocaleString('id-ID');
 
-        function addMessage() {
-            alert('Fitur pesan penjual akan ditambahkan');
-        }
+            const total = subtotal + serviceFee + shippingCost - discount;
+            totalSummary.textContent = 'Rp ' + total.toLocaleString('id-ID');
+        });
+
 
         function selectVoucher() {
             alert('Fitur voucher diskon akan ditambahkan');
@@ -241,6 +241,24 @@
             const button = document.querySelector('.checkout-button');
             button.disabled = true;
             button.textContent = 'Memproses...';
+        });
+        const shippingInputField = document.querySelector('input[name="shipping_method"]');
+        const paymentInputField = document.querySelector('input[name="payment_method"]');
+        const notesInputField = document.querySelector('input[name="notes"]');
+        const shippingSelect = document.getElementById('shippingMethod');
+        const paymentSelect = document.getElementById('paymentMethod');
+        const notesTextarea = document.getElementById('notesInput');
+
+        shippingSelect.addEventListener('change', () => {
+            shippingInputField.value = shippingSelect.value;
+        });
+
+        paymentSelect.addEventListener('change', () => {
+            paymentInputField.value = paymentSelect.value;
+        });
+
+        notesTextarea.addEventListener('input', () => {
+            notesInputField.value = notesTextarea.value;
         });
     </script>
 </body>
