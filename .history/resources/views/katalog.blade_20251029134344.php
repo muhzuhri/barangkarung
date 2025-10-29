@@ -53,21 +53,20 @@
     <section class="katalog-section">
         <h2>Katalog Pakaian</h2>
         <div class="product-grid">
-            @foreach ($products as $product)
-                <div class="product-card">
-                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
-                    {{-- <a>{{ $product->name }}</a> --}}
-                    <a href="{{ route('produk.show', $product->id) }}">{{ $product->name }}</a>
-                    <p class="brand">{{ $product->brand }}</p>
-                    <div class="price">
-                        <span class="discount">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
-                        @if ($product->original_price)
-                            <span class="original">Rp {{ number_format($product->original_price, 0, ',', '.') }}</span>
-                            <span class="off">-{{ $product->discount_percentage }}%</span>
-                        @endif
-                    </div>
-                    <button class="btn-cart" data-product-id="{{ $product->id }}">Masukkan ke Tas</button>
+            @foreach($products as $product)
+            <div class="product-card">
+                <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+                <a>{{ $product->name }}</a>
+                <p class="brand">{{ $product->brand }}</p>
+                <div class="price">
+                    <span class="discount">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                    @if($product->original_price)
+                    <span class="original">Rp {{ number_format($product->original_price, 0, ',', '.') }}</span>
+                    <span class="off">-{{ $product->discount_percentage }}%</span>
+                    @endif
                 </div>
+                <button class="btn-cart" data-product-id="{{ $product->id }}">Masukkan ke Tas</button>
+            </div>
             @endforeach
         </div>
     </section>
@@ -167,15 +166,15 @@
         const productModal = document.getElementById('productModal');
         const modalClose = document.getElementById('modalClose');
         const modalOverlay = document.querySelector('.modal-overlay');
-
+        
         // Product data from server
         const products = @json($products);
-
+        
         cartButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const productId = this.getAttribute('data-product-id');
                 const product = products.find(p => p.id == productId);
-
+                
                 if (product) {
                     showProductModal(product);
                 }
@@ -185,7 +184,7 @@
         // Modal close functionality
         modalClose.addEventListener('click', closeModal);
         modalOverlay.addEventListener('click', closeModal);
-
+        
         // ESC key to close modal
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && productModal.classList.contains('show')) {
@@ -198,15 +197,13 @@
             document.getElementById('modalProductImage').src = product.image_url;
             document.getElementById('modalProductName').textContent = product.name;
             document.getElementById('modalProductBrand').textContent = product.brand;
-            document.getElementById('modalProductPrice').textContent =
-                `Rp ${parseInt(product.price).toLocaleString('id-ID')}`;
-            document.getElementById('modalProductDescription').textContent = product.description ||
-                'Produk berkualitas tinggi dengan desain yang trendy dan nyaman digunakan.';
-
+            document.getElementById('modalProductPrice').textContent = `Rp ${parseInt(product.price).toLocaleString('id-ID')}`;
+            document.getElementById('modalProductDescription').textContent = product.description || 'Produk berkualitas tinggi dengan desain yang trendy dan nyaman digunakan.';
+            
             // Handle original price and discount
             const originalPriceEl = document.getElementById('modalOriginalPrice');
             const discountBadgeEl = document.getElementById('modalDiscountBadge');
-
+            
             if (product.original_price && product.original_price > product.price) {
                 originalPriceEl.textContent = `Rp ${parseInt(product.original_price).toLocaleString('id-ID')}`;
                 originalPriceEl.style.display = 'inline';
@@ -216,11 +213,11 @@
                 originalPriceEl.style.display = 'none';
                 discountBadgeEl.style.display = 'none';
             }
-
+            
             // Reset modal state
             resetModalState();
             updateTotalPrice(product);
-
+            
             // Show modal
             productModal.classList.add('show');
             document.body.style.overflow = 'hidden';
@@ -234,7 +231,7 @@
         function resetModalState() {
             // Reset quantity
             document.getElementById('modalQtyDisplay').textContent = '1';
-
+            
             // Reset size selection
             document.querySelectorAll('.size-btn').forEach(btn => {
                 btn.classList.remove('selected');
@@ -246,8 +243,7 @@
         // Size selection
         document.querySelectorAll('.size-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove(
-                    'selected'));
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
                 this.classList.add('selected');
             });
         });
@@ -259,7 +255,7 @@
             if (qty > 1) {
                 qty--;
                 qtyDisplay.textContent = qty;
-                const currentProduct = products.find(p =>
+                const currentProduct = products.find(p => 
                     document.getElementById('modalProductName').textContent === p.name
                 );
                 if (currentProduct) updateTotalPrice(currentProduct);
@@ -271,7 +267,7 @@
             let qty = parseInt(qtyDisplay.textContent);
             qty++;
             qtyDisplay.textContent = qty;
-            const currentProduct = products.find(p =>
+            const currentProduct = products.find(p => 
                 document.getElementById('modalProductName').textContent === p.name
             );
             if (currentProduct) updateTotalPrice(currentProduct);
@@ -281,76 +277,75 @@
         document.getElementById('addToCartModal').addEventListener('click', function() {
             const selectedSize = document.querySelector('.size-btn.selected').getAttribute('data-size');
             const quantity = parseInt(document.getElementById('modalQtyDisplay').textContent);
-
+            
             // Get current product ID from the modal
-            const currentProduct = products.find(p =>
+            const currentProduct = products.find(p => 
                 document.getElementById('modalProductName').textContent === p.name
             );
             const productId = currentProduct ? currentProduct.id : null;
-
+            
             const originalText = this.innerHTML;
-
+            
             // Disable button dan ubah text dengan animasi loading
             this.disabled = true;
-            this.innerHTML =
-                '<span style="display: inline-block; animation: spin 1s linear infinite;">⟳</span> Menambahkan...';
-
+            this.innerHTML = '<span style="display: inline-block; animation: spin 1s linear infinite;">⟳</span> Menambahkan...';
+            
             // Kirim request ke server
-            fetch('{{ route('cart.add') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        product_id: productId,
-                        quantity: quantity,
-                        size: selectedSize
-                    })
+            fetch('{{ route("cart.add") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: quantity,
+                    size: selectedSize
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        this.innerHTML = '<span style="color: #4CAF50;">✓ Ditambahkan!</span>';
-
-                        // Close modal after 1 second
-                        setTimeout(() => {
-                            closeModal();
-                            this.disabled = false;
-                            this.innerHTML = originalText;
-                        }, 1000);
-
-                        // Tampilkan notifikasi sukses dengan efek
-                        notifications.success(data.message, {
-                            title: 'Berhasil!',
-                            duration: 5000,
-                            sound: true,
-                            vibration: true
-                        });
-                    } else {
-                        throw new Error(data.message || 'Terjadi kesalahan');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    this.disabled = false;
-                    this.innerHTML = originalText;
-                    notifications.error('Gagal menambahkan ke keranjang', {
-                        title: 'Error!',
-                        duration: 3000,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.innerHTML = '<span style="color: #4CAF50;">✓ Ditambahkan!</span>';
+                    
+                    // Close modal after 1 second
+                    setTimeout(() => {
+                        closeModal();
+                        this.disabled = false;
+                        this.innerHTML = originalText;
+                    }, 1000);
+                    
+                    // Tampilkan notifikasi sukses dengan efek
+                    notifications.success(data.message, {
+                        title: 'Berhasil!',
+                        duration: 5000,
                         sound: true,
                         vibration: true
                     });
+                } else {
+                    throw new Error(data.message || 'Terjadi kesalahan');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                this.disabled = false;
+                this.innerHTML = originalText;
+                notifications.error('Gagal menambahkan ke keranjang', {
+                    title: 'Error!',
+                    duration: 3000,
+                    sound: true,
+                    vibration: true
                 });
+            });
         });
 
         function updateTotalPrice(product) {
             const quantity = parseInt(document.getElementById('modalQtyDisplay').textContent);
             const totalPrice = product.price * quantity;
-            document.getElementById('modalTotalPrice').textContent =
-                `Rp ${parseInt(totalPrice).toLocaleString('id-ID')}`;
+            document.getElementById('modalTotalPrice').textContent = `Rp ${parseInt(totalPrice).toLocaleString('id-ID')}`;
         }
     });
+
 </script>
 
 </html>

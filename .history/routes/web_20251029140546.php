@@ -23,7 +23,8 @@ Route::middleware('auth')->group(function () {
 
     // Katalog Produk
     Route::get('/katalog', [ProductController::class, 'index'])->name('katalog');
-    Route::get('/produk/{id}', [ProductController::class, 'show'])->name('produk.show'); // ⬅️ Tambahkan ini
+    Route::get('/produk/{id}', [ProductController::class, 'show'])->name('produk.show');
+ // ⬅️ Tambahkan ini
 
     // Keranjang
     Route::get('/keranjang', [CartController::class, 'index'])->name('keranjang');

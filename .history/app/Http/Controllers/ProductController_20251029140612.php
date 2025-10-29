@@ -156,14 +156,14 @@ class ProductController extends Controller
     }
 
     public function show($id)
-    {
-        $product = Product::findOrFail($id);
+{
+    $product = Product::findOrFail($id);
 
-        // Pastikan ada URL gambar untuk ditampilkan
-        $product->image_url = $product->image ? asset($product->image) : asset('img/default.jpg');
+    // Pastikan ada URL gambar untuk ditampilkan
+    $product->image_url = $product->image ? asset($product->image) : asset('img/default.jpg');
 
-        return view('detail_product', compact('product'));
-    }
+    return view('detail_product', compact('product'));
+}
 
     public function destroy($id)
     {

@@ -58,6 +58,8 @@
                     <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
                     {{-- <a>{{ $product->name }}</a> --}}
                     <a href="{{ route('produk.show', $product->id) }}">{{ $product->name }}</a>
+                    <a href="{{ route('produk.show', $product->id) }}">{{ $product->name }}</a>
+
                     <p class="brand">{{ $product->brand }}</p>
                     <div class="price">
                         <span class="discount">Rp {{ number_format($product->price, 0, ',', '.') }}</span>

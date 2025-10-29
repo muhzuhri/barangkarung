@@ -21,11 +21,7 @@ Route::middleware('auth')->group(function () {
         return view('beranda');
     })->name('beranda');
 
-    // Katalog Produk
     Route::get('/katalog', [ProductController::class, 'index'])->name('katalog');
-    Route::get('/produk/{id}', [ProductController::class, 'show'])->name('produk.show'); // ⬅️ Tambahkan ini
-
-    // Keranjang
     Route::get('/keranjang', [CartController::class, 'index'])->name('keranjang');
     
     // Cart API Routes
@@ -38,16 +34,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 
-    // Pesanan
     Route::get('/pesanan', [OrderController::class, 'index'])->name('pesanan');
     Route::get('/pesanan/{id}', [OrderController::class, 'show'])->name('pesanan.detail');
 
-    // Profil
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+
+
     Route::get('/profile', function () {
         return view('profile');
     })->name('profile');
 });
-
 
 // Admin Routes
 Route::prefix('admin')->group(function () {

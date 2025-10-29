@@ -159,10 +159,21 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        // Pastikan ada URL gambar untuk ditampilkan
+        // Tambahkan URL gambar biar gampang dipanggil di Blade
         $product->image_url = $product->image ? asset($product->image) : asset('img/default.jpg');
 
-        return view('detail_product', compact('product'));
+        // (Opsional) Produk terkait dari brand yang sama
+        $relatedProducts = Product::where('brand', $product->brand)
+            ->where('id', '!=', $product->id)
+            ->where('is_active', true)
+            ->take(4)
+            ->get();
+
+        $relatedProducts->each(function ($item) {
+            $item->image_url = $item->image ? asset($item->image) : asset('img/default.jpg');
+        });
+
+        return view('produk.detail', compact('product', 'relatedProducts'));
     }
 
     public function destroy($id)

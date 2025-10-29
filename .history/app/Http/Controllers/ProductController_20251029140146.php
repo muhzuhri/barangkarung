@@ -13,7 +13,7 @@ class ProductController extends Controller
     {
         $products = Product::where('is_active', true)->get();
         // Add image_url to each product for JavaScript
-        $products->each(function ($product) {
+        $products->each(function($product) {
             $product->image_url = $product->image ? asset($product->image) : null;
         });
         return view('katalog', compact('products'));
@@ -47,7 +47,7 @@ class ProductController extends Controller
 
         if ($validator->fails()) {
             Log::error('Validation failed: ' . json_encode($validator->errors()));
-
+            
             // Check if request is AJAX
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
@@ -56,14 +56,14 @@ class ProductController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
-
+            
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
 
         $data = $request->all();
-
+        
         // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -127,14 +127,14 @@ class ProductController extends Controller
         }
 
         $data = $request->all();
-
+        
         // Handle image upload
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($product->image && file_exists(public_path($product->image))) {
                 unlink(public_path($product->image));
             }
-
+            
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
             // Store in public/img/baju-img directory
@@ -156,24 +156,35 @@ class ProductController extends Controller
     }
 
     public function show($id)
-    {
-        $product = Product::findOrFail($id);
+{
+    $product = Product::findOrFail($id);
 
-        // Pastikan ada URL gambar untuk ditampilkan
-        $product->image_url = $product->image ? asset($product->image) : asset('img/default.jpg');
+    // Tambahkan URL gambar biar gampang dipanggil di Blade
+    $product->image_url = $product->image ? asset($product->image) : asset('img/default.jpg');
 
-        return view('detail_product', compact('product'));
-    }
+    // (Opsional) Produk terkait dari brand yang sama
+    $relatedProducts = Product::where('brand', $product->brand)
+        ->where('id', '!=', $product->id)
+        ->where('is_active', true)
+        ->take(4)
+        ->get();
+
+    $relatedProducts->each(function($item) {
+        $item->image_url = $item->image ? asset($item->image) : asset('img/default.jpg');
+    });
+
+    return view('produk.detail', compact('product', 'relatedProducts'));
+}
 
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
-
+        
         // Delete image if exists
         if ($product->image && file_exists(public_path($product->image))) {
             unlink(public_path($product->image));
         }
-
+        
         $product->delete();
 
         return redirect()->route('admin.products.index')

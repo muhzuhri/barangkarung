@@ -16,6 +16,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Protected Routes (require authentication)
+// Protected Routes (require authentication)
 Route::middleware('auth')->group(function () {
     Route::get('/beranda', function () {
         return view('beranda');
