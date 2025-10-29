@@ -110,7 +110,7 @@
     </div>
     <div class="meta-item">
         <div class="meta-label">Tanggal Pesanan</div>
-        <div class="meta-value">{{ $order->created_at->format('d/m/Y H:i') }}</div>
+        <div class="meta-value">{{ $order->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</div>
     </div>
     <div class="meta-item">
         <div class="meta-label">Metode Pengiriman</div>

@@ -44,7 +44,7 @@
                         <span
                             class="status-badge status-{{ \Illuminate\Support\Str::slug($order->status) }}">{{ $order->status }}</span>
                     </td>
-                    <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                    <td>{{ $order->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
                     <td>
                         <a class="btn btn-link" href="{{ route('admin.orders.show', $order->id) }}">Detail</a>
                     </td>

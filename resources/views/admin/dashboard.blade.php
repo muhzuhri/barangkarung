@@ -73,7 +73,7 @@
                                     {{ ucfirst($order->status) }}
                                 </span>
                             </td>
-                            <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                            <td>{{ $order->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

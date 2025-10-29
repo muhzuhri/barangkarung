@@ -65,7 +65,7 @@
                             <td>{{ $order->order_code }}</td>
                             <td>{{ $order->user->name ?? 'User #' . $order->user_id }}</td>
                             <td>Rp {{ number_format($order->total, 0, ',', '.') }}</td>
-                            <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                            <td>{{ $order->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
                         </tr>
                     @endforeach
                 </tbody>
