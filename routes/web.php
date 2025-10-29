@@ -7,6 +7,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 // Authentication Routes
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
@@ -41,6 +42,8 @@ Route::middleware('auth')->group(function () {
     // Pesanan
     Route::get('/pesanan', [OrderController::class, 'index'])->name('pesanan');
     Route::get('/pesanan/{id}', [OrderController::class, 'show'])->name('pesanan.detail');
+    Route::post('/pesanan/{id}/selesai', [OrderController::class, 'complete'])->name('pesanan.selesai');
+    Route::get('/pesanan-history', [OrderController::class, 'history'])->name('pesanan.history');
 
     // Profil
     Route::get('/profile', function () {
@@ -69,6 +72,14 @@ Route::prefix('admin')->group(function () {
         Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
         Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
         
+        // Order Management Routes
+        Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
+        Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+        Route::patch('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+
+        // Revenue Management
+        Route::get('/revenue', [\App\Http\Controllers\Admin\RevenueController::class, 'index'])->name('admin.revenue.index');
+
         // User Management Routes
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->names([
             'index' => 'admin.users.index',

@@ -28,6 +28,7 @@
                 @auth
                     <a href="{{ route('profile') }}"><span class="material-icons">person</span>Profile</a>
                     <a href="{{ route('pesanan') }}"><span class="material-icons">inventory_2</span>Pesanan</a>
+                    <a href="{{ route('pesanan.history') }}"><span class="material-icons">history</span>Riwayat Pesanan</a>
                     <a href="#"><span class="material-icons">help_outline</span>FAQ</a>
                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                         @csrf
@@ -53,6 +54,7 @@
     <a href="{{ route('beranda') }}">Beranda</a>
     <a href="{{ route('katalog') }}">Katalog</a>
     <a href="{{ route('pesanan') }}">Pesanan</a>
+    <a href="{{ route('pesanan.history') }}">Riwayat</a>
     <a href="{{ route('profile') }}">Profile</a>
 </nav>
 

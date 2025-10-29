@@ -60,7 +60,15 @@
 
                 <div class="order-footer">
                     <p><strong>Total Pembayaran:</strong> Rp{{ number_format($order->total, 0, ',', '.') }}</p>
-                    <a href="{{ route('pesanan.detail', $order->id) }}" class="btn-detail">Lihat Detail</a>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                        <a href="{{ route('pesanan.detail', $order->id) }}" class="btn-detail">Lihat Detail</a>
+                        @if ($order->status === 'dikirim')
+                            <form method="POST" action="{{ route('pesanan.selesai', $order->id) }}">
+                                @csrf
+                                <button type="submit" class="btn-detail" style="background:#10b981;">Tandai Selesai</button>
+                            </form>
+                        @endif
+                    </div>
                 </div>
             </div>
         @empty

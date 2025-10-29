@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Models\Order;
+
+class RevenueController extends Controller
+{
+    public function index()
+    {
+        $admin = Auth::guard('admin')->user();
+
+        $totalRevenue = Order::where('status', 'selesai')->sum('total');
+        $totalOrders = Order::where('status', 'selesai')->count();
+
+        $monthly = Order::select(
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
+                DB::raw('SUM(total) as revenue'),
+                DB::raw('COUNT(*) as orders_count')
+            )
+            ->where('status', 'selesai')
+            ->groupBy('month')
+            ->orderBy('month', 'desc')
+            ->limit(12)
+            ->get();
+
+        $completedOrders = Order::with(['items.product'])
+            ->where('status', 'selesai')
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return view('admin.revenue.index', compact(
+            'admin', 'totalRevenue', 'totalOrders', 'monthly', 'completedOrders'
+        ));
+    }
+}
+
+

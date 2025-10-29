@@ -22,6 +22,7 @@
                 <ul class="nav-links">
                     <li><a href="{{ route('admin.dashboard') }}">🏠 Dashboard</a></li>
                     <li><a href="{{ route('admin.products.index') }}">🛍️ Produk</a></li>
+                    <li><a href="{{ route('admin.orders.index') }}">📦 Pesanan</a></li>
                     <li><a href="{{ route('admin.users.index') }}">👥 User</a></li>
                     <li><a href="{{ route('admin.profile') }}" class="active">⚙️ Settings</a></li>
                 </ul>

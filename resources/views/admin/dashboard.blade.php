@@ -23,7 +23,9 @@
                 <ul class="nav-links">
                     <li><a href="{{ route('admin.dashboard') }}" class="active">🏠 Dashboard</a></li>
                     <li><a href="{{ route('admin.products.index') }}">🛍️ Produk</a></li>
+                    <li><a href="{{ route('admin.orders.index') }}">📦 Pesanan</a></li>
                     <li><a href="{{ route('admin.users.index') }}">👥 User</a></li>
+                    <li><a href="{{ route('admin.revenue.index') }}">💰 Pendapatan</a></li>
                     <li><a href="{{ route('admin.profile') }}">⚙️ Settings</a></li>
                 </ul>
             </nav>
@@ -44,6 +46,7 @@
                         <a href="{{ route('admin.profile') }}" class="dropdown-item">👤 Profile</a>
                         <a href="{{ route('admin.dashboard') }}" class="dropdown-item">🏠 Dashboard</a>
                         <a href="{{ route('admin.products.index') }}" class="dropdown-item">🛍️ Kelola Produk</a>
+                        <a href="{{ route('admin.orders.index') }}" class="dropdown-item">📦 Kelola Pesanan</a>
                         <a href="{{ route('admin.users.index') }}" class="dropdown-item">👥 Kelola User</a>
                         <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                             @csrf
@@ -122,12 +125,12 @@
                     <tbody>
                         @foreach($recentOrders as $order)
                         <tr>
-                            <td>{{ $order->order_number }}</td>
-                            <td>{{ $order->user->name }}</td>
-                            <td>Rp {{ number_format($order->total_amount, 0, ',', '.') }}</td>
+                            <td>{{ $order->order_code }}</td>
+                            <td>{{ $order->user->name ?? 'User #'.$order->user_id }}</td>
+                            <td>Rp {{ number_format($order->total, 0, ',', '.') }}</td>
                             <td>
                                 <span class="status-badge status-{{ $order->status }}">
-                                    {{ $order->status_display }}
+                                    {{ ucfirst($order->status) }}
                                 </span>
                             </td>
                             <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
@@ -139,15 +142,7 @@
         </div>
         @endif
 
-        <!-- Revenue Chart Section -->
-        @if($monthlyRevenue->count() > 0)
-        <div class="chart-section">
-            <h2 class="section-title">Grafik Pendapatan (6 Bulan Terakhir)</h2>
-            <div class="chart-container">
-                <canvas id="revenueChart"></canvas>
-            </div>
-        </div>
-        @endif
+
 
     </div>
 
@@ -201,7 +196,6 @@
         });
 
         // Initialize Revenue Chart
-        @if($monthlyRevenue->count() > 0)
         const ctx = document.getElementById('revenueChart').getContext('2d');
         const monthlyRevenueData = @json($monthlyRevenue);
         
@@ -270,7 +264,72 @@
                 }
             }
         });
-        @endif
+        // Initialize Orders Chart
+        const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+        const monthlyOrdersData = @json($monthlyOrders);
+        const ordersLabels = monthlyOrdersData.map(item => {
+            const date = new Date(item.month + '-01');
+            return date.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+        });
+        const ordersCounts = monthlyOrdersData.map(item => parseInt(item.count, 10));
+        new Chart(ordersCtx, {
+            type: 'bar',
+            data: {
+                labels: ordersLabels,
+                datasets: [{
+                    label: 'Orders',
+                    data: ordersCounts,
+                    backgroundColor: 'rgba(34, 197, 94, 0.5)',
+                    borderColor: 'rgb(34, 197, 94)',
+                    borderWidth: 1,
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+        // Initialize Users Chart
+        const usersCtx = document.getElementById('usersChart').getContext('2d');
+        const monthlyUsersData = @json($monthlyUsers);
+        const usersLabels = monthlyUsersData.map(item => {
+            const date = new Date(item.month + '-01');
+            return date.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+        });
+        const usersCounts = monthlyUsersData.map(item => parseInt(item.count, 10));
+        new Chart(usersCtx, {
+            type: 'bar',
+            data: {
+                labels: usersLabels,
+                datasets: [{
+                    label: 'User Baru',
+                    data: usersCounts,
+                    backgroundColor: 'rgba(99, 102, 241, 0.5)',
+                    borderColor: 'rgb(99, 102, 241)',
+                    borderWidth: 1,
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+        // Initialize Products Chart
+        const productsCtx = document.getElementById('productsChart').getContext('2d');
+        const monthlyProductsData = @json($monthlyProducts);
+        const productsLabels = monthlyProductsData.map(item => {
+            const date = new Date(item.month + '-01');
+            return date.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+        });
+        const productsCounts = monthlyProductsData.map(item => parseInt(item.count, 10));
+        new Chart(productsCtx, {
+            type: 'bar',
+            data: {
+                labels: productsLabels,
+                datasets: [{
+                    label: 'Produk Baru',
+                    data: productsCounts,
+                    backgroundColor: 'rgba(234, 179, 8, 0.5)',
+                    borderColor: 'rgb(234, 179, 8)',
+                    borderWidth: 1,
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
     </script>
 </body>
 

@@ -416,6 +416,7 @@
                 <ul class="nav-links">
                     <li><a href="{{ route('admin.dashboard') }}">🏠 Dashboard</a></li>
                     <li><a href="{{ route('admin.products.index') }}">🛍️ Produk</a></li>
+                    <li><a href="{{ route('admin.orders.index') }}">📦 Pesanan</a></li>
                     <li><a href="{{ route('admin.users.index') }}" class="active">👥 User</a></li>
                     <li><a href="{{ route('admin.profile') }}">⚙️ Settings</a></li>
                 </ul>
@@ -436,6 +437,7 @@
                     <div class="dropdown-menu" id="adminDropdown">
                         <a href="{{ route('admin.profile') }}" class="dropdown-item">👤 Profile</a>
                         <a href="{{ route('admin.dashboard') }}" class="dropdown-item">🏠 Dashboard</a>
+                        <a href="{{ route('admin.orders.index') }}" class="dropdown-item">📦 Kelola Pesanan</a>
                         <a href="{{ route('admin.products.index') }}" class="dropdown-item">🛍️ Kelola Produk</a>
                         <a href="{{ route('admin.users.index') }}" class="dropdown-item">👥 Kelola User</a>
                         <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
