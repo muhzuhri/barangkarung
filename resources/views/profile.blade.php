@@ -29,42 +29,42 @@
         <div class="data-container">
             <div class="data-group">
                 <label>Nama</label>
-                <input type="text" value="Agung Aksa" readonly>
+                <input type="text" value="{{ Auth::user()->name }}" readonly>
             </div>
 
             <div class="data-group">
                 <label>Tanggal Lahir</label>
-                <input type="text" value="10 - 02 - 2005" readonly>
+                <input type="text" value="{{ Auth::user()->birth_date ? \Carbon\Carbon::parse(Auth::user()->birth_date)->format('d - m - Y') : 'Belum diisi' }}" readonly>
             </div>
 
             <div class="data-group">
                 <label>Alamat</label>
-                <input type="text" value="Negara Bailangu" readonly>
+                <input type="text" value="{{ Auth::user()->address ?? 'Belum diisi' }}" readonly>
             </div>
 
             <div class="data-group">
                 <label>Jenis Kelamin</label>
-                <input type="text" value="Trans Gender" readonly>
+                <input type="text" value="{{ Auth::user()->gender ?? 'Belum diisi' }}" readonly>
             </div>
 
             <div class="data-group">
                 <label>No. Telpon</label>
-                <input type="text" value="0812 - 3456 - 7890" readonly>
+                <input type="text" value="{{ Auth::user()->phone ?? 'Belum diisi' }}" readonly>
             </div>
 
             <div class="data-group">
                 <label>Email</label>
-                <input type="text" value="AksaGans@gmail.com" readonly>
+                <input type="text" value="{{ Auth::user()->email }}" readonly>
             </div>
 
             <div class="data-group">
                 <label>Agama</label>
-                <input type="text" value="Islam" readonly>
+                <input type="text" value="{{ Auth::user()->religion ?? 'Belum diisi' }}" readonly>
             </div>
 
             <div class="data-group">
                 <label>Profesi</label>
-                <input type="text" value="Mahasiswa" readonly>
+                <input type="text" value="{{ Auth::user()->profession ?? 'Belum diisi' }}" readonly>
             </div>
         </div>
     </section>
