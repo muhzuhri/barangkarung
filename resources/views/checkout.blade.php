@@ -100,6 +100,7 @@
                     <div class="option-label">Metode Pembayaran</div>
                     <select id="paymentMethod" name="payment_method" class="option-select">
                         <option value="cod" selected>COD (Bayar di Tempat)</option>
+                        <option value="midtrans_dana">DANA (Midtrans)</option>
                     </select>
                 </div>
 

@@ -23,6 +23,12 @@ class Order extends Model
         'discount',
         'total',
         'status',
+        'payment_gateway',
+        'payment_token',
+        'payment_redirect_url',
+        'payment_transaction_id',
+        'payment_status',
+        'paid_at',
     ];
 
 
