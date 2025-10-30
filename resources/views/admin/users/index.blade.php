@@ -1,6 +1,7 @@
 @include('admin.layout.header')
 <title>User Admin | BK</title>
 
+
 @if (session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
@@ -35,6 +36,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>No</th>
                     <th>User</th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -46,6 +48,7 @@
             <tbody>
                 @foreach ($users as $user)
                     <tr>
+                        <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
                         <td>
                             <div class="user-info">
                                 <div class="user-avatar">

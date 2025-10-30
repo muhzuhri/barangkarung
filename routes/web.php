@@ -7,6 +7,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 // Authentication Routes
@@ -46,9 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/pesanan-history', [OrderController::class, 'history'])->name('pesanan.history');
 
     // Profil
-    Route::get('/profile', function () {
-        return view('profile');
-    })->name('profile');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 

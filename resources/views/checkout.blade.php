@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="{{ asset('css/checkout-style.css') }}">
 </head>
 
-<body>
+<body class="checkout-page">
     <x-navbar />
 
     <div class="container">
@@ -45,6 +45,7 @@
             <div class="address-info">
                 <div class="address-name">{{ $user->name }}</div>
                 <div class="address-text">{{ $user->address ?? 'Alamat belum diisi' }}</div>
+                <div class="address-phone">{{ $user->phone ?? 'No. Telp belum diisi' }}</div>
             </div>
             <div class="arrow-icon">→</div>
         </div>
@@ -129,11 +130,6 @@
                     <span class="summary-value">Rp {{ number_format($serviceFee, 0, ',', '.') }}</span>
                 </div>
 
-                <div class="summary-item">
-                    <span class="summary-label">Voucher Diskon</span>
-                    <span class="summary-value">Rp {{ number_format($discount, 0, ',', '.') }}</span>
-                </div>
-
                 <div class="summary-item total">
                     <span class="summary-label">Total</span>
                     <span class="summary-value">Rp {{ number_format($total, 0, ',', '.') }}</span>
@@ -213,8 +209,7 @@
         });
 
 
-        // Ubah biaya pengiriman secara dinamis berdasarkan pilihan user
-        const shippingSelect = document.getElementById('shippingMethod');
+        // Elemen ringkasan biaya
         const summaryShipping = document.querySelectorAll('.summary-item span.summary-value')[1]; // urutan ke-2
         const totalSummary = document.querySelector('.summary-item.total .summary-value');
 
@@ -222,14 +217,6 @@
         let serviceFee = {{ $serviceFee }};
         let discount = {{ $discount }};
         let shippingCost = {{ $shippingCost }};
-
-        shippingSelect.addEventListener('change', () => {
-            shippingCost = (shippingSelect.value === 'kargo') ? 12000 : 25000;
-            summaryShipping.textContent = 'Rp ' + shippingCost.toLocaleString('id-ID');
-
-            const total = subtotal + serviceFee + shippingCost - discount;
-            totalSummary.textContent = 'Rp ' + total.toLocaleString('id-ID');
-        });
 
 
         function selectVoucher() {
@@ -249,9 +236,21 @@
         const paymentSelect = document.getElementById('paymentMethod');
         const notesTextarea = document.getElementById('notesInput');
 
+        function recalcTotals() {
+            shippingCost = (shippingSelect.value === 'kargo') ? 12000 : 25000;
+            summaryShipping.textContent = 'Rp ' + shippingCost.toLocaleString('id-ID');
+            const total = subtotal + serviceFee + shippingCost - discount;
+            totalSummary.textContent = 'Rp ' + total.toLocaleString('id-ID');
+        }
+
+        // Sinkronkan pilihan ke input hidden + hitung ulang total
         shippingSelect.addEventListener('change', () => {
             shippingInputField.value = shippingSelect.value;
+            recalcTotals();
         });
+
+        // Inisialisasi awal (jaga-jaga bila default bukan reguler)
+        recalcTotals();
 
         paymentSelect.addEventListener('change', () => {
             paymentInputField.value = paymentSelect.value;

@@ -36,7 +36,7 @@
 				</div>
 				<div>
 					<div class="detail-label">Tanggal</div>
-					<div class="detail-value">{{ $order->created_at->translatedFormat('d F Y H:i') }}</div>
+					<div class="detail-value">{{ $order->created_at->setTimezone('Asia/Jakarta')->translatedFormat('d F Y H:i') }}</div>
 				</div>
 				<div>
 					<div class="detail-label">Status</div>

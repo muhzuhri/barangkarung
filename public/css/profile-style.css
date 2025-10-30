@@ -38,15 +38,50 @@
     margin-bottom: 6px;
 }
 
-.data-group input {
-    background-color: #d0cbcb; /* warna label */
-    border: none;
+.data-group input,
+.data-group select,
+.data-group textarea {
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 10px 14px;
     font-size: 14px;
-    color: #0f0f0f;
+    color: #111827;
     outline: none;
-    cursor: default;
+}
+
+.data-group input:focus,
+.data-group select:focus,
+.data-group textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+/* Gender radio modern */
+.radio-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.radio-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    user-select: none;
+}
+
+.radio-item input[type="radio"] {
+    accent-color: #667eea;
+}
+
+.radio-item:hover {
+    border-color: #d1d5db;
 }
 
 /* Responsif */
