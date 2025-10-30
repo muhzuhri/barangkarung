@@ -126,25 +126,7 @@
                         <textarea id="notesInput" name="notes" class="option-textarea" placeholder="Tulis pesan untuk penjual..."></textarea>
                     </div>
                 </div>
-                <!-- Right Column - Payment Summary & tombol submit -->
-                <div class="payment-summary">
-                    <div class="summary-title">Rincian Pembayaran</div>
-                    <div class="summary-item">
-                        <span class="summary-label">Subtotal Pesanan</span>
-                        <span class="summary-value">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Subtotal Pengiriman</span>
-                        <span class="summary-value">Rp {{ number_format($shippingCost, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Biaya Layanan</span>
-                        <span class="summary-value">Rp {{ number_format($serviceFee, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="summary-item total">
-                        <span class="summary-label">Total</span>
-                        <span class="summary-value">Rp {{ number_format($total, 0, ',', '.') }}</span>
-                    </div>
+
                     @foreach ($cartItems as $item)
                         <input type="hidden" name="selected_items[]" value="{{ $item->id }}">
                     @endforeach

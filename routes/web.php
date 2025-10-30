@@ -8,6 +8,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 // Authentication Routes
@@ -39,6 +40,10 @@ Route::middleware('auth')->group(function () {
     // Checkout Routes
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::post('/midtrans/notification', [CheckoutController::class, 'midtransNotification'])->name('midtrans.notification');
+
+    // Chatbot endpoint
+    Route::post('/chatbot/ask', [ChatbotController::class, 'ask'])->name('chatbot.ask');
 
     // Pesanan
     Route::get('/pesanan', [OrderController::class, 'index'])->name('pesanan');
