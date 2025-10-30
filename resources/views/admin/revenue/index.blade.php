@@ -17,6 +17,49 @@
 </div>
 
 @if ($monthly->count() > 0)
+    <div style="max-width: 800px; margin: 0 auto 18px auto;">
+        <h3 style="text-align:center; font-weight:400; margin:14px 0 8px 0;">Diagram Batang Pendapatan Per Bulan</h3>
+        <canvas id="barRevenueChart" height="120"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const chartData = @json($monthly);
+        const labels = chartData.map(row => {
+            const date = new Date(row.month + '-01');
+            return date.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+        });
+        const data = chartData.map(row => row.revenue);
+        const barCtx = document.getElementById('barRevenueChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Pendapatan',
+                    data: data,
+                    backgroundColor: 'rgba(52, 120, 246, 0.6)',
+                    borderColor: '#1472f6',
+                    borderWidth: 2,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: value => 'Rp ' + value.toLocaleString('id-ID')
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+@endif
+
+@if ($monthly->count() > 0)
     <div class="recent-orders-section">
         <h2 class="section-title">Ringkasan Bulanan</h2>
         <div class="orders-table">

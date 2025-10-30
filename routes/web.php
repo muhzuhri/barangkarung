@@ -77,6 +77,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
         Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
         Route::patch('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+        Route::patch('/admin/orders/{id}/update-payment', [\App\Http\Controllers\Admin\OrderController::class, 'updatePayment'])->name('admin.orders.updatePayment');
+        Route::patch('/admin/orders/{id}/update-status', [\App\Http\Controllers\Admin\OrderController::class, 'updateOrderStatus'])->name('admin.orders.updateOrderStatus');
 
         // Revenue Management
         Route::get('/revenue', [\App\Http\Controllers\Admin\RevenueController::class, 'index'])->name('admin.revenue.index');

@@ -22,7 +22,7 @@ class AdminAuthController extends Controller
         $totalUsers = User::count();
         $totalProducts = Product::count();
         $totalOrders = Order::count();
-        $totalRevenue = Order::where('status', 'selesai')->sum('total');
+        $totalRevenue = Order::where('order_status', 'selesai')->sum('total');
 
         // Recent orders
         $recentOrders = Order::with('user')
@@ -40,7 +40,7 @@ class AdminAuthController extends Controller
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
                 DB::raw('SUM(total) as revenue')
             )
-            ->where('status', 'selesai')
+            ->where('order_status', 'selesai')
             ->where('created_at', '>=', Carbon::now()->subMonths(6)->startOfMonth())
             ->groupBy('month')
             ->pluck('revenue', 'month');
@@ -49,6 +49,7 @@ class AdminAuthController extends Controller
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
                 DB::raw('COUNT(*) as count')
             )
+            ->where('order_status', 'selesai')
             ->where('created_at', '>=', Carbon::now()->subMonths(6)->startOfMonth())
             ->groupBy('month')
             ->pluck('count', 'month');

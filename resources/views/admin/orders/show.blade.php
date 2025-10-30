@@ -100,7 +100,7 @@
 <div class="order-header">
     <h1 class="order-title">Pesanan #{{ $order->order_code }}</h1>
     <span
-        class="badge-large status-badge status-{{ \Illuminate\Support\Str::slug($order->status) }}">{{ $order->status }}</span>
+        class="badge-large status-badge status-{{ \Illuminate\Support\Str::slug($order->order_status) }}">{{ ucfirst($order->order_status) }}</span>
 </div>
 
 <div class="meta-grid" style="margin-bottom:16px;">
@@ -120,6 +120,24 @@
         <div class="meta-label">Metode Pembayaran</div>
         <div class="meta-value">{{ $order->payment_method }}</div>
     </div>
+    <div class="meta-item">
+        <div class="meta-label">Status Pembayaran</div>
+        <div class="meta-value">
+            @if($order->payment_method === 'dana' || $order->payment_method === 'mandiri')
+                <strong>{{ ucfirst($order->payment_status ?? '-') }}</strong>
+                <br>
+                @if($order->payment_proof)
+                    <a href="{{ asset('storage/'.$order->payment_proof) }}" target="_blank" style="display:block;margin-bottom:6px;">Lihat Bukti Transfer</a>
+                @endif
+            @else
+                Non-Transfer (Bayar di Tempat/COD)
+            @endif
+        </div>
+    </div>
+    <div class="meta-item">
+        <div class="meta-label">Status Pesanan</div>
+        <div class="meta-value">{{ ucfirst($order->order_status) }}</div>
+    </div>
     <div class="meta-item" style="grid-column:1/-1;">
         <div class="meta-label">Alamat Pengiriman</div>
         <div class="meta-value">{{ $order->shipping_address }}</div>
@@ -133,7 +151,7 @@
     </div>
     <div class="summary-card">
         <div class="meta-label">Status</div>
-        <div class="summary-value">{{ ucfirst($order->status) }}</div>
+        <div class="summary-value">{{ ucfirst($order->order_status) }}</div>
     </div>
     <div class="summary-card">
         <div class="meta-label">Total Pembayaran</div>
@@ -169,18 +187,17 @@
     </table>
 </div>
 
-<form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="form-inline"
+<form method="POST" action="{{ route('admin.orders.updateOrderStatus', $order->id) }}" class="form-inline"
     style="margin-top:16px; gap:12px; align-items:center;">
     @csrf
     @method('PATCH')
-    <label for="status" style="min-width:110px;">Ubah Status</label>
-    <select id="status" name="status" style="padding:8px 10px; border-radius:8px; border:1px solid #e5e7eb;">
-        <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Pending</option>
-        <option value="Sedang Diproses" {{ $order->status === 'Sedang Diproses' ? 'selected' : '' }}>Sedang Diproses
-        </option>
-        <option value="dikirim" {{ $order->status === 'dikirim' ? 'selected' : '' }}>Dikirim</option>
-        <option value="selesai" {{ $order->status === 'selesai' ? 'selected' : '' }}>Selesai</option>
-        <option value="dibatalkan" {{ $order->status === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+    <label for="order_status" style="min-width:110px;">Ubah Status</label>
+    <select id="order_status" name="order_status" style="padding:8px 10px; border-radius:8px; border:1px solid #e5e7eb;">
+        <option value="pending" {{ $order->order_status === 'pending' ? 'selected' : '' }}>Pending</option>
+        <option value="diproses" {{ $order->order_status === 'diproses' ? 'selected' : '' }}>Sedang Diproses</option>
+        <option value="dikirim" {{ $order->order_status === 'dikirim' ? 'selected' : '' }}>Dikirim</option>
+        <option value="selesai" {{ $order->order_status === 'selesai' ? 'selected' : '' }}>Selesai</option>
+        <option value="dibatalkan" {{ $order->order_status === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
     </select>
     <div class="btn-group">
         <button type="submit" class="btn"

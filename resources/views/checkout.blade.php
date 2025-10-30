@@ -39,6 +39,16 @@
             </div>
         @endif
 
+        @if ($errors->any())
+            <div class="alert alert-error">
+                <ul style="margin:8px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <!-- Address Card -->
         <div class="address-card" onclick="editAddress()">
             <div class="location-icon">📍</div>
@@ -63,94 +73,87 @@
 
 
 
-        <!-- Main Layout -->
-        <div class="checkout-layout">
-            <!-- Left Column - Order Details -->
-            <div class="order-details">
-                <div class="seller-name">BarangKarung.id</div>
+        <!-- Main Layout - Tag pembuka form pindah ke bagian luar -->
+        <form id="checkoutForm" method="POST" action="{{ route('checkout.process') }}" enctype="multipart/form-data">
+            @csrf
+            <div class="checkout-layout">
+                <!-- Left Column - Order Details -->
+                <div class="order-details">
+                    <div class="seller-name">BarangKarung.id</div>
+                    @foreach ($cartItems as $item)
+                        <div class="product-item">
+                            <div class="product-image">
+                                @if ($item->product->image)
+                                    <img src="{{ $item->product->image_url }}" alt="{{ $item->product->name }}">
+                                @else
+                                    <span>📦</span>
+                                @endif
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">{{ $item->product->name }}</div>
+                                <div class="product-price">Rp {{ number_format($item->product->price, 0, ',', '.') }}</div>
+                            </div>
+                            <div class="product-quantity">x {{ $item->quantity }}</div>
+                        </div>
+                    @endforeach
 
-                @foreach ($cartItems as $item)
-                    <div class="product-item">
-                        <div class="product-image">
-                            @if ($item->product->image)
-                                <img src="{{ $item->product->image_url }}" alt="{{ $item->product->name }}">
-                            @else
-                                <span>📦</span>
-                            @endif
-                        </div>
-                        <div class="product-info">
-                            <div class="product-name">{{ $item->product->name }}</div>
-                            <div class="product-price">Rp {{ number_format($item->product->price, 0, ',', '.') }}</div>
-                        </div>
-                        <div class="product-quantity">x {{ $item->quantity }}</div>
+                    <!-- Opsi Pengiriman -->
+                    <div class="option-item">
+                        <div class="option-label">Opsi Pengiriman</div>
+                        <select id="shippingMethod" name="shipping_method" class="option-select">
+                            <option value="reguler" selected>Reguler (Rp 25.000)</option>
+                            <option value="kargo">Kargo (Rp 12.000)</option>
+                        </select>
                     </div>
-                @endforeach
-
-                <!-- Opsi Pengiriman -->
-                <div class="option-item">
-                    <div class="option-label">Opsi Pengiriman</div>
-                    <select id="shippingMethod" name="shipping_method" class="option-select">
-                        <option value="reguler" selected>Reguler (Rp 25.000)</option>
-                        <option value="kargo">Kargo (Rp 12.000)</option>
-                    </select>
+                    <!-- Metode Pembayaran -->
+                    <div class="option-item">
+                        <div class="option-label">Metode Pembayaran</div>
+                        <select id="paymentMethod" name="payment_method" class="option-select">
+                            <option value="cod" selected>COD (Bayar di Tempat)</option>
+                            <option value="dana">Dana (Transfer)</option>
+                            <option value="mandiri">Mandiri (Transfer)</option>
+                        </select>
+                    </div>
+                    <div class="option-item" id="transferInfoBox" style="display:none;">
+                        <div class="option-label" id="rekeningLabel"></div>
+                        <div class="rekening-info" id="rekeningInfo"></div>
+                        <div class="option-label">Upload Bukti Transfer</div>
+                        <input type="file" name="payment_proof" accept="image/*" class="option-input">
+                    </div>
+                    <!-- Pesan untuk Penjual -->
+                    <div class="option-item">
+                        <div class="option-label">Pesan Untuk Penjual</div>
+                        <textarea id="notesInput" name="notes" class="option-textarea" placeholder="Tulis pesan untuk penjual..."></textarea>
+                    </div>
                 </div>
-
-                <!-- Metode Pembayaran -->
-                <div class="option-item">
-                    <div class="option-label">Metode Pembayaran</div>
-                    <select id="paymentMethod" name="payment_method" class="option-select">
-                        <option value="cod" selected>COD (Bayar di Tempat)</option>
-                    </select>
-                </div>
-
-                <!-- Pesan untuk Penjual -->
-                <div class="option-item">
-                    <div class="option-label">Pesan Untuk Penjual</div>
-                    <textarea id="notesInput" name="notes" class="option-textarea" placeholder="Tulis pesan untuk penjual..."></textarea>
-                </div>
-
-            </div>
-
-            <!-- Right Column - Payment Summary -->
-            <div class="payment-summary">
-                <div class="summary-title">Rincian Pembayaran</div>
-
-                <div class="summary-item">
-                    <span class="summary-label">Subtotal Pesanan</span>
-                    <span class="summary-value">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
-                </div>
-
-                <div class="summary-item">
-                    <span class="summary-label">Subtotal Pengiriman</span>
-                    <span class="summary-value">Rp {{ number_format($shippingCost, 0, ',', '.') }}</span>
-                </div>
-
-                <div class="summary-item">
-                    <span class="summary-label">Biaya Layanan</span>
-                    <span class="summary-value">Rp {{ number_format($serviceFee, 0, ',', '.') }}</span>
-                </div>
-
-                <div class="summary-item total">
-                    <span class="summary-label">Total</span>
-                    <span class="summary-value">Rp {{ number_format($total, 0, ',', '.') }}</span>
-                </div>
-
-
-                <form id="checkoutForm" method="POST" action="{{ route('checkout.process') }}">
-                    @csrf
+                <!-- Right Column - Payment Summary & tombol submit -->
+                <div class="payment-summary">
+                    <div class="summary-title">Rincian Pembayaran</div>
+                    <div class="summary-item">
+                        <span class="summary-label">Subtotal Pesanan</span>
+                        <span class="summary-value">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Subtotal Pengiriman</span>
+                        <span class="summary-value">Rp {{ number_format($shippingCost, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Biaya Layanan</span>
+                        <span class="summary-value">Rp {{ number_format($serviceFee, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span class="summary-label">Total</span>
+                        <span class="summary-value">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                    </div>
                     @foreach ($cartItems as $item)
                         <input type="hidden" name="selected_items[]" value="{{ $item->id }}">
                     @endforeach
                     <input type="hidden" name="shipping_address" value="{{ $user->address ?? '' }}">
                     <input type="hidden" name="phone" value="{{ $user->phone ?? '' }}">
-                    <input type="hidden" name="shipping_method" value="reguler">
-                    <input type="hidden" name="payment_method" value="cod">
-                    <input type="hidden" name="notes" value="">
                     <button type="submit" class="checkout-button">Buat Pesanan</button>
-                </form>
-
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 
     <script>
@@ -258,6 +261,31 @@
 
         notesTextarea.addEventListener('input', () => {
             notesInputField.value = notesTextarea.value;
+        });
+
+        const transferInfoBox = document.getElementById('transferInfoBox');
+        const rekeningLabel = document.getElementById('rekeningLabel');
+        const rekeningInfo = document.getElementById('rekeningInfo');
+
+        document.getElementById('paymentMethod').addEventListener('change', function() {
+            const val = this.value;
+            if(val === 'dana') {
+                transferInfoBox.style.display = 'block';
+                rekeningLabel.textContent = 'Nomor DANA';
+                rekeningInfo.textContent = '0812xxxxxxx a.n. Contoh DANA';
+            } else if(val === 'mandiri') {
+                transferInfoBox.style.display = 'block';
+                rekeningLabel.textContent = 'Rekening Mandiri';
+                rekeningInfo.textContent = '123000xxxxx a.n. Contoh Mandiri';
+            } else {
+                transferInfoBox.style.display = 'none';
+                rekeningLabel.textContent = '';
+                rekeningInfo.textContent = '';
+            }
+        });
+        // trigger di load jika (misal reload dari validasi)
+        document.addEventListener('DOMContentLoaded', ()=>{
+          document.getElementById('paymentMethod').dispatchEvent(new Event('change'));
         });
     </script>
 </body>

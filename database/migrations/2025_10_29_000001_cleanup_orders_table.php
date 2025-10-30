@@ -31,6 +31,19 @@ return new class extends Migration
                 $table->dropColumn('total_payment');
             }
         });
+
+        // Tambahan migrasi untuk payment
+        Schema::table('orders', function (Blueprint $table) {
+            if (!Schema::hasColumn('orders', 'payment_proof')) {
+                $table->string('payment_proof')->nullable();
+            }
+            if (!Schema::hasColumn('orders', 'payment_status')) {
+                $table->enum('payment_status', ['pending', 'verified', 'rejected'])->default('pending');
+            }
+            if (!Schema::hasColumn('orders', 'order_status')) {
+                $table->enum('order_status', ['pending', 'diproses', 'dikirim', 'selesai', 'dibatalkan'])->default('pending');
+            }
+        });
     }
 
     public function down(): void

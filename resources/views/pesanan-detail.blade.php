@@ -46,6 +46,30 @@
 					<div class="detail-label">Telepon</div>
 					<div class="detail-value">{{ $order->phone }}</div>
 				</div>
+				<div>
+					<div class="detail-label">Status Pembayaran</div>
+					<div class="detail-value">
+						@if($order->payment_method === 'dana' || $order->payment_method === 'mandiri')
+							<strong>{{ ucfirst($order->payment_status ?? '-') }}</strong>
+							@if($order->payment_proof)
+								<br>
+								<a href="{{ asset('storage/'.$order->payment_proof) }}" target="_blank">Lihat Bukti Transfer</a>
+							@endif
+							<br>
+							@if($order->payment_status === 'pending')
+								Menunggu konfirmasi admin
+							@elseif($order->payment_status === 'verified')
+								Pembayaran terkonfirmasi
+							@elseif($order->payment_status === 'rejected')
+								Pembayaran ditolak, silakan hubungi admin
+							@endif
+						@else
+							Non-Transfer (Bayar di Tempat/COD)
+						@endif
+					</div>
+					<div class="detail-label">Status Pemesanan</div>
+					<div class="detail-value">{{ ucfirst($order->order_status) }}</div>
+				</div>
 				<div style="grid-column:1/-1;">
 					<div class="detail-label">Alamat Pengiriman</div>
 					<div class="detail-value">{{ $order->shipping_address }}</div>
@@ -84,7 +108,7 @@
 		</div>
 
 		<div style="display:flex; gap:8px; flex-wrap:wrap;">
-			@if ($order->status === 'dikirim')
+			@if ($order->order_status === 'dikirim')
 			<form method="POST" action="{{ route('pesanan.selesai', $order->id) }}">
 				@csrf
 				<button type="submit" class="btn-detail" style="background:#10b981;">Tandai Selesai</button>

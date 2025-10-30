@@ -36,11 +36,11 @@
                             'shipped' => 'shipping',
                             'delivered' => 'delivered',
                             'cancelled' => 'cancelled',
-                        ][$order->status] ?? 'pending';
+                        ][$order->order_status] ?? 'pending';
                     @endphp
 
                     <div class="order-status {{ $statusClass }}">
-                        {{ ucfirst($order->status) }}
+                        {{ ucfirst($order->order_status) }}
                     </div>
                 </div>
 
@@ -62,7 +62,7 @@
                     <p><strong>Total Pembayaran:</strong> Rp{{ number_format($order->total, 0, ',', '.') }}</p>
                     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                         <a href="{{ route('pesanan.detail', $order->id) }}" class="btn-detail">Lihat Detail</a>
-                        @if ($order->status === 'dikirim')
+                        @if ($order->order_status === 'dikirim')
                             <form method="POST" action="{{ route('pesanan.selesai', $order->id) }}">
                                 @csrf
                                 <button type="submit" class="btn-detail" style="background:#10b981;">Tandai Selesai</button>

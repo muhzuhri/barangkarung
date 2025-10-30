@@ -63,7 +63,7 @@ class CheckoutController extends Controller
         }
 
         // Validasi input termasuk selected_items
-        $request->validate([
+        $rules = [
             'selected_items' => 'required|array|min:1',
             'selected_items.*' => 'integer',
             'shipping_address' => 'nullable|string|max:500',
@@ -71,7 +71,11 @@ class CheckoutController extends Controller
             'shipping_method' => 'required|string',
             'payment_method' => 'required|string',
             'notes' => 'nullable|string|max:500',
-        ]);
+        ];
+        if (in_array($request->payment_method, ['dana', 'mandiri'])) {
+            $rules['payment_proof'] = 'required|image|mimes:jpg,jpeg,png|max:2048';
+        }
+        $validated = $request->validate($rules);
 
         $selectedIds = array_map('intval', $request->input('selected_items', []));
 
@@ -95,9 +99,9 @@ class CheckoutController extends Controller
         $total = $subtotal + $shippingCost + $serviceFee - $discount;
 
         // Buat pesanan baru
-        $order = Order::create([
+        $orderData = [
             'user_id' => $user->id,
-            'order_code' => 'ORD-' . strtoupper(uniqid()), // generate kode unik
+            'order_code' => 'ORD-' . strtoupper(uniqid()),
             'shipping_address' => $request->shipping_address ?? $user->address ?? '',
             'phone' => $request->phone,
             'shipping_method' => $shippingMethod,
@@ -108,8 +112,20 @@ class CheckoutController extends Controller
             'service_fee' => $serviceFee,
             'discount' => $discount,
             'total' => $total,
-            'status' => 'pending',
-        ]);
+        ];
+
+        if (in_array($request->payment_method, ['dana','mandiri'])) {
+            if ($request->hasFile('payment_proof')) {
+                $path = $request->file('payment_proof')->store('payments', 'public');
+                $orderData['payment_proof'] = $path;
+            }
+            $orderData['payment_status'] = 'pending';
+            $orderData['order_status'] = 'pending';
+        } else {
+            // Metode lain, misal COD
+            $orderData['order_status'] = 'pending';
+        }
+        $order = Order::create($orderData);
 
 
         // Simpan item pesanan hanya untuk item yang dipilih

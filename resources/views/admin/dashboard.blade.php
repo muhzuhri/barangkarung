@@ -96,8 +96,8 @@
                             <td>{{ $order->user->name ?? 'User #' . $order->user_id }}</td>
                             <td>Rp {{ number_format($order->total, 0, ',', '.') }}</td>
                             <td>
-                                <span class="status-badge status-{{ $order->status }}">
-                                    {{ ucfirst($order->status) }}
+                                <span class="status-badge status-{{ $order->order_status }}">
+                                    {{ ucfirst($order->order_status) }}
                                 </span>
                             </td>
                             <td>{{ $order->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
