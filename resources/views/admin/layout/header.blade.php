@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{ asset('css/admin/dashboard-admin-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/profile-admin-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/user-admin-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/faq-admin-style.css') }}">
     {{-- <link rel="stylesheet" href="{{ asset('css/admin/produk-admin-style.css') }}"> --}}
     {{-- <link rel="stylesheet" href="{{ asset('css/admin/editproduk-admin-style.css') }}"> --}}
 
@@ -48,6 +49,12 @@
                         <a href="{{ route('admin.orders.index') }}"
                             class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
                             Pesanan
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.faq.index') }}"
+                            class="{{ request()->routeIs('admin.faq.*') ? 'active' : '' }}">
+                            FAQ
                         </a>
                     </li>
                     <li>

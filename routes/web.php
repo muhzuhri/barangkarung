@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\FaqController;
 
 // Authentication Routes
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
@@ -87,6 +88,17 @@ Route::prefix('admin')->group(function () {
 
         // Revenue Management
         Route::get('/revenue', [\App\Http\Controllers\Admin\RevenueController::class, 'index'])->name('admin.revenue.index');
+
+        // FAQ Management Routes
+        Route::resource('faq', FaqController::class)->names([
+            'index' => 'admin.faq.index',
+            'create' => 'admin.faq.create',
+            'store' => 'admin.faq.store',
+            'show' => 'admin.faq.show',
+            'edit' => 'admin.faq.edit',
+            'update' => 'admin.faq.update',
+            'destroy' => 'admin.faq.destroy'
+        ]);
 
         // User Management Routes
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->names([

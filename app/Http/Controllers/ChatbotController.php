@@ -2,11 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Faq;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ChatbotController extends Controller
 {
+    /**
+     * Menghitung kemiripan antara dua string menggunakan algoritma Levenshtein
+     */
+    private function calculateSimilarity($str1, $str2) {
+        $str1 = (string) $str1;
+        $str2 = (string) $str2;
+        
+        $length1 = strlen($str1);
+        $length2 = strlen($str2);
+        
+        if ($length1 === 0) return $length2 === 0 ? 1.0 : 0.0;
+        
+        $distance = levenshtein($str1, $str2);
+        $maxLength = max($length1, $length2);
+        
+        return 1 - ($distance / $maxLength);
+    }
     public function ask(Request $request)
     {
         $request->validate([
@@ -24,7 +42,72 @@ class ChatbotController extends Controller
 
     private function generateReply($text)
     {
-        // Rules-based intents with broad keyword coverage
+        $text = Str::of(mb_strtolower($text));
+        $bestMatch = null;
+        $highestSimilarity = 0;
+        $relatedAnswers = [];
+        
+        // Cari di FAQ terlebih dahulu
+        $faqs = Faq::where('is_active', true)->get();
+        
+        foreach ($faqs as $faq) {
+            $lowercaseQuestion = Str::of(mb_strtolower($faq->question));
+            $questionSimilarity = $this->calculateSimilarity($text, $lowercaseQuestion);
+            
+            // Cek kemiripan dengan pertanyaan
+            if ($questionSimilarity > 0.4) { // Menurunkan threshold untuk menangkap lebih banyak kemungkinan
+                if ($questionSimilarity > $highestSimilarity) {
+                    $highestSimilarity = $questionSimilarity;
+                    $bestMatch = $faq;
+                }
+                
+                // Tambahkan ke daftar jawaban terkait
+                if ($questionSimilarity > 0.3) {
+                    $relatedAnswers[] = [
+                        'category' => $faq->category,
+                        'question' => $faq->question,
+                        'answer' => $faq->answer,
+                        'similarity' => $questionSimilarity
+                    ];
+                }
+            }
+            
+            // Cek kata kunci dalam kategori
+            if (Str::contains($text, Str::of(mb_strtolower($faq->category)))) {
+                $relatedAnswers[] = [
+                    'category' => $faq->category,
+                    'question' => $faq->question,
+                    'answer' => $faq->answer,
+                    'similarity' => 0.5
+                ];
+            }
+        }
+        
+        // Urutkan jawaban terkait berdasarkan kemiripan
+        usort($relatedAnswers, function($a, $b) {
+            return $b['similarity'] <=> $a['similarity'];
+        });
+        
+        // Batasi hanya 3 jawaban terkait teratas
+        $relatedAnswers = array_slice($relatedAnswers, 0, 3);
+        
+        if ($bestMatch) {
+            $response = "📌 " . $bestMatch->answer . "\n\n";
+            
+            if (count($relatedAnswers) > 1) {
+                $response .= "\n💡 Pertanyaan terkait yang mungkin membantu:\n\n";
+                foreach ($relatedAnswers as $related) {
+                    if ($related['question'] !== $bestMatch->question) {
+                        $response .= "▫️ " . $related['question'] . "\n";
+                        $response .= "   " . $related['answer'] . "\n\n";
+                    }
+                }
+            }
+            
+            return $response;
+        }
+
+        // Jika tidak ada FAQ yang cocok, gunakan rules default
         $rules = [
             [
                 'k' => ['halo', 'hai', 'hi', 'assalam', 'pagi', 'siang', 'sore', 'malam', 'selamat'],

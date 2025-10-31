@@ -4,11 +4,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Barang Karung ID</title>
 
     <!-- Google Fonts & Material Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons" />
+    
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
     <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('css/nav_menu-style.css') }}">
@@ -16,11 +20,16 @@
     <link rel="stylesheet" href="{{ asset('css/katalog-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/pesanan-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/profile-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/chatbot-style.css') }}">
 </head>
 
 <body>
-    <!-- ===== NAVBAR ===== -->
-    <x-navbar />
+    <div id="app">
+        <!-- ===== NAVBAR ===== -->
+        <x-navbar />
+        
+        <!-- ===== CHATBOT ===== -->
+        <chat-bot></chat-bot>
 
     <!-- ===== PROMO SECTION ===== -->
     <section class="promo-section">
