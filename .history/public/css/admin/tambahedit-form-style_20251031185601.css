@@ -1,0 +1,146 @@
+.btn-kembali {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* ukuran tombol */
+    height: 40px;
+    background-color: #8dc3fc;
+    border-radius: 50%; /* bikin tombol bulat */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+.btn-kembali:hover {
+    background-color: #8dc3fc;
+    transform: scale(1.05);
+}
+
+.btn-icon-kembali {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: brightness(0) invert(1); /* ubah icon jadi putih */
+}
+
+/* === Container utama form === */
+.form-container {
+    background: #ffffff;
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* === Label === */
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+}
+
+/* === Input, Textarea, File === */
+.form-input,
+.form-textarea,
+.form-file {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #0f172a;
+    background-color: #f8fafc;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-file:focus {
+    border-color: #2563eb;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    outline: none;
+}
+
+/* === Textarea === */
+.form-textarea {
+    resize: none;
+}
+
+/* === Spasi antar group === */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* === Tombol Aksi === */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+/* Tombol Batal */
+.btn-batal {
+    padding: 10px 20px;
+    background-color: #e2e8f0;
+    color: #334155;
+    font-weight: 500;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-batal:hover {
+    background-color: #cbd5e1;
+}
+
+/* Tombol Simpan */
+.btn-submit {
+    padding: 10px 22px;
+    background-color: #1e40af;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+/* === Efek tambahan untuk input file === */
+.form-file {
+    border: 2px dashed #cbd5e1;
+    background-color: #f9fafb;
+    cursor: pointer;
+}
+
+.form-file:hover {
+    border-color: #2563eb;
+}
+
+/* === Responsif === */
+@media (max-width: 600px) {
+    .form-container {
+        padding: 25px 20px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-batal,
+    .btn-submit {
+        width: 100%;
+        text-align: center;
+    }
+}

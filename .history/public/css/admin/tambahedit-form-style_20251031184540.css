@@ -1,0 +1,25 @@
+.btn-kembali {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;              /* ukuran tombol */
+    height: 40px;
+    background-color: #1e40af; /* biru tua (bisa kamu ganti) */
+    border-radius: 50%;        /* bikin tombol bulat */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.btn-kembali:hover {
+    background-color: #1d4ed8; /* warna biru sedikit lebih terang saat hover */
+    transform: scale(1.05);
+}
+
+.btn-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: brightness(0) invert(1); /* ubah icon jadi putih */
+}

@@ -1,0 +1,19 @@
+.btn-detail {
+    border: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.4px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-detail {
+    background-color: #d1fad5;
+    color: #05530f;
+}
+
+.btn-detail:hover {
+    background-color: #adf4b4;
+}

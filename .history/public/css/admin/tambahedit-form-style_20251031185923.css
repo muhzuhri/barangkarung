@@ -1,0 +1,125 @@
+.btn-kembali {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* ukuran tombol */
+    height: 40px;
+    background-color: #8dc3fc;
+    border-radius: 50%; /* bikin tombol bulat */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+.btn-kembali:hover {
+    background-color: #8dc3fc;
+    transform: scale(1.05);
+}
+
+.btn-icon-kembali {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: brightness(0) invert(1); /* ubah icon jadi putih */
+}
+
+.form-container {
+    background: #ffffff;
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    max-width: 850px;
+    margin: 40px auto;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.form-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 5px;
+}
+
+.form-subtitle {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin-bottom: 25px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group.form-full {
+    grid-column: span 2;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #1e293b;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-input,
+.form-textarea,
+.form-file {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    background-color: #f8fafc;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-file:focus {
+    border-color: #1e40af;
+    background-color: #fff;
+    box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.2);
+    outline: none;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-batal,
+.btn-submit {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-batal {
+    background-color: #e2e8f0;
+    color: #475569;
+}
+
+.btn-batal:hover {
+    background-color: #cbd5e1;
+}
+
+.btn-submit {
+    background-color: #1e40af;
+    color: #ffffff;
+}
+
+.btn-submit:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-2px);
+}

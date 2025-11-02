@@ -1,0 +1,107 @@
+.btn-detail {
+    border: none;
+    font-size: 0.8rem;
+    letter-spacing: 0.4px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-detail {
+    background-color: #d1fad5;
+    color: #05530f;
+}
+
+.btn-detail:hover {
+    background-color: #adf4b4;
+}
+
+/* Scoped enhancements for a modern detail view */
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 16px
+    }
+
+    .order-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0
+    }
+
+    .badge-large {
+        font-size: .85rem;
+        padding: 8px 12px;
+        border-radius: 999px;
+        display: inline-block
+    }
+
+    .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px
+    }
+
+    .meta-item {
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, .06);
+        border-radius: 12px;
+        padding: 12px
+    }
+
+    .meta-label {
+        font-size: .75rem;
+        color: #6b7280;
+        margin-bottom: 4px
+    }
+
+    .meta-value {
+        font-weight: 600
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px
+    }
+
+    .summary-card {
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, .06);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center
+    }
+
+    .summary-value {
+        font-size: 1.1rem;
+        font-weight: 700
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap
+    }
+
+    .form-inline {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap
+    }
+
+    @media (max-width: 768px) {
+        .meta-grid {
+            grid-template-columns: 1fr
+        }
+
+        .summary-grid {
+            grid-template-columns: 1fr
+        }
+    }

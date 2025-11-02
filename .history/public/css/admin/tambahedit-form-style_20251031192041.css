@@ -1,0 +1,150 @@
+.btn-kembali {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; /* ukuran tombol */
+    height: 40px;
+    background-color: #80bcfb;
+    border-radius: 50%; /* bikin tombol bulat */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+.btn-kembali:hover {
+    /* background-color: #6eb3fe; */
+    transform: scale(1.05);
+}
+
+.btn-icon-kembali {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: brightness(0) invert(1); /* ubah icon jadi putih */
+}
+
+./* ===== FORM CONTAINER ===== */
+.form-container {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 40px 35px;
+    margin: 40px auto;
+    max-width: 900px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+/* ===== FORM TITLE ===== */
+.form-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.form-subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+/* ===== GRID LAYOUT ===== */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.form-group.form-full {
+    grid-column: span 2;
+}
+
+/* ===== FORM INPUTS ===== */
+.form-label {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-input,
+.form-textarea,
+.form-file {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    background-color: #f8fafc;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-file:focus {
+    border-color: #1e40af;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15);
+    outline: none;
+}
+
+/* ===== BUTTON AREA ===== */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-batal,
+.btn-submit {
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.btn-batal {
+    background-color: #e2e8f0;
+    color: #475569;
+}
+
+.btn-batal:hover {
+    background-color: #cbd5e1;
+    transform: translateY(-2px);
+}
+
+.btn-submit {
+    background-color: #1e40af;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(30, 64, 175, 0.3);
+}
+
+.btn-submit:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 25px 20px;
+        margin: 20px auto;
+        max-width: 95%;
+    }
+
+    .form-title {
+        font-size: 1.6rem;
+    }
+
+    .form-subtitle {
+        font-size: 0.9rem;
+    }
+}
