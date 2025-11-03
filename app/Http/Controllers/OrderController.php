@@ -23,7 +23,7 @@ class OrderController extends Controller
         // Ambil pesanan aktif (belum selesai) milik user, termasuk item di dalamnya
         $orders = Order::with(['items.product'])
             ->where('user_id', $user->id)
-            ->where('status', '!=', 'selesai')
+            ->where('order_status', '!=', 'selesai')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -51,18 +51,14 @@ class OrderController extends Controller
     public function complete(Request $request, $id)
     {
         $user = Auth::user();
-
         $order = Order::where('user_id', $user->id)
             ->where('id', $id)
             ->firstOrFail();
-
-        if ($order->status !== 'dikirim') {
+        if ($order->order_status !== 'dikirim') {
             return back()->with('error', 'Pesanan tidak bisa diselesaikan pada status saat ini.');
         }
-
-        $order->status = 'selesai';
+        $order->order_status = 'selesai';
         $order->save();
-
         return redirect()->route('pesanan.history')->with('success', 'Terima kasih! Pesanan dipindahkan ke riwayat.');
     }
 
@@ -79,7 +75,7 @@ class OrderController extends Controller
 
         $orders = Order::with(['items.product'])
             ->where('user_id', $user->id)
-            ->where('status', 'selesai')
+            ->where('order_status', 'selesai')
             ->orderBy('created_at', 'desc')
             ->get();
 

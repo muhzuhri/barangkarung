@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+// Midtrans classes will be referenced via FQN and guarded by class_exists
 
 
 class CheckoutController extends Controller
@@ -63,7 +64,7 @@ class CheckoutController extends Controller
         }
 
         // Validasi input termasuk selected_items
-        $request->validate([
+        $rules = [
             'selected_items' => 'required|array|min:1',
             'selected_items.*' => 'integer',
             'shipping_address' => 'nullable|string|max:500',
@@ -71,7 +72,11 @@ class CheckoutController extends Controller
             'shipping_method' => 'required|string',
             'payment_method' => 'required|string',
             'notes' => 'nullable|string|max:500',
-        ]);
+        ];
+        if (in_array($request->payment_method, ['dana', 'mandiri'])) {
+            $rules['payment_proof'] = 'required|image|mimes:jpg,jpeg,png|max:2048';
+        }
+        $validated = $request->validate($rules);
 
         $selectedIds = array_map('intval', $request->input('selected_items', []));
 
@@ -95,9 +100,9 @@ class CheckoutController extends Controller
         $total = $subtotal + $shippingCost + $serviceFee - $discount;
 
         // Buat pesanan baru
-        $order = Order::create([
+        $orderData = [
             'user_id' => $user->id,
-            'order_code' => 'ORD-' . strtoupper(uniqid()), // generate kode unik
+            'order_code' => 'ORD-' . strtoupper(uniqid()),
             'shipping_address' => $request->shipping_address ?? $user->address ?? '',
             'phone' => $request->phone,
             'shipping_method' => $shippingMethod,
@@ -108,8 +113,20 @@ class CheckoutController extends Controller
             'service_fee' => $serviceFee,
             'discount' => $discount,
             'total' => $total,
-            'status' => 'pending',
-        ]);
+        ];
+
+        if (in_array($request->payment_method, ['dana','mandiri'])) {
+            if ($request->hasFile('payment_proof')) {
+                $path = $request->file('payment_proof')->store('payments', 'public');
+                $orderData['payment_proof'] = $path;
+            }
+            $orderData['payment_status'] = 'pending';
+            $orderData['order_status'] = 'pending';
+        } else {
+            // Metode lain, misal COD
+            $orderData['order_status'] = 'pending';
+        }
+        $order = Order::create($orderData);
 
 
         // Simpan item pesanan hanya untuk item yang dipilih
@@ -128,8 +145,113 @@ class CheckoutController extends Controller
             ->whereIn('id', $selectedIds)
             ->delete();
 
+        // Jika metode pembayaran Midtrans DANA, buat transaksi Snap
+        if ($request->payment_method === 'midtrans_dana') {
+            if (!class_exists(\Midtrans\Snap::class)) {
+                Log::error('Midtrans error: Snap class not available. Did you install midtrans/midtrans-php?');
+                return redirect()->route('pesanan')
+                    ->with('error', 'Layanan pembayaran sementara tidak tersedia. Coba lagi nanti.');
+            }
+            $params = [
+                'transaction_details' => [
+                    'order_id' => $order->order_code,
+                    'gross_amount' => (int) $total,
+                ],
+                'customer_details' => [
+                    'first_name' => $user->name,
+                    'email' => $user->email,
+                    'phone' => $request->phone,
+                    'shipping_address' => [
+                        'address' => $request->shipping_address ?? '',
+                    ],
+                ],
+                'enabled_payments' => ['dana'],
+                'callbacks' => [
+                    'finish' => route('pesanan'),
+                ],
+                'item_details' => $cartItems->map(function ($item) {
+                    return [
+                        'id' => (string) $item->product_id,
+                        'price' => (int) $item->product->price,
+                        'quantity' => (int) $item->quantity,
+                        'name' => substr($item->product->name, 0, 50),
+                    ];
+                })->values()->toArray(),
+            ];
+
+            try {
+                $snapTransaction = \Midtrans\Snap::createTransaction($params);
+                $order->update([
+                    'payment_gateway' => 'midtrans',
+                    'payment_token' => $snapTransaction->token ?? null,
+                    'payment_redirect_url' => $snapTransaction->redirect_url ?? null,
+                    'payment_status' => 'pending',
+                ]);
+
+                Log::info("Midtrans Snap created for order {$order->order_code}");
+
+                return redirect()->away($order->payment_redirect_url);
+            } catch (\Throwable $e) {
+                Log::error('Midtrans error: ' . $e->getMessage());
+                return redirect()->route('pesanan')
+                    ->with('error', 'Gagal memproses pembayaran DANA. Silakan coba lagi atau pilih metode lain.');
+            }
+        }
+
         Log::info("Checkout sukses oleh user {$user->id}, order_id: {$order->id}, total: {$total}");
 
         return redirect()->route('pesanan')->with('success', 'Pesanan berhasil dibuat! Terima kasih atas pembelian Anda.');
+    }
+
+    /**
+     * Midtrans Payment Notification Callback
+     */
+    public function midtransNotification(Request $request)
+    {
+        $notif = new \Midtrans\Notification();
+        $orderCode = $notif->order_id ?? null;
+        $transactionStatus = $notif->transaction_status ?? null;
+        $fraudStatus = $notif->fraud_status ?? null;
+        $transactionId = $notif->transaction_id ?? null;
+
+        if (!$orderCode) {
+            return response()->json(['message' => 'invalid payload'], 400);
+        }
+
+        $order = Order::where('order_code', $orderCode)->first();
+        if (!$order) {
+            return response()->json(['message' => 'order not found'], 404);
+        }
+
+        $newStatus = $order->status;
+        $paymentStatus = $order->payment_status;
+
+        if ($transactionStatus === 'capture') {
+            if ($fraudStatus === 'challenge') {
+                $paymentStatus = 'challenge';
+                $newStatus = 'pending';
+            } else if ($fraudStatus === 'accept') {
+                $paymentStatus = 'paid';
+                $newStatus = 'paid';
+            }
+        } else if ($transactionStatus === 'settlement') {
+            $paymentStatus = 'paid';
+            $newStatus = 'paid';
+        } else if (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
+            $paymentStatus = $transactionStatus;
+            $newStatus = 'cancelled';
+        } else if ($transactionStatus === 'pending') {
+            $paymentStatus = 'pending';
+            $newStatus = 'pending';
+        }
+
+        $order->update([
+            'payment_transaction_id' => $transactionId,
+            'payment_status' => $paymentStatus,
+            'status' => $newStatus,
+            'paid_at' => $paymentStatus === 'paid' ? now() : $order->paid_at,
+        ]);
+
+        return response()->json(['message' => 'ok']);
     }
 }

@@ -8,7 +8,9 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\FaqController;
 
 // Authentication Routes
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
@@ -39,6 +41,10 @@ Route::middleware('auth')->group(function () {
     // Checkout Routes
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::post('/midtrans/notification', [CheckoutController::class, 'midtransNotification'])->name('midtrans.notification');
+
+    // Chatbot endpoint
+    Route::post('/chatbot/ask', [ChatbotController::class, 'ask'])->name('chatbot.ask');
 
     // Pesanan
     Route::get('/pesanan', [OrderController::class, 'index'])->name('pesanan');
@@ -77,9 +83,22 @@ Route::prefix('admin')->group(function () {
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
         Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
         Route::patch('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+        Route::patch('/admin/orders/{id}/update-payment', [\App\Http\Controllers\Admin\OrderController::class, 'updatePayment'])->name('admin.orders.updatePayment');
+        Route::patch('/admin/orders/{id}/update-status', [\App\Http\Controllers\Admin\OrderController::class, 'updateOrderStatus'])->name('admin.orders.updateOrderStatus');
 
         // Revenue Management
         Route::get('/revenue', [\App\Http\Controllers\Admin\RevenueController::class, 'index'])->name('admin.revenue.index');
+
+        // FAQ Management Routes
+        Route::resource('faq', FaqController::class)->names([
+            'index' => 'admin.faq.index',
+            'create' => 'admin.faq.create',
+            'store' => 'admin.faq.store',
+            'show' => 'admin.faq.show',
+            'edit' => 'admin.faq.edit',
+            'update' => 'admin.faq.update',
+            'destroy' => 'admin.faq.destroy'
+        ]);
 
         // User Management Routes
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->names([

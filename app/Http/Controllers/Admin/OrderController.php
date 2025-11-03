@@ -37,6 +37,30 @@ class OrderController extends Controller
 
         return redirect()->back()->with('success', 'Status pesanan diperbarui.');
     }
+
+    public function updatePayment(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+        $action = $request->input('action');
+        if ($action === 'verified') {
+            $order->payment_status = 'verified';
+        } elseif ($action === 'rejected') {
+            $order->payment_status = 'rejected';
+        }
+        $order->save();
+        return redirect()->back()->with('success', 'Status pembayaran diperbarui.');
+    }
+
+    public function updateOrderStatus(Request $request, $id)
+    {
+        $request->validate([
+            'order_status' => 'required|in:pending,diproses,dikirim,selesai,dibatalkan'
+        ]);
+        $order = Order::findOrFail($id);
+        $order->order_status = $request->order_status;
+        $order->save();
+        return redirect()->back()->with('success', 'Status pesanan diperbarui.');
+    }
 }
 
 
