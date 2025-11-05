@@ -127,6 +127,37 @@
                     </div>
                 </div>
 
+                <!-- Right Column - Payment Summary -->
+                <div class="payment-summary">
+                    <div class="summary-title">Rincian Pembayaran</div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Subtotal</span>
+                        <span class="summary-value">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Biaya Pengiriman</span>
+                        <span class="summary-value" id="summaryShipping">Rp {{ number_format($shippingCost, 0, ',', '.') }}</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Biaya Layanan</span>
+                        <span class="summary-value">Rp {{ number_format($serviceFee, 0, ',', '.') }}</span>
+                    </div>
+                    
+                    @if($discount > 0)
+                    <div class="summary-item">
+                        <span class="summary-label">Diskon</span>
+                        <span class="summary-value" style="color: #27ae60;">- Rp {{ number_format($discount, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
+                    
+                    <div class="summary-item total">
+                        <span class="summary-label">Total Pembayaran</span>
+                        <span class="summary-value" id="totalSummary">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                    </div>
+
                     @foreach ($cartItems as $item)
                         <input type="hidden" name="selected_items[]" value="{{ $item->id }}">
                     @endforeach
@@ -195,8 +226,8 @@
 
 
         // Elemen ringkasan biaya
-        const summaryShipping = document.querySelectorAll('.summary-item span.summary-value')[1]; // urutan ke-2
-        const totalSummary = document.querySelector('.summary-item.total .summary-value');
+        const summaryShipping = document.getElementById('summaryShipping');
+        const totalSummary = document.getElementById('totalSummary');
 
         let subtotal = {{ $subtotal }};
         let serviceFee = {{ $serviceFee }};
@@ -214,36 +245,29 @@
             button.disabled = true;
             button.textContent = 'Memproses...';
         });
-        const shippingInputField = document.querySelector('input[name="shipping_method"]');
-        const paymentInputField = document.querySelector('input[name="payment_method"]');
-        const notesInputField = document.querySelector('input[name="notes"]');
+        // Hidden inputs sudah ada di form, tidak perlu selector terpisah
         const shippingSelect = document.getElementById('shippingMethod');
         const paymentSelect = document.getElementById('paymentMethod');
         const notesTextarea = document.getElementById('notesInput');
 
         function recalcTotals() {
             shippingCost = (shippingSelect.value === 'kargo') ? 12000 : 25000;
-            summaryShipping.textContent = 'Rp ' + shippingCost.toLocaleString('id-ID');
+            if (summaryShipping) {
+                summaryShipping.textContent = 'Rp ' + shippingCost.toLocaleString('id-ID');
+            }
             const total = subtotal + serviceFee + shippingCost - discount;
-            totalSummary.textContent = 'Rp ' + total.toLocaleString('id-ID');
+            if (totalSummary) {
+                totalSummary.textContent = 'Rp ' + total.toLocaleString('id-ID');
+            }
         }
 
-        // Sinkronkan pilihan ke input hidden + hitung ulang total
+        // Sinkronkan pilihan pengiriman dan hitung ulang total
         shippingSelect.addEventListener('change', () => {
-            shippingInputField.value = shippingSelect.value;
             recalcTotals();
         });
 
         // Inisialisasi awal (jaga-jaga bila default bukan reguler)
         recalcTotals();
-
-        paymentSelect.addEventListener('change', () => {
-            paymentInputField.value = paymentSelect.value;
-        });
-
-        notesTextarea.addEventListener('input', () => {
-            notesInputField.value = notesTextarea.value;
-        });
 
         const transferInfoBox = document.getElementById('transferInfoBox');
         const rekeningLabel = document.getElementById('rekeningLabel');

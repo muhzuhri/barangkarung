@@ -55,7 +55,7 @@
             <img src="{{ asset('img/img-dashboard/ds-chart.png') }}" alt="Icon Pesanan">
         </div>
         <div class="stat-number">{{ number_format($totalOrders) }}</div>
-        <div class="stat-label">Total Pesanan</div>
+        <div class="stat-label">Pesanan Selesai</div>
     </div>
 
     <div class="stat-card">
@@ -115,8 +115,8 @@
                             <td>{{ $order->user->name ?? 'User #' . $order->user_id }}</td>
                             <td>Rp {{ number_format($order->total, 0, ',', '.') }}</td>
                             <td>
-                                <span class="status-badge status-{{ $order->order_status }}">
-                                    {{ ucfirst($order->order_status) }}
+                                <span class="status-badge status-{{ \Illuminate\Support\Str::slug($order->order_status ?? $order->status) }}">
+                                    {{ ucfirst($order->order_status ?? $order->status) }}
                                 </span>
                             </td>
                             <td>{{ $order->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>

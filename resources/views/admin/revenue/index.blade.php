@@ -25,7 +25,21 @@
     </div>
 </div>
 
+<!-- Chart Section -->
+<div class="recent-orders-section" style="margin-top: 2rem;">
+    <div class="section-header">
+        <img src={{ asset('img/icon/statistic-icon.png') }} alt="Grafik Pendapatan" class="section-icon">
+        <h2 class="section-title">Grafik Pendapatan Per Bulan</h2>
+    </div>
+    <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);">
+        <canvas id="revenueChart" style="max-height: 400px;"></canvas>
+    </div>
+</div>
 
+<!-- Table Section -->
+<div class="recent-orders-section">
+    <div class="section-header">
+        <img src={{ asset('img/icon/calendar-icon.png') }} alt="Ringkasan Bulanan" class="section-icon">
         <h2 class="section-title">Ringkasan Bulanan</h2>
     </div>
 
@@ -93,5 +107,79 @@
     @endif
 
 </div>
+
+<script>
+    // Prepare data for chart
+    const monthlyData = @json($monthly);
+    
+    const labels = monthlyData.map(item => {
+        const date = new Date(item.month + '-01');
+        return date.toLocaleDateString('id-ID', {
+            month: 'short',
+            year: 'numeric'
+        });
+    });
+    
+    const revenueData = monthlyData.map(item => parseFloat(item.revenue || 0));
+
+    // Create chart
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Pendapatan (Rp)',
+                data: revenueData,
+                backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                borderColor: 'rgba(102, 126, 234, 1)',
+                borderWidth: 2,
+                borderRadius: 6,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Pendapatan: Rp ' + context.parsed.y.toLocaleString('id-ID');
+                        }
+                    }
+                },
+                title: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + value.toLocaleString('id-ID');
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+</script>
 
 @include('admin.layout.footer')

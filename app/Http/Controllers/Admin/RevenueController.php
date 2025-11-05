@@ -16,16 +16,40 @@ class RevenueController extends Controller
         $totalRevenue = Order::where('order_status', 'selesai')->sum('total');
         $totalOrders = Order::where('order_status', 'selesai')->count();
 
-        $monthly = Order::select(
+        // Generate last 12 months (dari bulan terbaru ke terlama)
+        $months = [];
+        for ($i = 0; $i <= 11; $i++) {
+            $months[] = \Carbon\Carbon::now()->subMonths($i)->format('Y-m');
+        }
+
+        // Get revenue data for last 12 months
+        $revenueRows = Order::select(
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
                 DB::raw('SUM(total) as revenue'),
                 DB::raw('COUNT(*) as orders_count')
             )
             ->where('order_status', 'selesai')
+            ->where('created_at', '>=', \Carbon\Carbon::now()->subMonths(12)->startOfMonth())
             ->groupBy('month')
-            ->orderBy('month', 'desc')
-            ->limit(12)
-            ->get();
+            ->pluck('revenue', 'month');
+
+        $orderRows = Order::select(
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
+                DB::raw('COUNT(*) as orders_count')
+            )
+            ->where('order_status', 'selesai')
+            ->where('created_at', '>=', \Carbon\Carbon::now()->subMonths(12)->startOfMonth())
+            ->groupBy('month')
+            ->pluck('orders_count', 'month');
+
+        // Map to ensure all months are present (bulan terbaru di kiri, terlama di kanan)
+        $monthly = collect($months)->map(function ($m) use ($revenueRows, $orderRows) {
+            return (object) [
+                'month' => $m,
+                'revenue' => (float) ($revenueRows[$m] ?? 0),
+                'orders_count' => (int) ($orderRows[$m] ?? 0)
+            ];
+        })->values();
 
         $completedOrders = Order::with(['items.product'])
             ->where('order_status', 'selesai')

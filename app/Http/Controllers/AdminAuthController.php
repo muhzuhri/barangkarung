@@ -21,11 +21,13 @@ class AdminAuthController extends Controller
         // Aggregate statistics
         $totalUsers = User::count();
         $totalProducts = Product::count();
-        $totalOrders = Order::count();
+        $totalOrders = Order::where('order_status', 'selesai')->count(); // Hanya pesanan selesai untuk konsistensi dengan menu profit
         $totalRevenue = Order::where('order_status', 'selesai')->sum('total');
 
-        // Recent orders
+        // Recent orders - show orders that are not completed yet (need status update)
         $recentOrders = Order::with('user')
+            ->where('order_status', '!=', 'selesai')
+            ->where('order_status', '!=', 'dibatalkan')
             ->orderBy('created_at', 'desc')
             ->limit(6)
             ->get();
