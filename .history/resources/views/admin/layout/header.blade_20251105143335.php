@@ -36,17 +36,8 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <div class="header">
 
-        <script>
-$(document).ready(function() {
-    $('#status').select2({
-        width: '100%',
-        placeholder: 'Ubah Status',
-        minimumResultsForSearch: Infinity // tanpa kolom pencarian
-    });
-});
-</script>
 
-
+        
         <div class="header-content">
             <div class="logo">
                 <div class="logo-icon">BK</div>

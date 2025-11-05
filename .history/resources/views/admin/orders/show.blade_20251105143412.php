@@ -3,6 +3,7 @@
 @endphp
 
 <style>
+    /* Style utama untuk dropdown */
     /* Label */
     .status-label {
         display: block;
@@ -15,12 +16,12 @@
 
     /* Select2 container */
     .select2-container .select2-selection--single {
-        height: 52px !important;
+        height: 50px !important;
         border: 2px solid #e5e7eb !important;
         border-radius: 14px !important;
         display: flex !important;
         align-items: center;
-        background-color: #ffffff !important;
+        background-color: #fff !important;
         padding: 6px 14px !important;
         transition: all 0.25s ease;
         box-shadow: none !important;
@@ -29,22 +30,20 @@
 
     /* Hover & Focus */
     .select2-container--default .select2-selection--single:hover {
-        border-color: #bfdbfe !important;
-        background-color: #f9fafb !important;
+        border-color: #93c5fd !important;
     }
 
     .select2-container--default.select2-container--focus .select2-selection--single {
         border-color: #3B82F6 !important;
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
-        background-color: #ffffff !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
     }
 
     /* Text */
     .select2-container .select2-selection__rendered {
-        color: #1f2937 !important;
+        color: #374151 !important;
         font-size: 15px !important;
         font-weight: 500 !important;
-        padding-left: 2px !important;
+        padding-left: 4px !important;
     }
 
     /* Dropdown arrow */
@@ -53,13 +52,11 @@
         right: 14px !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
-        transition: transform 0.25s ease, filter 0.2s ease;
-        filter: grayscale(60%);
+        transition: transform 0.25s ease;
     }
 
     .select2-container--open .select2-selection__arrow {
         transform: translateY(-50%) rotate(180deg) !important;
-        filter: grayscale(0%);
     }
 
     .select2-container--default .select2-selection__arrow b {
@@ -69,42 +66,26 @@
 
     /* Dropdown Panel */
     .select2-dropdown {
-        margin-top: 8px !important;
-        border: none !important;
-        border-radius: 14px !important;
-        background-color: #ffffff !important;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08) !important;
+        margin-top: 6px !important;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 12px !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
         overflow: hidden !important;
-        animation: dropdownFade 0.15s ease-out;
-    }
-
-    @keyframes dropdownFade {
-        from {
-            opacity: 0;
-            transform: translateY(-4px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
     }
 
     /* Option list */
     .select2-results__option {
-        padding: 12px 16px !important;
+        padding: 10px 16px !important;
         font-size: 15px !important;
         font-weight: 500 !important;
         color: #374151 !important;
-        transition: all 0.2s ease;
-        border-radius: 8px !important;
-        margin: 2px 6px !important;
+        transition: all 0.15s ease;
     }
 
     /* Hover / highlighted option */
     .select2-results__option--highlighted {
-        background-color: #eff6ff !important;
-        color: #1E3A8A !important;
+        background-color: #EFF6FF !important;
+        color: #1E40AF !important;
     }
 
     /* Remove search box */
@@ -112,26 +93,14 @@
         display: none !important;
     }
 
-    /* Custom Scrollbar — soft modern look */
+    /* Scrollbar styling (opsional, biar halus) */
     .select2-results__options::-webkit-scrollbar {
-        width: 8px;
-        background: transparent;
-    }
-
-    .select2-results__options::-webkit-scrollbar-track {
-        background: transparent;
-        margin: 8px;
+        width: 6px;
     }
 
     .select2-results__options::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #d1d5db 0%, #9ca3af 100%);
+        background-color: #cbd5e1;
         border-radius: 10px;
-        border: 2px solid #f9fafb;
-        transition: background 0.3s ease;
-    }
-
-    .select2-results__options::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #9ca3af 0%, #6b7280 100%);
     }
 </style>
 
@@ -186,7 +155,7 @@
                 <div class="meta-value">{{ $order->shipping_method }}</div>
             </div>
         </div>
-        
+
         <div class="meta-row full">
             <div class="meta-item full-width">
                 <div class="meta-label">Alamat Pengiriman</div>
@@ -335,7 +304,7 @@
 
 
         <div class="btn-group">
-            <button type="submit" class="btn-submit">Perbarui</button>
+            <button type="submit" class="btn-submit">Perbarui Status</button>
             {{-- <a href="{{ route('admin.orders.index') }}" class="btn-batal">Kembali</a> --}}
         </div>
     </form>

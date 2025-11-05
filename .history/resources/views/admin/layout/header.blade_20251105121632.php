@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    
     {{-- Icon web & title --}}
     <link rel="icon" type="image/png" sizes="128x128" href="{{ asset('img/icon/webb-icon.png') }}">
 
@@ -24,29 +24,17 @@
     <link rel="stylesheet" href="{{ asset('css/admin/faq-admin-style.css') }}">
 
     <!-- Tambahkan di dalam <head> -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 </head>
 
 <body>
-    <!-- Tambahkan sebelum </body> -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<!-- Tambahkan sebelum </body> -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <div class="header">
-
-        <script>
-$(document).ready(function() {
-    $('#status').select2({
-        width: '100%',
-        placeholder: 'Ubah Status',
-        minimumResultsForSearch: Infinity // tanpa kolom pencarian
-    });
-});
-</script>
-
-
         <div class="header-content">
             <div class="logo">
                 <div class="logo-icon">BK</div>
@@ -73,12 +61,6 @@ $(document).ready(function() {
                             Pesanan
                         </a>
                     </li>
-                    <!-- <li>
-                        <a href="{{ route('admin.faq.index') }}"
-                            class="{{ request()->routeIs('admin.faq.*') ? 'active' : '' }}">
-                            FAQ
-                        </a>
-                    </li> -->
                     <li>
                         <a href="{{ route('admin.users.index') }}"
                             class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
@@ -91,12 +73,6 @@ $(document).ready(function() {
                             Profit
                         </a>
                     </li>
-                    {{-- <li>
-                        <a href="{{ route('admin.setting.profile') }}"
-                            class="{{ request()->routeIs('admin.setting.profile*') ? 'active' : '' }}">
-                            Settings
-                        </a>
-                    </li> --}}
                 </ul>
             </nav>
 
@@ -116,12 +92,8 @@ $(document).ready(function() {
 
                     <div class="dropdown-menu" id="adminDropdown">
                         <a href="{{ route('admin.faq.index') }}" class="dropdown-item">
-                            <img src="{{ asset('img/icon/setting-icon.png') }}" alt="Pengaturan" class="icon">
+                            <img src="{{ asset('img/icon/faq-icon.png') }}" alt="Pengaturan" class="icon">
                             FAQ
-                        </a>
-                        <a href="{{ route('admin.setting.payment') }}" class="dropdown-item">
-                            <img src="{{ asset('img/icon/setting-icon.png') }}" alt="Pembayaran" class="icon">
-                            Pembayaran
                         </a>
                         <a href="{{ route('admin.setting.profile') }}" class="dropdown-item">
                             <img src="{{ asset('img/icon/setting-icon.png') }}" alt="Pengaturan" class="icon">

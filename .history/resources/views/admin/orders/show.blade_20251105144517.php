@@ -186,7 +186,7 @@
                 <div class="meta-value">{{ $order->shipping_method }}</div>
             </div>
         </div>
-        
+
         <div class="meta-row full">
             <div class="meta-item full-width">
                 <div class="meta-label">Alamat Pengiriman</div>

@@ -175,7 +175,7 @@
                 <div class="meta-value">{{ $order->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</div>
             </div>
         </div>
-
+        
         <div class="meta-row">
             <div class="meta-item">
                 <div class="meta-label">Metode Pembayaran</div>
@@ -186,7 +186,7 @@
                 <div class="meta-value">{{ $order->shipping_method }}</div>
             </div>
         </div>
-        
+
         <div class="meta-row full">
             <div class="meta-item full-width">
                 <div class="meta-label">Alamat Pengiriman</div>

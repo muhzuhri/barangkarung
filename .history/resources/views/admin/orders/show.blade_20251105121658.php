@@ -3,136 +3,46 @@
 @endphp
 
 <style>
-    /* Label */
-    .status-label {
-        display: block;
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 8px;
-        font-size: 14px;
-        font-family: 'Inter', sans-serif;
-    }
+    /* Style utama untuk dropdown */
+.status-select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #d1d5db; /* abu muda */
+    border-radius: 12px;
+    background-color: white;
+    font-size: 15px;
+    color: #374151; /* abu tua */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    transition: all 0.2s ease;
+}
 
-    /* Select2 container */
-    .select2-container .select2-selection--single {
-        height: 52px !important;
-        border: 2px solid #e5e7eb !important;
-        border-radius: 14px !important;
-        display: flex !important;
-        align-items: center;
-        background-color: #ffffff !important;
-        padding: 6px 14px !important;
-        transition: all 0.25s ease;
-        box-shadow: none !important;
-        font-family: 'Inter', sans-serif;
-    }
+/* Efek hover dan fokus */
+.status-select:hover {
+    border-color: #93c5fd; /* biru lembut */
+}
 
-    /* Hover & Focus */
-    .select2-container--default .select2-selection--single:hover {
-        border-color: #bfdbfe !important;
-        background-color: #f9fafb !important;
-    }
+.status-select:focus {
+    outline: none;
+    border-color: #3b82f6; /* biru */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
 
-    .select2-container--default.select2-container--focus .select2-selection--single {
-        border-color: #3B82F6 !important;
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
-        background-color: #ffffff !important;
-    }
+/* Label */
+.status-label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
 
-    /* Text */
-    .select2-container .select2-selection__rendered {
-        color: #1f2937 !important;
-        font-size: 15px !important;
-        font-weight: 500 !important;
-        padding-left: 2px !important;
-    }
-
-    /* Dropdown arrow */
-    .select2-container--default .select2-selection__arrow {
-        height: 100% !important;
-        right: 14px !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important;
-        transition: transform 0.25s ease, filter 0.2s ease;
-        filter: grayscale(60%);
-    }
-
-    .select2-container--open .select2-selection__arrow {
-        transform: translateY(-50%) rotate(180deg) !important;
-        filter: grayscale(0%);
-    }
-
-    .select2-container--default .select2-selection__arrow b {
-        border-color: #6b7280 transparent transparent transparent !important;
-        border-width: 6px 5px 0 5px !important;
-    }
-
-    /* Dropdown Panel */
-    .select2-dropdown {
-        margin-top: 8px !important;
-        border: none !important;
-        border-radius: 14px !important;
-        background-color: #ffffff !important;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08) !important;
-        overflow: hidden !important;
-        animation: dropdownFade 0.15s ease-out;
-    }
-
-    @keyframes dropdownFade {
-        from {
-            opacity: 0;
-            transform: translateY(-4px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Option list */
-    .select2-results__option {
-        padding: 12px 16px !important;
-        font-size: 15px !important;
-        font-weight: 500 !important;
-        color: #374151 !important;
-        transition: all 0.2s ease;
-        border-radius: 8px !important;
-        margin: 2px 6px !important;
-    }
-
-    /* Hover / highlighted option */
-    .select2-results__option--highlighted {
-        background-color: #eff6ff !important;
-        color: #1E3A8A !important;
-    }
-
-    /* Remove search box */
-    .select2-search--dropdown {
-        display: none !important;
-    }
-
-    /* Custom Scrollbar — soft modern look */
-    .select2-results__options::-webkit-scrollbar {
-        width: 8px;
-        background: transparent;
-    }
-
-    .select2-results__options::-webkit-scrollbar-track {
-        background: transparent;
-        margin: 8px;
-    }
-
-    .select2-results__options::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #d1d5db 0%, #9ca3af 100%);
-        border-radius: 10px;
-        border: 2px solid #f9fafb;
-        transition: background 0.3s ease;
-    }
-
-    .select2-results__options::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #9ca3af 0%, #6b7280 100%);
-    }
 </style>
 
 @include('admin.layout.header')
@@ -186,7 +96,7 @@
                 <div class="meta-value">{{ $order->shipping_method }}</div>
             </div>
         </div>
-        
+
         <div class="meta-row full">
             <div class="meta-item full-width">
                 <div class="meta-label">Alamat Pengiriman</div>
@@ -324,18 +234,17 @@
         </select> --}}
 
         <label for="status" class="status-label">Ubah Status</label>
-        <select id="status" name="status" class="status-select">
-            <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Pending</option>
-            <option value="Sedang Diproses" {{ $order->status === 'Sedang Diproses' ? 'selected' : '' }}>Sedang
-                Diproses</option>
-            <option value="dikirim" {{ $order->status === 'dikirim' ? 'selected' : '' }}>Dikirim</option>
-            <option value="selesai" {{ $order->status === 'selesai' ? 'selected' : '' }}>Selesai</option>
-            <option value="dibatalkan" {{ $order->status === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
-        </select>
+<select id="status" name="status" class="status-select">
+    <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Pending</option>
+    <option value="Sedang Diproses" {{ $order->status === 'Sedang Diproses' ? 'selected' : '' }}>Sedang Diproses</option>
+    <option value="dikirim" {{ $order->status === 'dikirim' ? 'selected' : '' }}>Dikirim</option>
+    <option value="selesai" {{ $order->status === 'selesai' ? 'selected' : '' }}>Selesai</option>
+    <option value="dibatalkan" {{ $order->status === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+</select>
 
 
         <div class="btn-group">
-            <button type="submit" class="btn-submit">Perbarui</button>
+            <button type="submit" class="btn-submit">Perbarui Status</button>
             {{-- <a href="{{ route('admin.orders.index') }}" class="btn-batal">Kembali</a> --}}
         </div>
     </form>
@@ -344,12 +253,6 @@
 <!-- Penutup -->
 <div class="penutup">
     <p class="penutup-text">
-        Sistem ini terus berkembang untuk memberikan kemudahan dalam pengelolaan toko barang karung.
-        Jangan ragu untuk menjelajahi lebih banyak fitur dan manfaatkan semaksimal mungkin.
-        Sistem ini terus berkembang untuk memberikan kemudahan dalam pengelolaan toko barang karung.
-        Jangan ragu untuk menjelajahi lebih banyak fitur dan manfaatkan semaksimal mungkin.
-        Sistem ini terus berkembang untuk memberikan kemudahan dalam pengelolaan toko barang karung.
-        Jangan ragu untuk menjelajahi lebih banyak fitur dan manfaatkan semaksimal mungkin.
         Sistem ini terus berkembang untuk memberikan kemudahan dalam pengelolaan toko barang karung.
         Jangan ragu untuk menjelajahi lebih banyak fitur dan manfaatkan semaksimal mungkin.
     </p>
