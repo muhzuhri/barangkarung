@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{{ asset('css/admin/pesanan-admin-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/tambahedit-form-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/user-admin-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/faq-admin-style.css') }}">
 
 
 </head>
@@ -54,12 +55,12 @@
                             Pesanan
                         </a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="{{ route('admin.faq.index') }}"
                             class="{{ request()->routeIs('admin.faq.*') ? 'active' : '' }}">
                             FAQ
                         </a>
-                    </li>
+                    </li> -->
                     <li>
                         <a href="{{ route('admin.users.index') }}"
                             class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
@@ -96,6 +97,10 @@
                     </div>
 
                     <div class="dropdown-menu" id="adminDropdown">
+                        <a href="{{ route('admin.faq.index') }}" class="dropdown-item">
+                            <img src="{{ asset('img/icon/setting-icon.png') }}" alt="Pengaturan" class="icon">
+                            FAQ
+                        </a>
                         <a href="{{ route('admin.setting.profile') }}" class="dropdown-item">
                             <img src="{{ asset('img/icon/setting-icon.png') }}" alt="Pengaturan" class="icon">
                             Pengaturan

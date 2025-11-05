@@ -16,9 +16,9 @@ class RevenueController extends Controller
         $totalRevenue = Order::where('order_status', 'selesai')->sum('total');
         $totalOrders = Order::where('order_status', 'selesai')->count();
 
-        // Generate last 12 months (dari bulan terbaru ke terlama)
+        // Generate last 12 months (dari bulan terlama ke terbaru - Januari ke kanan)
         $months = [];
-        for ($i = 0; $i <= 11; $i++) {
+        for ($i = 11; $i >= 0; $i--) {
             $months[] = \Carbon\Carbon::now()->subMonths($i)->format('Y-m');
         }
 
@@ -42,7 +42,7 @@ class RevenueController extends Controller
             ->groupBy('month')
             ->pluck('orders_count', 'month');
 
-        // Map to ensure all months are present (bulan terbaru di kiri, terlama di kanan)
+        // Map to ensure all months are present (bulan terlama di kiri, terbaru di kanan - Januari ke kanan)
         $monthly = collect($months)->map(function ($m) use ($revenueRows, $orderRows) {
             return (object) [
                 'month' => $m,

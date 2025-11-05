@@ -39,6 +39,42 @@ class ChatbotController extends Controller
             'reply' => $reply,
         ]);
     }
+    
+    /**
+     * Ambil FAQ populer untuk quick replies
+     */
+    public function getPopularFaqs()
+    {
+        $faqs = Faq::where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get(['id', 'question', 'category']);
+        
+        return response()->json([
+            'faqs' => $faqs
+        ]);
+    }
+    
+    /**
+     * Ambil semua FAQ yang dikelompokkan berdasarkan kategori
+     */
+    public function getAllFaqs()
+    {
+        $faqs = Faq::where('is_active', true)
+            ->orderBy('category')
+            ->orderBy('question')
+            ->get(['id', 'question', 'category']);
+        
+        // Kelompokkan berdasarkan kategori
+        $grouped = $faqs->groupBy('category')->map(function ($items) {
+            return $items->pluck('question', 'id');
+        });
+        
+        return response()->json([
+            'faqs' => $faqs,
+            'grouped' => $grouped
+        ]);
+    }
 
     private function generateReply($text)
     {
@@ -47,15 +83,61 @@ class ChatbotController extends Controller
         $highestSimilarity = 0;
         $relatedAnswers = [];
         
+        // Cek jika user meminta daftar pertanyaan
+        $helpKeywords = ['bantuan', 'help', 'pertanyaan', 'daftar', 'list', 'apa saja', 'apa yang bisa', 'tanyakan', 'fitur'];
+        $isHelpRequest = false;
+        foreach ($helpKeywords as $keyword) {
+            if ($text->contains($keyword)) {
+                $isHelpRequest = true;
+                break;
+            }
+        }
+        
+        if ($isHelpRequest) {
+            $allFaqs = Faq::where('is_active', true)
+                ->orderBy('category')
+                ->orderBy('question')
+                ->get(['question', 'category']);
+            
+            if ($allFaqs->count() > 0) {
+                $response = "📋 Berikut adalah daftar pertanyaan yang bisa Anda tanyakan:\n\n";
+                
+                // Kelompokkan berdasarkan kategori
+                $grouped = $allFaqs->groupBy('category');
+                
+                foreach ($grouped as $category => $faqs) {
+                    $response .= "📌 " . strtoupper($category) . "\n";
+                    $num = 1;
+                    foreach ($faqs as $faq) {
+                        $response .= "   " . $num . ". " . $faq->question . "\n";
+                        $num++;
+                    }
+                    $response .= "\n";
+                }
+                
+                $response .= "💡 Ketik pertanyaan Anda atau klik salah satu pertanyaan di atas untuk mendapatkan jawaban!";
+                
+                return $response;
+            } else {
+                return "Maaf, belum ada pertanyaan yang tersedia saat ini. Silakan hubungi admin untuk informasi lebih lanjut.";
+            }
+        }
+        
         // Cari di FAQ terlebih dahulu
         $faqs = Faq::where('is_active', true)->get();
         
         foreach ($faqs as $faq) {
             $lowercaseQuestion = Str::of(mb_strtolower($faq->question));
+            $lowercaseAnswer = Str::of(mb_strtolower($faq->answer));
+            
+            // Hitung kemiripan dengan pertanyaan
             $questionSimilarity = $this->calculateSimilarity($text, $lowercaseQuestion);
             
+            // Hitung kemiripan dengan jawaban (untuk mencari kata kunci dalam jawaban)
+            $answerSimilarity = $this->calculateSimilarity($text, $lowercaseAnswer);
+            
             // Cek kemiripan dengan pertanyaan
-            if ($questionSimilarity > 0.4) { // Menurunkan threshold untuk menangkap lebih banyak kemungkinan
+            if ($questionSimilarity > 0.35) {
                 if ($questionSimilarity > $highestSimilarity) {
                     $highestSimilarity = $questionSimilarity;
                     $bestMatch = $faq;
@@ -72,14 +154,44 @@ class ChatbotController extends Controller
                 }
             }
             
+            // Cek kata kunci dalam jawaban
+            if ($answerSimilarity > 0.4) {
+                if ($answerSimilarity > $highestSimilarity) {
+                    $highestSimilarity = $answerSimilarity;
+                    $bestMatch = $faq;
+                }
+            }
+            
             // Cek kata kunci dalam kategori
-            if (Str::contains($text, Str::of(mb_strtolower($faq->category)))) {
-                $relatedAnswers[] = [
-                    'category' => $faq->category,
-                    'question' => $faq->question,
-                    'answer' => $faq->answer,
-                    'similarity' => 0.5
-                ];
+            if ($faq->category && Str::contains($text, Str::of(mb_strtolower($faq->category)))) {
+                $categoryExists = false;
+                foreach ($relatedAnswers as $existing) {
+                    if ($existing['question'] === $faq->question) {
+                        $categoryExists = true;
+                        break;
+                    }
+                }
+                if (!$categoryExists) {
+                    $relatedAnswers[] = [
+                        'category' => $faq->category,
+                        'question' => $faq->question,
+                        'answer' => $faq->answer,
+                        'similarity' => 0.5
+                    ];
+                }
+            }
+            
+            // Cek kata kunci dalam pertanyaan menggunakan contains
+            $questionWords = explode(' ', $lowercaseQuestion);
+            $textWords = explode(' ', $text);
+            $matchingWords = array_intersect($questionWords, $textWords);
+            
+            if (count($matchingWords) >= 2 && count($matchingWords) >= count($questionWords) * 0.3) {
+                $wordSimilarity = count($matchingWords) / max(count($questionWords), count($textWords));
+                if ($wordSimilarity > 0.3 && $wordSimilarity > $highestSimilarity) {
+                    $highestSimilarity = $wordSimilarity;
+                    $bestMatch = $faq;
+                }
             }
         }
         
@@ -88,14 +200,25 @@ class ChatbotController extends Controller
             return $b['similarity'] <=> $a['similarity'];
         });
         
+        // Hapus duplikat berdasarkan question
+        $uniqueAnswers = [];
+        $seenQuestions = [];
+        foreach ($relatedAnswers as $related) {
+            if (!in_array($related['question'], $seenQuestions)) {
+                $uniqueAnswers[] = $related;
+                $seenQuestions[] = $related['question'];
+            }
+        }
+        $relatedAnswers = $uniqueAnswers;
+        
         // Batasi hanya 3 jawaban terkait teratas
         $relatedAnswers = array_slice($relatedAnswers, 0, 3);
         
-        if ($bestMatch) {
-            $response = "📌 " . $bestMatch->answer . "\n\n";
+        if ($bestMatch && $highestSimilarity > 0.35) {
+            $response = "📌 " . $bestMatch->answer;
             
             if (count($relatedAnswers) > 1) {
-                $response .= "\n💡 Pertanyaan terkait yang mungkin membantu:\n\n";
+                $response .= "\n\n💡 Pertanyaan terkait:\n\n";
                 foreach ($relatedAnswers as $related) {
                     if ($related['question'] !== $bestMatch->question) {
                         $response .= "▫️ " . $related['question'] . "\n";

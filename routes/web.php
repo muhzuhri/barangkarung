@@ -45,6 +45,8 @@ Route::middleware('auth')->group(function () {
 
     // Chatbot endpoint
     Route::post('/chatbot/ask', [ChatbotController::class, 'ask'])->name('chatbot.ask');
+    Route::get('/chatbot/faqs', [ChatbotController::class, 'getPopularFaqs'])->name('chatbot.faqs');
+    Route::get('/chatbot/all-faqs', [ChatbotController::class, 'getAllFaqs'])->name('chatbot.all-faqs');
 
     // Pesanan
     Route::get('/pesanan', [OrderController::class, 'index'])->name('pesanan');

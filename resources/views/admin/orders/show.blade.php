@@ -128,15 +128,31 @@
                 </div>
                 <div style="margin-bottom: 1rem;">
                     <div style="font-weight: 600; margin-bottom: 0.5rem; color: #333;">Gambar Bukti Transfer:</div>
-                    <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank" 
+                    @php
+                        // Path yang disimpan di database adalah 'payments/filename.jpg'
+                        $proofUrl = asset('storage/' . $order->payment_proof);
+                        $storagePath = storage_path('app/public/' . $order->payment_proof);
+                        $publicPath = public_path('storage/' . $order->payment_proof);
+                        $fileExists = file_exists($storagePath) || file_exists($publicPath);
+                    @endphp
+                    <a href="{{ $proofUrl }}" target="_blank" 
                        style="display: inline-block; margin-top: 0.5rem;">
-                        <img src="{{ asset('storage/' . $order->payment_proof) }}" 
+                        <img src="{{ $proofUrl }}" 
                              alt="Bukti Pembayaran" 
-                             style="max-width: 400px; max-height: 400px; border-radius: 8px; border: 2px solid #e5e7eb; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                             onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'padding: 2rem; background: #fff3cd; border-radius: 8px; border: 2px solid #ffc107; color: #856404; text-align: center;\'><strong>⚠️ Gambar tidak dapat dimuat</strong><br><small>URL: {{ $proofUrl }}</small><br><small>Pastikan file ada di: storage/app/public/{{ $order->payment_proof }}</small></div>';"
+                             style="max-width: 400px; max-height: 400px; border-radius: 8px; border: 2px solid #e5e7eb; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1); object-fit: contain;">
                     </a>
                     <div style="margin-top: 0.5rem; color: #666; font-size: 14px;">
                         Klik gambar untuk melihat ukuran penuh
                     </div>
+                    @if(!$fileExists)
+                        <div style="margin-top: 0.5rem; padding: 0.5rem; background: #fef3c7; border-radius: 6px; font-size: 12px; color: #92400e;">
+                            <strong>⚠️ Debug Info:</strong><br>
+                            <small>Path DB: {{ $order->payment_proof }}</small><br>
+                            <small>URL: <a href="{{ $proofUrl }}" target="_blank" style="color: #667eea;">{{ $proofUrl }}</a></small><br>
+                            <small>Storage: {{ $storagePath }}</small>
+                        </div>
+                    @endif
                 </div>
                 @if(($order->payment_status ?? 'pending') === 'pending')
                     <form method="POST" action="{{ route('admin.orders.updatePayment', $order->id) }}" style="display: flex; gap: 8px; margin-top: 1rem;">
