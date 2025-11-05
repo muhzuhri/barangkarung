@@ -238,10 +238,10 @@
 
 /* Card utama */
 .payment-card {
-    background: #f0ecec;
-    border-radius: 0.7rem;
+    background: #fff;
+    border-radius: 12px;
     padding: 1.5rem;
-    /* box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06); */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
 }
 
 /* Status pembayaran */

@@ -238,10 +238,10 @@
 
 /* Card utama */
 .payment-card {
-    background: #f0ecec;
-    border-radius: 0.7rem;
+    background: #fff;
+    border-radius: 12px;
     padding: 1.5rem;
-    /* box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06); */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
 }
 
 /* Status pembayaran */
@@ -255,7 +255,7 @@
     margin-bottom: 0.5rem;
 }
 
-/* .status-badge {
+.status-badge {
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 14px;
@@ -266,7 +266,7 @@
 
 .status-pending { background: #f59e0b; }
 .status-verified { background: #10b981; }
-.status-rejected { background: #ef4444; } */
+.status-rejected { background: #ef4444; }
 
 /* Bukti transfer */
 .payment-proof {

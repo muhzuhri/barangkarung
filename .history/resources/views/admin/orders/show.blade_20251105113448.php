@@ -111,69 +111,85 @@
     </div>
 
     <!-- Bukti Pembayaran -->
-    @if (in_array($order->payment_method, ['dana', 'mandiri']))
-        <div class="payment-section">
-            <div class="section-header">
-                <img src="{{ asset('img/icon/bukti-icon.png') }}" alt="Bukti Pembayaran" class="section-icon">
-                <h2 class="section-title">Bukti Pembayaran</h2>
+   @if(in_array($order->payment_method, ['dana', 'mandiri']))
+<div class="payment-section">
+    <div class="section-header">
+        <img src="{{ asset('img/icon/statistic-icon.png') }}" alt="Bukti Pembayaran" class="section-icon">
+        <h2 class="section-title">Bukti Pembayaran</h2>
+    </div>
+
+    <div class="payment-card">
+        @if($order->payment_proof)
+            <div class="payment-status">
+                <div class="label">Status Pembayaran:</div>
+                <span class="status-badge status-{{ \Illuminate\Support\Str::slug($order->payment_status ?? 'pending') }}">
+                    {{ ucfirst($order->payment_status ?? 'Pending') }}
+                </span>
             </div>
 
-            <div class="payment-card">
-                @if ($order->payment_proof)
-                    <div class="payment-status">
-                        <div class="label">Status Pembayaran:</div>
-                        <span
-                            class="status-badge status-{{ \Illuminate\Support\Str::slug($order->payment_status ?? 'pending') }}">
-                            {{ ucfirst($order->payment_status ?? 'Pending') }}
-                        </span>
+            <div class="payment-proof">
+                <div class="label">Gambar Bukti Transfer:</div>
+                @php
+                    $proofUrl = asset('storage/' . $order->payment_proof);
+                    $storagePath = storage_path('app/public/' . $order->payment_proof);
+                    $publicPath = public_path('storage/' . $order->payment_proof);
+                    $fileExists = file_exists($storagePath) || file_exists($publicPath);
+                @endphp
+
+                <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
+                    <img src="{{ $proofUrl }}" alt="Bukti Pembayaran" 
+                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><strong>⚠️ Gambar tidak dapat dimuat</strong><br><small>{{ $proofUrl }}</small></div>';"
+                         class="proof-image">
+                </a>
+                <div class="note">Klik gambar untuk melihat ukuran penuh</div>
+
+                @if(!$fileExists)
+                    <div class="debug-info">
+                        <strong>⚠️ Debug Info:</strong><br>
+                        <small>Path DB: {{ $order->payment_proof }}</small><br>
+                        <small>URL: <a href="{{ $proofUrl }}" target="_blank">{{ $proofUrl }}</a></small><br>
+                        <small>Storage: {{ $storagePath }}</small>
                     </div>
-
-                    <div class="payment-proof">
-                        <div class="label">Gambar Bukti Transfer:</div>
-                        @php
-                            $proofUrl = asset('storage/' . $order->payment_proof);
-                            $storagePath = storage_path('app/public/' . $order->payment_proof);
-                            $publicPath = public_path('storage/' . $order->payment_proof);
-                            $fileExists = file_exists($storagePath) || file_exists($publicPath);
-                        @endphp
-
-                        <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
-                            <img src="{{ $proofUrl }}" alt="Bukti Pembayaran"
-                                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><strong>⚠️ Gambar tidak dapat dimuat</strong><br><small>{{ $proofUrl }}</small></div>';"
-                                class="proof-image">
-                        </a>
-                        <div class="note">Klik gambar untuk melihat ukuran penuh</div>
-
-                        @if (!$fileExists)
-                            <div class="debug-info">
-                                <strong>⚠️ Debug Info:</strong><br>
-                                <small>Path DB: {{ $order->payment_proof }}</small><br>
-                                <small>URL: <a href="{{ $proofUrl }}"
-                                        target="_blank">{{ $proofUrl }}</a></small><br>
-                                <small>Storage: {{ $storagePath }}</small>
-                            </div>
-                        @endif
-                    </div>
-
-                    @if (($order->payment_status ?? 'pending') === 'pending')
-                        <form method="POST" action="{{ route('admin.orders.updatePayment', $order->id) }}"
-                            class="payment-actions">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" name="action" value="verified" class="btn btn-verify">
-                                Verifikasi Pembayaran
-                            </button>
-                            <button type="submit" name="action" value="rejected" class="btn btn-reject">
-                                Tolak Pembayaran
-                            </button>
-                        </form>
-                    @endif
-                @else
-                    <div class="no-proof">Bukti pembayaran belum diupload</div>
                 @endif
             </div>
+
+            @if(($order->payment_status ?? 'pending') === 'pending')
+                <form method="POST" action="{{ route('admin.orders.updatePayment', $order->id) }}" class="payment-actions">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" name="action" value="verified" class="btn btn-verify">
+                        Verifikasi Pembayaran
+                    </button>
+                    <button type="submit" name="action" value="rejected" class="btn btn-reject">
+                        Tolak Pembayaran
+                    </button>
+                </form>
+            @endif
+        @else
+            <div class="no-proof">Bukti pembayaran belum diupload</div>
+        @endif
+    </div>
+</div>
+@endif
+
+
+    <!-- Form Update Status -->
+    {{-- <form method="POST" action="{{ route('admin.orders.updateOrderStatus', $order->id) }}" class="form-inline" style="margin-top:16px; gap:12px; align-items:center;">
+        @csrf
+        @method('PATCH')
+        <label for="order_status" style="min-width:110px;">Ubah Status</label>
+        <select id="order_status" name="order_status" style="padding:8px 10px; border-radius:8px; border:1px solid #e5e7eb;">
+            <option value="pending" {{ ($order->order_status ?? $order->status) === 'pending' ? 'selected' : '' }}>Pending</option>
+            <option value="diproses" {{ ($order->order_status ?? $order->status) === 'diproses' ? 'selected' : '' }}>Sedang Diproses</option>
+            <option value="dikirim" {{ ($order->order_status ?? $order->status) === 'dikirim' ? 'selected' : '' }}>Dikirim</option>
+            <option value="selesai" {{ ($order->order_status ?? $order->status) === 'selesai' ? 'selected' : '' }}>Selesai</option>
+            <option value="dibatalkan" {{ ($order->order_status ?? $order->status) === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+        </select>
+        <div class="btn-group">
+            <button type="submit" class="btn" style="background:#667eea; color:#fff; padding:10px 14px; border-radius:8px;">Update Status</button>
+            <a class="btn btn-secondary" href="{{ route('admin.orders.index') }}" style="background:#6b7280; color:#fff; padding:10px 14px; border-radius:8px;">Kembali</a>
         </div>
-    @endif
+    </form> --}}
 
     <!-- Form Update Status -->
     <form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="status-form">
