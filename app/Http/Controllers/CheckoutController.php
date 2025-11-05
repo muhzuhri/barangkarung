@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\PaymentSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 // Midtrans classes will be referenced via FQN and guarded by class_exists
@@ -49,7 +50,10 @@ class CheckoutController extends Controller
         $discount = 0;
         $total = $subtotal + $shippingCost + $serviceFee - $discount;
 
-        return view('checkout', compact('cartItems', 'subtotal', 'shippingCost', 'serviceFee', 'discount', 'total', 'user'));
+        // Ambil payment settings
+        $paymentSettings = PaymentSetting::where('is_active', true)->get()->keyBy('payment_method');
+
+        return view('checkout', compact('cartItems', 'subtotal', 'shippingCost', 'serviceFee', 'discount', 'total', 'user', 'paymentSettings'));
     }
 
     /**
@@ -115,7 +119,7 @@ class CheckoutController extends Controller
             'total' => $total,
         ];
 
-        if (in_array($request->payment_method, ['dana','mandiri'])) {
+        if (in_array($request->payment_method, ['dana','mandiri','qris'])) {
             if ($request->hasFile('payment_proof')) {
                 $path = $request->file('payment_proof')->store('payments', 'public');
                 $orderData['payment_proof'] = $path;

@@ -106,20 +106,34 @@
                         </select>
                     </div>
                     <!-- Metode Pembayaran -->
+                    <!-- Metode Pembayaran -->
                     <div class="option-item">
                         <div class="option-label">Metode Pembayaran</div>
                         <select id="paymentMethod" name="payment_method" class="option-select">
                             <option value="cod" selected>COD (Bayar di Tempat)</option>
-                            <option value="dana">Dana (Transfer)</option>
+                            <option value="dana">DANA (Transfer)</option>
                             <option value="mandiri">Mandiri (Transfer)</option>
+                            <option value="qris">QRIS Umum</option>
                         </select>
                     </div>
+
+                    <!-- Info Transfer -->
                     <div class="option-item" id="transferInfoBox" style="display:none;">
                         <div class="option-label" id="rekeningLabel"></div>
                         <div class="rekening-info" id="rekeningInfo"></div>
+
+                        <div id="qrisImageContainer" style="display:none; margin-top: 1rem; text-align:center;">
+                            <img id="qrisImage"
+                                src=""
+                                alt="QRIS"
+                                style="max-width: 300px; max-height: 300px; border: 2px solid #e5e7eb; border-radius: 8px; margin-bottom: 0.5rem;">
+                            <p id="qrisInstructions" style="font-size: 12px; color: #666; margin-top: 0.5rem;"></p>
+                        </div>
+
                         <div class="option-label">Upload Bukti Transfer</div>
                         <input type="file" name="payment_proof" accept="image/*" class="option-input">
                     </div>
+
                     <!-- Pesan untuk Penjual -->
                     <div class="option-item">
                         <div class="option-label">Pesan Untuk Penjual</div>
@@ -272,23 +286,76 @@
         const transferInfoBox = document.getElementById('transferInfoBox');
         const rekeningLabel = document.getElementById('rekeningLabel');
         const rekeningInfo = document.getElementById('rekeningInfo');
+        const qrisImageContainer = document.getElementById('qrisImageContainer');
 
+        // document.getElementById('paymentMethod').addEventListener('change', function() {
+        //     const val = this.value;
+        //     if(val === 'dana') {
+        //         transferInfoBox.style.display = 'block';
+        //         qrisImageContainer.style.display = 'none';
+        //         @if(isset($paymentSettings['dana']))
+        //             rekeningLabel.textContent = '{{ $paymentSettings['dana']->label ?? "Nomor DANA" }}';
+        //             rekeningInfo.textContent = '{{ $paymentSettings['dana']->account_number ?? "" }}' + 
+        //                 @if($paymentSettings['dana']->account_name) ' a.n. {{ $paymentSettings['dana']->account_name }}' @else '' @endif;
+        //         @else
+        //             rekeningLabel.textContent = 'Nomor DANA';
+        //             rekeningInfo.textContent = '0812xxxxxxx a.n. Contoh DANA';
+        //         @endif
+        //     } else if(val === 'mandiri') {
+        //         transferInfoBox.style.display = 'block';
+        //         qrisImageContainer.style.display = 'none';
+        //         @if(isset($paymentSettings['mandiri']))
+        //             rekeningLabel.textContent = '{{ $paymentSettings['mandiri']->label ?? "Rekening Mandiri" }}';
+        //             rekeningInfo.textContent = '{{ $paymentSettings['mandiri']->account_number ?? "" }}' + 
+        //                 @if($paymentSettings['mandiri']->account_name) ' a.n. {{ $paymentSettings['mandiri']->account_name }}' @else '' @endif;
+        //         @else
+        //             rekeningLabel.textContent = 'Rekening Mandiri';
+        //             rekeningInfo.textContent = '123000xxxxx a.n. Contoh Mandiri';
+        //         @endif
+        //     } else if(val === 'qris') {
+        //         transferInfoBox.style.display = 'block';
+        //         qrisImageContainer.style.display = 'block';
+        //         rekeningLabel.textContent = 'QRIS';
+        //         rekeningInfo.textContent = '';
+        //     } else {
+        //         transferInfoBox.style.display = 'none';
+        //         qrisImageContainer.style.display = 'none';
+        //         rekeningLabel.textContent = '';
+        //         rekeningInfo.textContent = '';
+        //     }
+        // });
         document.getElementById('paymentMethod').addEventListener('change', function() {
             const val = this.value;
-            if(val === 'dana') {
+
+            if (val === 'dana') {
                 transferInfoBox.style.display = 'block';
-                rekeningLabel.textContent = 'Nomor DANA';
-                rekeningInfo.textContent = '0812xxxxxxx a.n. Contoh DANA';
-            } else if(val === 'mandiri') {
+                qrisImageContainer.style.display = 'block';
+                rekeningLabel.textContent = 'QRIS DANA';
+                rekeningInfo.textContent = 'Silakan scan kode QR berikut untuk transfer melalui DANA.';
+                qrisImage.src = "{{ asset('img/qris.jpeg') }}"; // Gambar QRIS DANA
+
+            } else if (val === 'mandiri') {
                 transferInfoBox.style.display = 'block';
-                rekeningLabel.textContent = 'Rekening Mandiri';
-                rekeningInfo.textContent = '123000xxxxx a.n. Contoh Mandiri';
+                qrisImageContainer.style.display = 'block';
+                rekeningLabel.textContent = 'QRIS Mandiri';
+                rekeningInfo.textContent = 'Scan QR berikut untuk transfer via Bank Mandiri.';
+                qrisImage.src = "{{ asset('img/qris.jpeg') }}"; // jika ada QR mandiri
+
+            } else if (val === 'qris') {
+                transferInfoBox.style.display = 'block';
+                qrisImageContainer.style.display = 'block';
+                rekeningLabel.textContent = 'QRIS Umum';
+                rekeningInfo.textContent = '';
+                qrisImage.src = "{{ asset('img/qris.jpeg') }}"; // default QR umum
+
             } else {
                 transferInfoBox.style.display = 'none';
+                qrisImageContainer.style.display = 'none';
                 rekeningLabel.textContent = '';
                 rekeningInfo.textContent = '';
             }
         });
+
         // trigger di load jika (misal reload dari validasi)
         document.addEventListener('DOMContentLoaded', ()=>{
           document.getElementById('paymentMethod').dispatchEvent(new Event('change'));

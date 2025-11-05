@@ -101,6 +101,10 @@
                             <img src="{{ asset('img/icon/setting-icon.png') }}" alt="Pengaturan" class="icon">
                             FAQ
                         </a>
+                        <a href="{{ route('admin.setting.payment') }}" class="dropdown-item">
+                            <img src="{{ asset('img/icon/setting-icon.png') }}" alt="Pembayaran" class="icon">
+                            Pembayaran
+                        </a>
                         <a href="{{ route('admin.setting.profile') }}" class="dropdown-item">
                             <img src="{{ asset('img/icon/setting-icon.png') }}" alt="Pengaturan" class="icon">
                             Pengaturan
