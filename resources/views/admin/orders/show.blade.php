@@ -244,7 +244,7 @@
     </div>
 
     <!-- Bukti Pembayaran -->
-    @if (in_array($order->payment_method, ['dana', 'mandiri']))
+    @if (in_array($order->payment_method, ['dana', 'mandiri', 'qris']))
         <div class="payment-section">
             <div class="section-header">
                 <img src="{{ asset('img/icon/bukti-icon.png') }}" alt="Bukti Pembayaran" class="section-icon">

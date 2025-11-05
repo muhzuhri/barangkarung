@@ -288,66 +288,42 @@
         const rekeningInfo = document.getElementById('rekeningInfo');
         const qrisImageContainer = document.getElementById('qrisImageContainer');
 
-        // document.getElementById('paymentMethod').addEventListener('change', function() {
-        //     const val = this.value;
-        //     if(val === 'dana') {
-        //         transferInfoBox.style.display = 'block';
-        //         qrisImageContainer.style.display = 'none';
-        //         @if(isset($paymentSettings['dana']))
-        //             rekeningLabel.textContent = '{{ $paymentSettings['dana']->label ?? "Nomor DANA" }}';
-        //             rekeningInfo.textContent = '{{ $paymentSettings['dana']->account_number ?? "" }}' + 
-        //                 @if($paymentSettings['dana']->account_name) ' a.n. {{ $paymentSettings['dana']->account_name }}' @else '' @endif;
-        //         @else
-        //             rekeningLabel.textContent = 'Nomor DANA';
-        //             rekeningInfo.textContent = '0812xxxxxxx a.n. Contoh DANA';
-        //         @endif
-        //     } else if(val === 'mandiri') {
-        //         transferInfoBox.style.display = 'block';
-        //         qrisImageContainer.style.display = 'none';
-        //         @if(isset($paymentSettings['mandiri']))
-        //             rekeningLabel.textContent = '{{ $paymentSettings['mandiri']->label ?? "Rekening Mandiri" }}';
-        //             rekeningInfo.textContent = '{{ $paymentSettings['mandiri']->account_number ?? "" }}' + 
-        //                 @if($paymentSettings['mandiri']->account_name) ' a.n. {{ $paymentSettings['mandiri']->account_name }}' @else '' @endif;
-        //         @else
-        //             rekeningLabel.textContent = 'Rekening Mandiri';
-        //             rekeningInfo.textContent = '123000xxxxx a.n. Contoh Mandiri';
-        //         @endif
-        //     } else if(val === 'qris') {
-        //         transferInfoBox.style.display = 'block';
-        //         qrisImageContainer.style.display = 'block';
-        //         rekeningLabel.textContent = 'QRIS';
-        //         rekeningInfo.textContent = '';
-        //     } else {
-        //         transferInfoBox.style.display = 'none';
-        //         qrisImageContainer.style.display = 'none';
-        //         rekeningLabel.textContent = '';
-        //         rekeningInfo.textContent = '';
-        //     }
-        // });
         document.getElementById('paymentMethod').addEventListener('change', function() {
             const val = this.value;
-
-            if (val === 'dana') {
+            if(val === 'dana') {
+                transferInfoBox.style.display = 'block';
+                qrisImageContainer.style.display = 'none';
+                @if(isset($paymentSettings['dana']))
+                    rekeningLabel.textContent = '{{ $paymentSettings['dana']->label ?? "Nomor DANA" }}';
+                    rekeningInfo.textContent = '{{ $paymentSettings['dana']->account_number ?? "" }}' + 
+                        @if($paymentSettings['dana']->account_name) ' a.n. {{ $paymentSettings['dana']->account_name }}' @else '' @endif;
+                @else
+                    rekeningLabel.textContent = 'Nomor DANA';
+                    rekeningInfo.textContent = '0812xxxxxxx a.n. Contoh DANA';
+                @endif
+            } else if(val === 'mandiri') {
+                transferInfoBox.style.display = 'block';
+                qrisImageContainer.style.display = 'none';
+                @if(isset($paymentSettings['mandiri']))
+                    rekeningLabel.textContent = '{{ $paymentSettings['mandiri']->label ?? "Rekening Mandiri" }}';
+                    rekeningInfo.textContent = '{{ $paymentSettings['mandiri']->account_number ?? "" }}' + 
+                        @if($paymentSettings['mandiri']->account_name) ' a.n. {{ $paymentSettings['mandiri']->account_name }}' @else '' @endif;
+                @else
+                    rekeningLabel.textContent = 'Rekening Mandiri';
+                    rekeningInfo.textContent = '123000xxxxx a.n. Contoh Mandiri';
+                @endif
+            } else if(val === 'qris') {
                 transferInfoBox.style.display = 'block';
                 qrisImageContainer.style.display = 'block';
-                rekeningLabel.textContent = 'QRIS DANA';
-                rekeningInfo.textContent = 'Silakan scan kode QR berikut untuk transfer melalui DANA.';
-                qrisImage.src = "{{ asset('img/qris.jpeg') }}"; // Gambar QRIS DANA
-
-            } else if (val === 'mandiri') {
-                transferInfoBox.style.display = 'block';
-                qrisImageContainer.style.display = 'block';
-                rekeningLabel.textContent = 'QRIS Mandiri';
-                rekeningInfo.textContent = 'Scan QR berikut untuk transfer via Bank Mandiri.';
-                qrisImage.src = "{{ asset('img/qris.jpeg') }}"; // jika ada QR mandiri
-
-            } else if (val === 'qris') {
-                transferInfoBox.style.display = 'block';
-                qrisImageContainer.style.display = 'block';
-                rekeningLabel.textContent = 'QRIS Umum';
+                rekeningLabel.textContent = 'QRIS';
                 rekeningInfo.textContent = '';
-                qrisImage.src = "{{ asset('img/qris.jpeg') }}"; // default QR umum
-
+                @if(isset($paymentSettings['qris']) && $paymentSettings['qris']->qris_image)
+                    qrisImage.src = "{{ asset('storage/' . $paymentSettings['qris']->qris_image) }}";
+                    qrisInstructions.textContent = "{{ $paymentSettings['qris']->instructions ?? 'Scan QRIS di atas untuk melakukan pembayaran.' }}";
+                @else
+                    qrisImage.src = ""; // Clear if no QRIS image
+                    qrisInstructions.textContent = "QRIS tidak tersedia.";
+                @endif
             } else {
                 transferInfoBox.style.display = 'none';
                 qrisImageContainer.style.display = 'none';
@@ -355,6 +331,40 @@
                 rekeningInfo.textContent = '';
             }
         });
+        
+
+        /////
+        // document.getElementById('paymentMethod').addEventListener('change', function() {
+        //     const val = this.value;
+
+        //     if (val === 'dana') {
+        //         transferInfoBox.style.display = 'block';
+        //         qrisImageContainer.style.display = 'block';
+        //         rekeningLabel.textContent = 'QRIS DANA';
+        //         rekeningInfo.textContent = 'Silakan scan kode QR berikut untuk transfer melalui DANA.';
+        //         qrisImage.src = "{{ asset('img/qris.jpeg') }}"; // Gambar QRIS DANA
+
+        //     } else if (val === 'mandiri') {
+        //         transferInfoBox.style.display = 'block';
+        //         qrisImageContainer.style.display = 'block';
+        //         rekeningLabel.textContent = 'QRIS Mandiri';
+        //         rekeningInfo.textContent = 'Scan QR berikut untuk transfer via Bank Mandiri.';
+        //         qrisImage.src = "{{ asset('img/qris.jpeg') }}"; // jika ada QR mandiri
+
+        //     } else if (val === 'qris') {
+        //         transferInfoBox.style.display = 'block';
+        //         qrisImageContainer.style.display = 'block';
+        //         rekeningLabel.textContent = 'QRIS Umum';
+        //         rekeningInfo.textContent = '';
+        //         qrisImage.src = "{{ asset('img/qris.jpeg') }}"; // default QR umum
+
+        //     } else {
+        //         transferInfoBox.style.display = 'none';
+        //         qrisImageContainer.style.display = 'none';
+        //         rekeningLabel.textContent = '';
+        //         rekeningInfo.textContent = '';
+        //     }
+        // });
 
         // trigger di load jika (misal reload dari validasi)
         document.addEventListener('DOMContentLoaded', ()=>{
