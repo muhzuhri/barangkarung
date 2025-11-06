@@ -36,7 +36,7 @@
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333;">Icon/Logo Metode Pembayaran</label>
                         @if($payment->icon_image)
                             <div style="margin-bottom: 0.5rem;">
-                                <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($payment->icon_image) }}" 
+                                <img src="{{ asset('storage/' . $payment->icon_image) }}" 
                                      alt="Icon" 
                                      style="max-width: 100px; max-height: 100px; border: 2px solid #e5e7eb; border-radius: 8px;">
                             </div>
@@ -62,7 +62,7 @@
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333;">Gambar QRIS</label>
                         @if($payment->qris_image)
                             <div style="margin-bottom: 0.5rem;">
-                                <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($payment->qris_image) }}" 
+                                <img src="{{ asset('storage/' . $payment->qris_image) }}" 
                                      alt="QRIS" 
                                      style="max-width: 200px; max-height: 200px; border: 2px solid #e5e7eb; border-radius: 8px;">
                             </div>
