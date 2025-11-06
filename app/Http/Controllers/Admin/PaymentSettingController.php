@@ -24,12 +24,25 @@ class PaymentSettingController extends Controller
             'label' => 'nullable|string|max:255',
             'account_number' => 'nullable|string|max:255',
             'account_name' => 'nullable|string|max:255',
+            'icon_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'qris_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'instructions' => 'nullable|string',
             'is_active' => 'boolean',
         ]);
 
-        $data = $request->except('qris_image');
+        $data = $request->except(['qris_image', 'icon_image']);
+
+        // Handle icon image upload
+        if ($request->hasFile('icon_image')) {
+            // Delete old image if exists
+            if ($payment->icon_image && Storage::disk('public')->exists($payment->icon_image)) {
+                Storage::disk('public')->delete($payment->icon_image);
+            }
+
+            $image = $request->file('icon_image');
+            $path = $image->store('payment-icons', 'public');
+            $data['icon_image'] = $path;
+        }
 
         // Handle QRIS image upload
         if ($request->hasFile('qris_image')) {
@@ -56,12 +69,20 @@ class PaymentSettingController extends Controller
             'label' => 'nullable|string|max:255',
             'account_number' => 'nullable|string|max:255',
             'account_name' => 'nullable|string|max:255',
+            'icon_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'qris_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'instructions' => 'nullable|string',
             'is_active' => 'boolean',
         ]);
 
-        $data = $request->except('qris_image');
+        $data = $request->except(['qris_image', 'icon_image']);
+
+        // Handle icon image upload
+        if ($request->hasFile('icon_image')) {
+            $image = $request->file('icon_image');
+            $path = $image->store('payment-icons', 'public');
+            $data['icon_image'] = $path;
+        }
 
         // Handle QRIS image upload
         if ($request->hasFile('qris_image')) {

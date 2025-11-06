@@ -13,15 +13,20 @@ body {
 
 /* ===== NAVBAR ===== */
 .navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 40px;
     border-bottom: 1px solid #e0e0e0;
     background-color: #fff;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 1000;
+}
+
+.navbar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 40px;
+    position: relative;
+    gap: 20px;
 }
 
 /* ===== Logo ===== */
@@ -80,6 +85,43 @@ body {
     background-color: #313130;
 }
 
+/* ===== Hamburger Menu ===== */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+    align-self: center;
+    margin: 0;
+}
+
+.hamburger-menu span {
+    width: 100%;
+    height: 3px;
+    background-color: #000;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
 /* ===== Right Icons ===== */
 .nav-right {
     display: flex;
@@ -87,7 +129,7 @@ body {
     gap: 25px;
 }
 
-.nav-right a {
+.nav-right a.nav-icon {
     text-decoration: none;
     color: #111;
     display: flex;
@@ -97,7 +139,7 @@ body {
     transition: color 0.3s;
 }
 
-.nav-right a:hover {
+.nav-right a.nav-icon:hover {
     color: #9d4d13;
 }
 
@@ -146,7 +188,6 @@ body {
 }
 
 /* ===== Category Menu ===== */
-/* ===== Category Menu ===== */
 .category-menu {
     display: flex;
     justify-content: center;
@@ -154,6 +195,8 @@ body {
     padding: 12px 0;
     border-bottom: 1px solid #e0e0e0;
     background-color: #fff;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .category-menu a {
@@ -199,17 +242,118 @@ body {
 
 /* ===== Responsive ===== */
 @media (max-width: 900px) {
-    .navbar {
-        flex-direction: column;
-        gap: 15px;
+    .navbar-top {
+        padding: 12px 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .logo {
+        order: 1;
+        flex: 0 0 auto;
+    }
+
+    .logo h1 {
+        font-size: 18px;
     }
 
     .search-box {
-        width: 90%;
+        order: 4;
+        width: 100%;
+        margin: 10px 0 0 0;
+        flex: 0 0 100%;
+    }
+
+    .nav-right {
+        order: 2;
+        gap: 12px;
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+    }
+
+    .hamburger-menu {
+        display: flex;
+        order: 3;
+        align-self: center;
+        margin-left: 0;
+        margin-right: 0;
     }
 
     .category-menu {
-        flex-wrap: wrap;
-        gap: 25px;
+        display: none !important;
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        border-bottom: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        max-height: calc(100vh - 150px);
+        overflow-y: auto;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        margin-top: 0;
+    }
+
+    .category-menu.show {
+        display: flex !important;
+        animation: slideDown 0.3s ease;
+    }
+
+    .category-menu a {
+        padding: 15px 20px;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: left;
+        width: 100%;
+    }
+
+    .category-menu a::after {
+        display: none;
+    }
+
+    .category-menu a.active {
+        background-color: #f5f5f5;
+        color: #000;
+        font-weight: 600;
+    }
+
+    .category-menu a:hover {
+        background-color: #f5f5f5;
+    }
+
+    .dropdown-menu {
+        right: 0;
+        left: auto;
+        top: 35px;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size: 18px;
+    }
+
+    .nav-right .material-icons {
+        font-size: 20px;
+    }
+
+    .hamburger-menu {
+        width: 25px;
+        height: 25px;
     }
 }

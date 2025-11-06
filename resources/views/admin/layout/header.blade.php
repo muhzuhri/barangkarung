@@ -139,7 +139,11 @@ $(document).ready(function() {
 
                 </div>
 
-                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+                <button class="mobile-menu-toggle" id="adminHamburgerMenu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </div>

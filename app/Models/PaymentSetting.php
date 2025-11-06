@@ -11,6 +11,7 @@ class PaymentSetting extends Model
 
     protected $fillable = [
         'payment_method',
+        'icon_image',
         'label',
         'account_number',
         'account_name',

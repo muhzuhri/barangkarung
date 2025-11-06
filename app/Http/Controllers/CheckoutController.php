@@ -52,8 +52,20 @@ class CheckoutController extends Controller
 
         // Ambil payment settings
         $paymentSettings = PaymentSetting::where('is_active', true)->get()->keyBy('payment_method');
+        
+        // Prepare payment settings data untuk JavaScript dengan key payment_method
+        $paymentSettingsJs = [];
+        foreach ($paymentSettings as $payment) {
+            $paymentSettingsJs[$payment->payment_method] = [
+                'label' => $payment->label ?? ucfirst($payment->payment_method),
+                'account_number' => $payment->account_number ?? '',
+                'account_name' => $payment->account_name ?? '',
+                'qris_image' => $payment->qris_image ? asset('storage/' . $payment->qris_image) : null,
+                'instructions' => $payment->instructions ?? ''
+            ];
+        }
 
-        return view('checkout', compact('cartItems', 'subtotal', 'shippingCost', 'serviceFee', 'discount', 'total', 'user', 'paymentSettings'));
+        return view('checkout', compact('cartItems', 'subtotal', 'shippingCost', 'serviceFee', 'discount', 'total', 'user', 'paymentSettings', 'paymentSettingsJs'));
     }
 
     /**
@@ -77,7 +89,7 @@ class CheckoutController extends Controller
             'payment_method' => 'required|string',
             'notes' => 'nullable|string|max:500',
         ];
-        if (in_array($request->payment_method, ['dana', 'mandiri'])) {
+        if (in_array($request->payment_method, ['dana', 'mandiri','qris'])) {
             $rules['payment_proof'] = 'required|image|mimes:jpg,jpeg,png|max:2048';
         }
         $validated = $request->validate($rules);

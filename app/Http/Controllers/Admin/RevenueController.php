@@ -16,20 +16,26 @@ class RevenueController extends Controller
         $totalRevenue = Order::where('order_status', 'selesai')->sum('total');
         $totalOrders = Order::where('order_status', 'selesai')->count();
 
-        // Generate last 12 months (dari bulan terlama ke terbaru - Januari ke kanan)
+        // Start from October 2025
+        $startDate = \Carbon\Carbon::create(2025, 10, 1)->startOfMonth();
+        $now = \Carbon\Carbon::now();
+        
+        // Generate months from October 2025 to current month
         $months = [];
-        for ($i = 11; $i >= 0; $i--) {
-            $months[] = \Carbon\Carbon::now()->subMonths($i)->format('Y-m');
+        $current = $startDate->copy();
+        while ($current->lte($now)) {
+            $months[] = $current->format('Y-m');
+            $current->addMonth();
         }
 
-        // Get revenue data for last 12 months
+        // Get revenue data starting from October 2025
         $revenueRows = Order::select(
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
                 DB::raw('SUM(total) as revenue'),
                 DB::raw('COUNT(*) as orders_count')
             )
             ->where('order_status', 'selesai')
-            ->where('created_at', '>=', \Carbon\Carbon::now()->subMonths(12)->startOfMonth())
+            ->where('created_at', '>=', $startDate)
             ->groupBy('month')
             ->pluck('revenue', 'month');
 
@@ -38,11 +44,11 @@ class RevenueController extends Controller
                 DB::raw('COUNT(*) as orders_count')
             )
             ->where('order_status', 'selesai')
-            ->where('created_at', '>=', \Carbon\Carbon::now()->subMonths(12)->startOfMonth())
+            ->where('created_at', '>=', $startDate)
             ->groupBy('month')
             ->pluck('orders_count', 'month');
 
-        // Map to ensure all months are present (bulan terlama di kiri, terbaru di kanan - Januari ke kanan)
+        // Map to ensure all months are present (bulan terlama di kiri, terbaru di kanan)
         $monthly = collect($months)->map(function ($m) use ($revenueRows, $orderRows) {
             return (object) [
                 'month' => $m,

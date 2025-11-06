@@ -122,8 +122,19 @@
     
     const revenueData = monthlyData.map(item => parseFloat(item.revenue || 0));
 
-    // Create chart
+    // Create gradient for bars
     const ctx = document.getElementById('revenueChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(102, 126, 234, 0.8)');
+    gradient.addColorStop(0.5, 'rgba(102, 126, 234, 0.6)');
+    gradient.addColorStop(1, 'rgba(102, 126, 234, 0.3)');
+
+    // Create hover gradient
+    const hoverGradient = ctx.createLinearGradient(0, 0, 0, 400);
+    hoverGradient.addColorStop(0, 'rgba(102, 126, 234, 1)');
+    hoverGradient.addColorStop(0.5, 'rgba(102, 126, 234, 0.8)');
+    hoverGradient.addColorStop(1, 'rgba(102, 126, 234, 0.5)');
+
     new Chart(ctx, {
         type: 'bar',
         data: {
@@ -131,22 +142,71 @@
             datasets: [{
                 label: 'Pendapatan (Rp)',
                 data: revenueData,
-                backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                backgroundColor: gradient,
                 borderColor: 'rgba(102, 126, 234, 1)',
                 borderWidth: 2,
-                borderRadius: 6,
+                borderRadius: {
+                    topLeft: 8,
+                    topRight: 8,
+                    bottomLeft: 0,
+                    bottomRight: 0
+                },
                 borderSkipped: false,
+                hoverBackgroundColor: hoverGradient,
+                hoverBorderColor: 'rgba(102, 126, 234, 1)',
+                hoverBorderWidth: 3,
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: true,
+            animation: {
+                duration: 1500,
+                easing: 'easeInOutQuad',
+                onComplete: function(animation) {
+                    const chart = animation.chart;
+                    const ctx = chart.ctx;
+                    ctx.save();
+                    const meta = chart.getDatasetMeta(0);
+                    meta.data.forEach((bar, index) => {
+                        if (revenueData[index] > 0) {
+                            const data = revenueData[index];
+                            const xPos = bar.x;
+                            const yPos = bar.y - 10;
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillStyle = '#667eea';
+                            ctx.font = 'bold 11px Poppins';
+                            ctx.fillText('Rp ' + data.toLocaleString('id-ID'), xPos, yPos);
+                        }
+                    });
+                    ctx.restore();
+                }
+            },
             plugins: {
                 legend: {
                     display: false
                 },
                 tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        family: 'Poppins',
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        family: 'Poppins',
+                        size: 13
+                    },
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 2,
+                    cornerRadius: 8,
+                    displayColors: false,
                     callbacks: {
+                        title: function(context) {
+                            return context[0].label;
+                        },
                         label: function(context) {
                             return 'Pendapatan: Rp ' + context.parsed.y.toLocaleString('id-ID');
                         }
@@ -161,15 +221,40 @@
                     beginAtZero: true,
                     ticks: {
                         callback: function(value) {
+                            if (value >= 1000000) {
+                                return 'Rp ' + (value / 1000000).toFixed(1) + 'Jt';
+                            } else if (value >= 1000) {
+                                return 'Rp ' + (value / 1000).toFixed(0) + 'Rb';
+                            }
                             return 'Rp ' + value.toLocaleString('id-ID');
-                        }
+                        },
+                        font: {
+                            family: 'Poppins',
+                            size: 11
+                        },
+                        color: '#6b7280'
                     },
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        drawBorder: false,
+                        lineWidth: 1
+                    },
+                    border: {
+                        display: false
                     }
                 },
                 x: {
                     grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            family: 'Poppins',
+                            size: 11
+                        },
+                        color: '#6b7280'
+                    },
+                    border: {
                         display: false
                     }
                 }
@@ -177,6 +262,14 @@
             interaction: {
                 intersect: false,
                 mode: 'index'
+            },
+            layout: {
+                padding: {
+                    top: 20,
+                    right: 10,
+                    bottom: 10,
+                    left: 10
+                }
             }
         }
     });

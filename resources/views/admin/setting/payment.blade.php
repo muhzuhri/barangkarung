@@ -33,6 +33,20 @@
                     </div>
                     
                     <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333;">Icon/Logo Metode Pembayaran</label>
+                        @if($payment->icon_image)
+                            <div style="margin-bottom: 0.5rem;">
+                                <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($payment->icon_image) }}" 
+                                     alt="Icon" 
+                                     style="max-width: 100px; max-height: 100px; border: 2px solid #e5e7eb; border-radius: 8px;">
+                            </div>
+                        @endif
+                        <input type="file" name="icon_image" accept="image/*" 
+                               style="width: 100%; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px;">
+                        <small style="color: #666; font-size: 12px;">Format: JPG, PNG. Max: 2MB. Akan ditampilkan di halaman checkout</small>
+                    </div>
+                    
+                    <div>
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333;">Nomor Rekening/Nomor</label>
                         <input type="text" name="account_number" value="{{ old('account_number', $payment->account_number) }}" 
                                style="width: 100%; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px;">

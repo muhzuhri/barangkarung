@@ -1,45 +1,53 @@
 <!-- ===== NAVBAR ===== -->
 <header class="navbar">
-    <!-- Logo -->
-    <div class="logo">
-        <h1>BARANG KARUNG</h1>
-    </div>
+    <div class="navbar-top">
+        <!-- Logo -->
+        <div class="logo">
+            <h1>BARANG KARUNG</h1>
+        </div>
 
-    <!-- Search bar -->
-    <div class="search-box">
-        <input type="text" placeholder="Cari produk keren dan terbaik di sini ..." />
-        <button><span class="material-icons">search</span></button>
-    </div>
+        <!-- Search bar -->
+        <div class="search-box">
+            <input type="text" placeholder="Cari produk keren dan terbaik di sini ..." />
+            <button><span class="material-icons">search</span></button>
+        </div>
 
-    <!-- Right icons -->
-    <div class="nav-right">
+        <!-- Right icons -->
+        <div class="nav-right">
+            <a href="{{ route('keranjang') }}" class="nav-icon"><span class="material-icons">shopping_cart</span></a>
 
-        <a href="{{ route('keranjang') }}"><span class="material-icons">shopping_cart</span></a>
-
-        <div class="dropdown">
-            <a href="#"><span class="material-icons">account_circle</span></a>
-            <div class="dropdown-menu">
-                @auth
-                    <a href="{{ route('profile') }}"><span class="material-icons">person</span>Profile</a>
-                    <a href="{{ route('pesanan') }}"><span class="material-icons">inventory_2</span>Pesanan</a>
-                    <a href="{{ route('pesanan.history') }}"><span class="material-icons">history</span>Riwayat Pesanan</a>
-                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                        @csrf
-                        <button type="submit" style="background: none; border: none; color: #000; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 12px; padding: 12px 20px; width: 100%; text-align: left; cursor: pointer; transition: background 0.3s;">
-                            <span class="material-icons">logout</span>Logout
-                        </button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}"><span class="material-icons">login</span>Masuk</a>
-                    <a href="{{ route('register') }}"><span class="material-icons">person_add</span>Daftar</a>
-                @endauth
+            <div class="dropdown">
+                <a href="#" class="nav-icon"><span class="material-icons">account_circle</span></a>
+                <div class="dropdown-menu">
+                    @auth
+                        <a href="{{ route('profile') }}"><span class="material-icons">person</span>Profile</a>
+                        <a href="{{ route('pesanan') }}"><span class="material-icons">inventory_2</span>Pesanan</a>
+                        <a href="{{ route('pesanan.history') }}"><span class="material-icons">history</span>Riwayat Pesanan</a>
+                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button type="submit" style="background: none; border: none; color: #000; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 12px; padding: 12px 20px; width: 100%; text-align: left; cursor: pointer; transition: background 0.3s;">
+                                <span class="material-icons">logout</span>Logout
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}"><span class="material-icons">login</span>Masuk</a>
+                        <a href="{{ route('register') }}"><span class="material-icons">person_add</span>Daftar</a>
+                    @endauth
+                </div>
             </div>
         </div>
+
+        <!-- Hamburger Menu Button -->
+        <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </div>
 </header>
 
 <!-- ===== CATEGORY MENU ===== -->
-<nav class="category-menu">
+<nav class="category-menu" id="categoryMenu">
     <a href="{{ route('beranda') }}" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">Beranda</a>
     <a href="{{ route('katalog') }}" class="{{ request()->routeIs('katalog') ? 'active' : '' }}">Katalog</a>
     <a href="{{ route('pesanan') }}" class="{{ request()->routeIs('pesanan') ? 'active' : '' }}">Pesanan</a>
@@ -47,15 +55,37 @@
     <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile') ? 'active' : '' }}">Profile</a>
 </nav>
 
-
-<!-- js toogle menu nav -->
+<!-- js toggle menu nav -->
 <script>
-    const toggle = document.querySelector('.menu-toggle');
-    const categoryMenu = document.querySelector('.category-menu');
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const categoryMenu = document.getElementById('categoryMenu');
+    const navbar = document.querySelector('.navbar');
 
-    toggle.addEventListener('click', () => {
-        categoryMenu.classList.toggle('show');
-    });
+    if (hamburgerMenu && categoryMenu) {
+        hamburgerMenu.addEventListener('click', () => {
+            hamburgerMenu.classList.toggle('active');
+            categoryMenu.classList.toggle('show');
+            navbar.classList.toggle('menu-open');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navbar.contains(e.target) && categoryMenu.classList.contains('show')) {
+                hamburgerMenu.classList.remove('active');
+                categoryMenu.classList.remove('show');
+                navbar.classList.remove('menu-open');
+            }
+        });
+
+        // Close menu when clicking on a link
+        categoryMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburgerMenu.classList.remove('active');
+                categoryMenu.classList.remove('show');
+                navbar.classList.remove('menu-open');
+            });
+        });
+    }
 </script>
 
 <!-- ===== Chatbot Floating Widget ===== -->
