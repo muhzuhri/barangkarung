@@ -62,12 +62,43 @@ class RevenueController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
+        // Additional data for charts
+        $months = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $months[] = \Carbon\Carbon::now()->subMonths($i)->format('Y-m');
+        }
+
+        $userRows = \App\Models\User::select(
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
+            DB::raw('COUNT(*) as count')
+        )
+            ->where('created_at', '>=', \Carbon\Carbon::now()->subMonths(6)->startOfMonth())
+            ->groupBy('month')
+            ->pluck('count', 'month');
+
+        $productRows = \App\Models\Product::select(
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
+            DB::raw('COUNT(*) as count')
+        )
+            ->where('created_at', '>=', \Carbon\Carbon::now()->subMonths(6)->startOfMonth())
+            ->groupBy('month')
+            ->pluck('count', 'month');
+
+        $monthlyUsers = collect($months)->map(function ($m) use ($userRows) {
+            return (object) ['month' => $m, 'count' => (int) ($userRows[$m] ?? 0)];
+        });
+        $monthlyProducts = collect($months)->map(function ($m) use ($productRows) {
+            return (object) ['month' => $m, 'count' => (int) ($productRows[$m] ?? 0)];
+        });
+
         return view('admin.revenue.index', compact(
             'admin',
             'totalRevenue',
             'totalOrders',
             'monthly',
-            'completedOrders'
+            'completedOrders',
+            'monthlyUsers',
+            'monthlyProducts'
         ));
     }
 }

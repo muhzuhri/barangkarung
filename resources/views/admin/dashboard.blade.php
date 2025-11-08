@@ -152,22 +152,15 @@
     const data = monthlyRevenueData.map(item => parseFloat(item.revenue));
 
     new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: labels,
             datasets: [{
                 label: 'Pendapatan (Rp)',
                 data: data,
-                borderColor: '#667eea',
-                backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#667eea',
-                pointBorderColor: '#ffffff',
-                pointBorderWidth: 2,
-                pointRadius: 6,
-                pointHoverRadius: 8
+                backgroundColor: 'rgba(102, 126, 234, 0.5)',
+                borderColor: 'rgb(102, 126, 234)',
+                borderWidth: 1,
             }]
         },
         options: {
@@ -202,10 +195,6 @@
                         display: false
                     }
                 }
-            },
-            interaction: {
-                intersect: false,
-                mode: 'index'
             }
         }
     });

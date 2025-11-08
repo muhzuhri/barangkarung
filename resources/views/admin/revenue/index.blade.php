@@ -36,6 +36,26 @@
     </div>
 </div>
 
+<!-- Additional Charts Section -->
+<div class="charts-grid"
+    style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+    <div class="chart-card"
+        style="background: white; border-radius: 12px; padding: 1rem; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);">
+        <h2 class="chart-title" style="font-size: 1rem; margin-bottom: 0.5rem;">📦 Pesanan Bulanan</h2>
+        <canvas id="ordersChart" style="max-height: 200px;"></canvas>
+    </div>
+    <div class="chart-card"
+        style="background: white; border-radius: 12px; padding: 1rem; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);">
+        <h2 class="chart-title" style="font-size: 1rem; margin-bottom: 0.5rem;">👤 Pengguna Baru</h2>
+        <canvas id="usersChart" style="max-height: 200px;"></canvas>
+    </div>
+    <div class="chart-card"
+        style="background: white; border-radius: 12px; padding: 1rem; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);">
+        <h2 class="chart-title" style="font-size: 1rem; margin-bottom: 0.5rem;">🧥 Produk Baru</h2>
+        <canvas id="productsChart" style="max-height: 200px;"></canvas>
+    </div>
+</div>
+
 <!-- Table Section -->
 <div class="recent-orders-section">
     <div class="section-header">
@@ -111,7 +131,7 @@
 <script>
     // Prepare data for chart
     const monthlyData = @json($monthly);
-    
+
     const labels = monthlyData.map(item => {
         const date = new Date(item.month + '-01');
         return date.toLocaleDateString('id-ID', {
@@ -119,7 +139,7 @@
             year: 'numeric'
         });
     });
-    
+
     const revenueData = monthlyData.map(item => parseFloat(item.revenue || 0));
 
     // Create gradient for bars
@@ -269,6 +289,108 @@
                     right: 10,
                     bottom: 10,
                     left: 10
+                }
+            }
+        }
+    });
+
+    // Initialize Orders Chart
+    const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+    const monthlyOrdersData = @json($monthly);
+    const ordersLabels = monthlyOrdersData.map(item => {
+        const date = new Date(item.month + '-01');
+        return date.toLocaleDateString('id-ID', {
+            month: 'short',
+            year: 'numeric'
+        });
+    });
+    const ordersCounts = monthlyOrdersData.map(item => parseInt(item.orders_count, 10));
+    new Chart(ordersCtx, {
+        type: 'bar',
+        data: {
+            labels: ordersLabels,
+            datasets: [{
+                label: 'Orders',
+                data: ordersCounts,
+                backgroundColor: 'rgba(34, 197, 94, 0.5)',
+                borderColor: 'rgb(34, 197, 94)',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+
+    // Initialize Users Chart
+    const usersCtx = document.getElementById('usersChart').getContext('2d');
+    const monthlyUsersData = @json($monthlyUsers);
+    const usersLabels = monthlyUsersData.map(item => {
+        const date = new Date(item.month + '-01');
+        return date.toLocaleDateString('id-ID', {
+            month: 'short',
+            year: 'numeric'
+        });
+    });
+    const usersCounts = monthlyUsersData.map(item => parseInt(item.count, 10));
+    new Chart(usersCtx, {
+        type: 'bar',
+        data: {
+            labels: usersLabels,
+            datasets: [{
+                label: 'User Baru',
+                data: usersCounts,
+                backgroundColor: 'rgba(99, 102, 241, 0.5)',
+                borderColor: 'rgb(99, 102, 241)',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+
+    // Initialize Products Chart
+    const productsCtx = document.getElementById('productsChart').getContext('2d');
+    const monthlyProductsData = @json($monthlyProducts);
+    const productsLabels = monthlyProductsData.map(item => {
+        const date = new Date(item.month + '-01');
+        return date.toLocaleDateString('id-ID', {
+            month: 'short',
+            year: 'numeric'
+        });
+    });
+    const productsCounts = monthlyProductsData.map(item => parseInt(item.count, 10));
+    new Chart(productsCtx, {
+        type: 'bar',
+        data: {
+            labels: productsLabels,
+            datasets: [{
+                label: 'Produk Baru',
+                data: productsCounts,
+                backgroundColor: 'rgba(234, 179, 8, 0.5)',
+                borderColor: 'rgb(234, 179, 8)',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
                 }
             }
         }
