@@ -17,17 +17,17 @@ class AdminAuthController extends Controller
     public function dashboard()
     {
         $admin = Auth::guard('admin')->user();
-        
+
         // Aggregate statistics
         $totalUsers = User::count();
         $totalProducts = Product::count();
-        $totalOrders = Order::where('order_status', 'selesai')->count(); // Hanya pesanan selesai untuk konsistensi dengan menu profit
-        $totalRevenue = Order::where('order_status', 'selesai')->sum('total');
+        $totalOrders = Order::where('status', 'selesai')->count(); // Hanya pesanan selesai untuk konsistensi dengan menu profit
+        $totalRevenue = Order::where('status', 'selesai')->sum('total');
 
         // Recent orders - show orders that are not completed yet (need status update)
         $recentOrders = Order::with('user')
-            ->where('order_status', '!=', 'selesai')
-            ->where('order_status', '!=', 'dibatalkan')
+            ->where('status', '!=', 'selesai')
+            ->where('status', '!=', 'dibatalkan')
             ->orderBy('created_at', 'desc')
             ->limit(6)
             ->get();
@@ -39,35 +39,35 @@ class AdminAuthController extends Controller
         }
 
         $revenueRows = Order::select(
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
-                DB::raw('SUM(total) as revenue')
-            )
-            ->where('order_status', 'selesai')
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
+            DB::raw('SUM(total) as revenue')
+        )
+            ->where('status', 'selesai')
             ->where('created_at', '>=', Carbon::now()->subMonths(6)->startOfMonth())
             ->groupBy('month')
             ->pluck('revenue', 'month');
 
         $orderRows = Order::select(
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
-                DB::raw('COUNT(*) as count')
-            )
-            ->where('order_status', 'selesai')
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
+            DB::raw('COUNT(*) as count')
+        )
+            ->where('status', 'selesai')
             ->where('created_at', '>=', Carbon::now()->subMonths(6)->startOfMonth())
             ->groupBy('month')
             ->pluck('count', 'month');
 
         $userRows = User::select(
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
-                DB::raw('COUNT(*) as count')
-            )
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
+            DB::raw('COUNT(*) as count')
+        )
             ->where('created_at', '>=', Carbon::now()->subMonths(6)->startOfMonth())
             ->groupBy('month')
             ->pluck('count', 'month');
 
         $productRows = Product::select(
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
-                DB::raw('COUNT(*) as count')
-            )
+            DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
+            DB::raw('COUNT(*) as count')
+        )
             ->where('created_at', '>=', Carbon::now()->subMonths(6)->startOfMonth())
             ->groupBy('month')
             ->pluck('count', 'month');
@@ -108,7 +108,7 @@ class AdminAuthController extends Controller
     public function updateProfile(Request $request)
     {
         $admin = Auth::guard('admin')->user();
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:admins,email,' . $admin->id,

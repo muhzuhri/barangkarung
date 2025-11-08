@@ -52,7 +52,7 @@ class CheckoutController extends Controller
 
         // Ambil payment settings
         $paymentSettings = PaymentSetting::where('is_active', true)->get()->keyBy('payment_method');
-        
+
         // Prepare payment settings data untuk JavaScript dengan key payment_method
         $paymentSettingsJs = [];
         foreach ($paymentSettings as $payment) {
@@ -89,7 +89,7 @@ class CheckoutController extends Controller
             'payment_method' => 'required|string',
             'notes' => 'nullable|string|max:500',
         ];
-        if (in_array($request->payment_method, ['dana', 'mandiri','qris'])) {
+        if (in_array($request->payment_method, ['dana', 'mandiri', 'qris'])) {
             $rules['payment_proof'] = 'required|image|mimes:jpg,jpeg,png|max:2048';
         }
         $validated = $request->validate($rules);
@@ -131,17 +131,17 @@ class CheckoutController extends Controller
             'total' => $total,
         ];
 
-        if (in_array($request->payment_method, ['dana','mandiri','qris'])) {
+        if (in_array($request->payment_method, ['dana', 'mandiri', 'qris'])) {
             if ($request->hasFile('payment_proof')) {
                 try {
                     $path = $request->file('payment_proof')->store('payments', 'public');
-                    
+
                     // Verifikasi file benar-benar tersimpan
                     if (!\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
                         Log::error("Payment proof file not saved: {$path}");
                         return redirect()->back()->withInput()->with('error', 'Gagal menyimpan bukti transfer. Silakan coba lagi.');
                     }
-                    
+
                     $orderData['payment_proof'] = $path;
                     Log::info("Payment proof saved: {$path}");
                 } catch (\Exception $e) {
@@ -155,10 +155,10 @@ class CheckoutController extends Controller
                 }
             }
             $orderData['payment_status'] = 'pending';
-            $orderData['order_status'] = 'pending';
+            $orderData['status'] = 'pending';
         } else {
             // Metode lain, misal COD
-            $orderData['order_status'] = 'pending';
+            $orderData['status'] = 'pending';
         }
         $order = Order::create($orderData);
 

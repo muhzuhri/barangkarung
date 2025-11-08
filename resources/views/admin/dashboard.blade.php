@@ -115,8 +115,8 @@
                             <td>{{ $order->user->name ?? 'User #' . $order->user_id }}</td>
                             <td>Rp {{ number_format($order->total, 0, ',', '.') }}</td>
                             <td>
-                                <span class="status-badge status-{{ \Illuminate\Support\Str::slug($order->order_status ?? $order->status) }}">
-                                    {{ ucfirst($order->order_status ?? $order->status) }}
+                                <span class="status-badge status-{{ \Illuminate\Support\Str::slug($order->status) }}">
+                                    {{ ucfirst($order->status) }}
                                 </span>
                             </td>
                             <td>{{ $order->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>

@@ -158,8 +158,8 @@
         <h1 class="order-title">
             Pesanan #{{ $order->order_code }}
         </h1>
-        <span class="status-badge status-{{ \Illuminate\Support\Str::slug($order->order_status ?? $order->status) }}">
-            {{ ucfirst($order->order_status ?? $order->status) }}
+        <span class="status-badge status-{{ \Illuminate\Support\Str::slug($order->status) }}">
+            {{ ucfirst($order->status) }}
         </span>
     </div>
 
@@ -186,7 +186,7 @@
                 <div class="meta-value">{{ $order->shipping_method }}</div>
             </div>
         </div>
-        
+
         <div class="meta-row full">
             <div class="meta-item full-width">
                 <div class="meta-label">Alamat Pengiriman</div>
@@ -203,7 +203,7 @@
         </div>
         <div class="summary-card">
             <div class="summary-label">Status</div>
-            <div class="summary-value">{{ ucfirst($order->order_status ?? $order->status) }}</div>
+            <div class="summary-value">{{ ucfirst($order->status) }}</div>
         </div>
         <div class="summary-card">
             <div class="summary-label">Total Pembayaran</div>
@@ -264,7 +264,9 @@
                     <div class="payment-proof">
                         <div class="label">Gambar Bukti Transfer:</div>
                         @php
-                            $fileExists = \Illuminate\Support\Facades\Storage::disk('public')->exists($order->payment_proof);
+                            $fileExists = \Illuminate\Support\Facades\Storage::disk('public')->exists(
+                                $order->payment_proof,
+                            );
                             // Gunakan asset() untuk URL yang relatif terhadap domain saat ini
                             $proofUrl = asset('storage/' . $order->payment_proof);
                             $storagePath = storage_path('app/public/' . $order->payment_proof);
@@ -278,15 +280,19 @@
                             </a>
                             <div class="note">Klik gambar untuk melihat ukuran penuh</div>
                         @else
-                            <div class="image-error" style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin: 16px 0;">
+                            <div class="image-error"
+                                style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin: 16px 0;">
                                 <strong style="color: #92400e;">⚠️ Gambar tidak dapat dimuat</strong><br>
-                                <small style="color: #78350f;">File tidak ditemukan di storage. File mungkin sudah dihapus atau belum pernah diupload.</small>
+                                <small style="color: #78350f;">File tidak ditemukan di storage. File mungkin sudah
+                                    dihapus atau belum pernah diupload.</small>
                             </div>
-                            <div class="debug-info" style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 12px; margin-top: 8px; font-size: 12px;">
+                            <div class="debug-info"
+                                style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 12px; margin-top: 8px; font-size: 12px;">
                                 <strong style="color: #92400e;">🔍 Debug Info:</strong><br>
                                 <small style="color: #78350f;">
                                     <strong>Path DB:</strong> {{ $order->payment_proof }}<br>
-                                    <strong>URL:</strong> <a href="{{ $proofUrl }}" target="_blank" style="color: #059669; text-decoration: underline;">{{ $proofUrl }}</a><br>
+                                    <strong>URL:</strong> <a href="{{ $proofUrl }}" target="_blank"
+                                        style="color: #059669; text-decoration: underline;">{{ $proofUrl }}</a><br>
                                     <strong>Storage Path:</strong> {{ $storagePath }}<br>
                                     <strong>Public Path:</strong> {{ $publicPath }}<br>
                                     <strong>File Exists:</strong> {{ $fileExists ? 'Ya' : 'Tidak' }}
