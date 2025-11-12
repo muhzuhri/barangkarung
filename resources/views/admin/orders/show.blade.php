@@ -393,7 +393,7 @@
         <!-- Input Nomor Resi (muncul hanya jika status dikirim) -->
         <div id="tracking-number-container"
             style="display: {{ $order->status === 'dikirim' ? 'block' : 'none' }}; width: 100%;">
-            <label for="tracking_number" >Nomor Resi</label>
+            <label for="tracking_number">Nomor Resi</label>
             <input type="text" id="tracking_number" name="tracking_number" class="form-input"
                 value="{{ old('tracking_number', $order->tracking_number) }}" placeholder="Masukkan nomor resi J&T"
                 style="margin-top: 4px;">
@@ -407,19 +407,33 @@
     <script>
         // Function to toggle tracking number field
         function toggleTrackingField() {
-            const statusSelect = document.getElementById('status');
-            const trackingContainer = document.getElementById('tracking-number-container');
+            const statusSelect = $('#status');
+            const trackingContainer = $('#tracking-number-container');
 
-            if (statusSelect.value === 'dikirim') {
-                trackingContainer.style.display = 'block';
-            } else {
-                trackingContainer.style.display = 'none';
+            if (statusSelect.length && trackingContainer.length) {
+                if (statusSelect.val() === 'dikirim') {
+                    trackingContainer.show();
+                } else {
+                    trackingContainer.hide();
+                }
             }
         }
 
-        // Run on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        // Run on page load and after select2 initialization
+        $(document).ready(function() {
+            // Initialize select2 if not already initialized
+            if (!$('#status').hasClass('select2-hidden-accessible')) {
+                $('#status').select2({
+                    width: '100%',
+                    placeholder: 'Ubah Status',
+                    minimumResultsForSearch: Infinity
+                });
+            }
+
             toggleTrackingField();
+
+            // Add event listener to status select for real-time toggle
+            $('#status').on('change', toggleTrackingField);
         });
     </script>
 

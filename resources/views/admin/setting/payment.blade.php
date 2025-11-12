@@ -182,7 +182,7 @@
                         </p>
                     </div>
                 </div>
-
+                
                 <div class="form-group">
                     <label class="form-label">
                         <input type="checkbox" name="is_active" value="1"
