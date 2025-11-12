@@ -23,6 +23,7 @@ class Order extends Model
         'discount',
         'total',
         'status',
+        'tracking_number',
         'payment_status',
         'payment_proof',
     ];

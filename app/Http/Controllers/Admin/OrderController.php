@@ -28,12 +28,31 @@ class OrderController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|string|in:pending,Sedang Diproses,dikirim,selesai,dibatalkan'
+            'status' => 'required|string|in:pending,Sedang Diproses,dikirim,selesai,dibatalkan',
+            'tracking_number' => 'nullable|string|max:255'
         ]);
 
         $order = Order::findOrFail($id);
+        $oldStatus = $order->status;
         $order->status = $request->input('status');
+
+        // Jika status diubah menjadi "dikirim", simpan nomor resi
+        if ($request->input('status') === 'dikirim') {
+            $order->tracking_number = $request->input('tracking_number');
+        }
+
         $order->save();
+
+        // Jika status baru adalah "dikirim" dan sebelumnya bukan, kirim notifikasi ke user
+        if ($request->input('status') === 'dikirim' && $oldStatus !== 'dikirim' && $order->tracking_number) {
+            // Kirim notifikasi ke user (bisa menggunakan email, SMS, atau notifikasi in-app)
+            // Untuk sementara, kita simpan sebagai flash message untuk demo
+            session()->flash('user_notification', [
+                'order_code' => $order->order_code,
+                'tracking_number' => $order->tracking_number,
+                'message' => "Pesanan Anda dengan kode {$order->order_code} telah dikirim dengan nomor resi: {$order->tracking_number}"
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Status pesanan diperbarui.');
     }
@@ -62,6 +81,3 @@ class OrderController extends Controller
         return redirect()->back()->with('success', 'Status pesanan diperbarui.');
     }
 }
-
-
-

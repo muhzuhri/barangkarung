@@ -4,7 +4,7 @@
     justify-content: center;
     width: 40px; /* ukuran tombol */
     height: 40px;
-    background-color: #8dc3fc;
+    background-color: #7abaff;
     border-radius: 50%; /* bikin tombol bulat */
     cursor: pointer;
     transition: all 0.3s ease;
@@ -18,8 +18,8 @@
 }
 
 .btn-icon-kembali {
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     object-fit: contain;
     filter: brightness(0) invert(1); /* ubah icon jadi putih */
 }
@@ -231,11 +231,11 @@
 
 .btn-batal,
 .btn-submit {
-    padding: 10px 24px;
+    padding: 11px 24px;
     border-radius: 10px;
-    font-size: 1rem;
+    font-size: 14px;
     font-weight: 500;
-    letter-spacing: 0.7px;
+    letter-spacing: 0.5px;
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -243,19 +243,20 @@
 }
 
 .btn-batal {
-    background-color: #e2e8f0;
-    color: #323b48;
+    background-color: #e6effb;
+    border: solid 1px #e1e9f4;
+    color: #3e4855;
 }
 
 .btn-batal:hover {
-    background-color: #cbd5e1;
+    background-color: #dfe9f5;
+    color: #343c47;
     transform: translateY(-2px);
 }
 
 .btn-submit {
     background-color: #2c53d3;
     color: #ffffff;
-    /* box-shadow: 0 4px 10px rgba(30, 64, 175, 0.3); */
 }
 
 .btn-submit:hover {

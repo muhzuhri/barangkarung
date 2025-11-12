@@ -87,6 +87,21 @@
                     <div class="detail-label">Status</div>
                     <div class="detail-value">{{ ucfirst($order->status) }}</div>
                 </div>
+                @if ($order->tracking_number)
+                    <div>
+                        <div class="detail-label">Nomor Resi</div>
+                        <div class="detail-value">
+                            {{ $order->tracking_number }}
+                            @if ($order->status === 'dikirim')
+                                <br>
+                                <a href="https://jet.co.id/track" target="_blank"
+                                    style="color: #3b82f6; text-decoration: underline; font-size: 0.85rem; margin-top: 4px; display: inline-block;">
+                                    Cek Status Pengiriman J&T
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                @endif
                 <div>
                     <div class="detail-label">Telepon</div>
                     <div class="detail-value">{{ $order->phone }}</div>
@@ -161,6 +176,19 @@
                 </form>
             @endif
             <a href="{{ route('pesanan') }}" class="btn-detail" style="background:#6b7280;">Kembali</a>
+        </div>
+
+        <!-- Footer Informasi Tracking -->
+        <div class="detail-card" style="background: #f8fafc; border: 1px solid #e2e8f0; margin-top: 24px;">
+            <div style="text-align: center; color: #6b7280; font-size: 0.9rem; line-height: 1.5;">
+                <strong style="color: #374151;">Informasi Pengiriman</strong><br>
+                Untuk mengecek status paket/barang Anda sudah di mana, silakan kunjungi
+                <a href="https://jet.co.id/track" target="_blank"
+                    style="color: #3b82f6; text-decoration: underline; font-weight: 500;">
+                    https://jet.co.id/track
+                </a>
+                untuk informasi lebih lanjut tentang pengiriman J&T Express.
+            </div>
         </div>
     </main>
 </body>

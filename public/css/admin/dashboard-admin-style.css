@@ -1,4 +1,4 @@
-/* Welcome Card */
+/* ========= SECTION SELEMATA DATANG DI BERANDA ========= */
 .sambutan {
     margin-bottom: 2rem; /* mb-8 */
     background: linear-gradient(to right, #e4effd, #c2ceff); /* from-blue-50 to-indigo-200 */
@@ -55,7 +55,8 @@
     }
 }
 
-/* Stats Grid */
+
+/* ========= SECTION 4 BOX DI BERANDA ========= */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -103,7 +104,7 @@
     font-size: 1.5rem;
     font-weight: 500;
     color: #171e2a; /* slate-800 */
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.6rem;
 }
 
 /* Label bawah */
@@ -118,30 +119,8 @@
 .stat-card:nth-child(3) .stat-icon { background-color: #fce7f3; } /* merah muda */
 .stat-card:nth-child(4) .stat-icon { background-color: #fef9c3; } /* kuning muda */
 
-/* Charts Section */
-/* .charts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-    gap: 25px;
-    margin-bottom: 40px;
-}
 
-.chart-card {
-    background: white;
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    height: 320px;
-}
-
-.chart-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #374151;
-} */
-
-/* ===== Table Section ===== */
+/* ========= SECTION SELURUH DATA TABLE ========= */
 .recent-orders-section {
     margin-top: 2rem;
     background: #ffffff;
@@ -172,7 +151,7 @@
     color: #202020; /* slate-800 */
 }
 
-/* Table Container */
+/* ========== DATA TABLE ========== */
 .orders-table {
     background: #fff;
     border-radius: 8px;
@@ -184,8 +163,6 @@
 .orders-table table {
     width: 100%;
     border-collapse: collapse;
-    font-family: 'Poppins', sans-serif;
-    /* font-size: 15px; */
 }
 
 /* Header */
@@ -194,7 +171,7 @@
 }
 
 .orders-table th {
-    font-size: 15px;
+    font-size: 16px;
     text-align: left;
     padding: 12px 16px;
     letter-spacing: 0.4px;
@@ -205,7 +182,7 @@
 
 /* Body Rows */
 .orders-table td {
-    font-size: 14px;
+    font-size: 15px;
     padding: 12px 16px;
     border-bottom: 1px solid #e5e7eb;
     color: #333;
@@ -222,7 +199,6 @@
     display: inline-block;
     padding: 6px 12px;
     border-radius: 10px;
-    font-size: 13px;
     font-weight: 600;
 }
 
@@ -278,7 +254,8 @@
     }
 }
 
-/* Container Penutup */
+
+/* ========= SECTION PENUTUP ========= */
 .penutup {
     background-color: #e1ecf8;
     border: 1px solid #e5e7eb;
@@ -292,13 +269,12 @@
 /* Teks di dalam */
 .penutup-text {
     color: #374151;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
     line-height: 1.7;
     max-width: 64rem;
     margin: 0 auto;
     text-align: center;
-    font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
 }
 
 /* Responsif: lebih kecil padding dan ukuran teks di layar kecil */

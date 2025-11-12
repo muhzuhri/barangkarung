@@ -44,6 +44,13 @@
                     </div>
                 </div>
 
+                @if ($order->tracking_number)
+                    <div class="tracking-info"
+                        style="font-size: 12px; color: #666; margin-top: 4px; margin-left: 16px;">
+                        Resi: {{ $order->tracking_number }}
+                    </div>
+                @endif
+
                 @foreach ($order->items as $item)
                     <div class="order-body">
                         <img src="{{ $item->product->image_url ?? asset('img/no-image.png') }}"

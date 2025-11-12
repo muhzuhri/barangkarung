@@ -12,7 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {{-- Google Fonts --}}
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
+    {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"> --}}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
 
     {{-- Style CSS --}}
     <link rel="stylesheet" href="{{ asset('css/admin/navbar-admin-style.css') }}">
@@ -21,12 +22,10 @@
     <link rel="stylesheet" href="{{ asset('css/admin/pesanan-admin-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/tambahedit-form-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin/user-admin-style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/faq-admin-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/profile-admin-style.css') }}">
 
     <!-- Tambahkan di dalam <head> -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-
 
 </head>
 
@@ -34,19 +33,19 @@
     <!-- Tambahkan sebelum </body> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    {{-- JS Chekbox --}}
+    <script>
+        $(document).ready(function() {
+            $('#status').select2({
+                width: '100%',
+                placeholder: 'Ubah Status',
+                minimumResultsForSearch: Infinity // tanpa kolom pencarian
+            });
+        });
+    </script>
+
     <div class="header">
-
-        <script>
-$(document).ready(function() {
-    $('#status').select2({
-        width: '100%',
-        placeholder: 'Ubah Status',
-        minimumResultsForSearch: Infinity // tanpa kolom pencarian
-    });
-});
-</script>
-
-
         <div class="header-content">
             <div class="logo">
                 <div class="logo-icon">BK</div>
@@ -73,12 +72,6 @@ $(document).ready(function() {
                             Pesanan
                         </a>
                     </li>
-                    <!-- <li>
-                        <a href="{{ route('admin.faq.index') }}"
-                            class="{{ request()->routeIs('admin.faq.*') ? 'active' : '' }}">
-                            FAQ
-                        </a>
-                    </li> -->
                     <li>
                         <a href="{{ route('admin.users.index') }}"
                             class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
@@ -91,12 +84,6 @@ $(document).ready(function() {
                             Profit
                         </a>
                     </li>
-                    {{-- <li>
-                        <a href="{{ route('admin.setting.profile') }}"
-                            class="{{ request()->routeIs('admin.setting.profile*') ? 'active' : '' }}">
-                            Settings
-                        </a>
-                    </li> --}}
                 </ul>
             </nav>
 
@@ -116,16 +103,16 @@ $(document).ready(function() {
 
                     <div class="dropdown-menu" id="adminDropdown">
                         <a href="{{ route('admin.faq.index') }}" class="dropdown-item">
-                            <img src="{{ asset('img/icon/setting-icon.png') }}" alt="Pengaturan" class="icon">
+                            <img src="{{ asset('img/icon/faq-icon.png') }}" alt="Pengaturan" class="icon">
                             FAQ
-                        </a>
-                        <a href="{{ route('admin.setting.payment') }}" class="dropdown-item">
-                            <img src="{{ asset('img/icon/setting-icon.png') }}" alt="Pembayaran" class="icon">
-                            Pembayaran
                         </a>
                         <a href="{{ route('admin.setting.profile') }}" class="dropdown-item">
                             <img src="{{ asset('img/icon/setting-icon.png') }}" alt="Pengaturan" class="icon">
-                            Pengaturan
+                            Profile
+                        </a>
+                        <a href="{{ route('admin.setting.payment') }}" class="dropdown-item">
+                            <img src="{{ asset('img/icon/income-icon.png') }}" alt="Pembayaran" class="icon">
+                            Pembayaran
                         </a>
                         <div class="dropdown-divider"></div>
                         <form method="POST" action="{{ route('logout') }}">
@@ -136,14 +123,9 @@ $(document).ready(function() {
                             </button>
                         </form>
                     </div>
-
                 </div>
 
-                <button class="mobile-menu-toggle" id="adminHamburgerMenu" onclick="toggleMobileMenu()" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
             </div>
         </div>
     </div>
