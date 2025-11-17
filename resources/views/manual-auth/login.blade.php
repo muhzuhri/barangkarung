@@ -44,14 +44,15 @@
                 @csrf
 
                 <div class="form-group">
-                    <img src="img/user-icon.png" alt="User Icon" class="icon">
+                    <img src="{{ asset('img/user-icon.png') }}" alt="User Icon" class="icon">
                     <input type="email" name="email" placeholder="Email" required value="{{ old('email') }}">
                 </div>
 
                 <div class="form-group password-group">
-                    <img src="img/pass-icon.png" alt="Password Icon" class="icon">
+                    <img src="{{ asset('img/pass-icon.png') }}" alt="Password Icon" class="icon">
                     <input type="password" name="password" id="password" placeholder="Password" required>
-                    <img src="img/eye-icon.png" alt="Toggle Password" id="togglePassword" class="toggle-icon">
+                    <img src="{{ asset('img/eye-icon.png') }}" alt="Toggle Password" id="togglePassword"
+                        class="toggle-icon">
                 </div>
 
                 <p class="note">Cek dulu apakah sudah dengan benar</p>
@@ -60,7 +61,8 @@
 
             <!-- Link Registrasi -->
             <div class="register-link">
-                <p>Belum punya akun? <a href="{{ route('register') }}" class="register-link-text">Daftar di sini</a></p>
+                <p>Belum punya akun? <a href="{{ route('register') }}" class="register-link-text">Daftar di sini</a>
+                </p>
             </div>
         </div>
 
@@ -68,7 +70,7 @@
         <div class="brand-section">
             <h1>Barang Karung ID</h1>
             <p>Thrift For Everybody</p>
-            <img src="img/login-icon.png" alt="Gambar baju thrift">
+            <img src="{{ asset('img/login-icon.png') }}" alt="Gambar baju thrift">
         </div>
     </div>
 
@@ -83,7 +85,8 @@
         togglePassword.addEventListener('click', function() {
             const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordField.setAttribute('type', type);
-            this.src = type === 'password' ? 'img/eye-icon.png' : 'img/close_eye-icon.png';
+            this.src = type === 'password' ? '{{ asset('img/eye-icon.png') }}' :
+                '{{ asset('img/close_eye-icon.png') }}';
         });
     </script>
 

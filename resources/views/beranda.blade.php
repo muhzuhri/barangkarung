@@ -46,7 +46,7 @@
                         <span class="material-icons">arrow_forward</span></a>
                 </div>
                 <div class="promo-image">
-                    <img src="img/img/p.jpg" alt="Barang Karung ID">
+                    <img src="{{ asset('img/img/p.jpg') }}" alt="Barang Karung ID">
                 </div>
             </div>
         </section>
@@ -55,19 +55,19 @@
         <section class="hero-slider">
             <div class="slides">
                 <div class="slide active">
-                    <img src="img/img/pict1.jpg" alt="Slide 1">
+                    <img src="{{ asset('img/img/pict1.jpg') }}" alt="Slide 1">
                 </div>
                 <div class="slide">
-                    <img src="img/img/pict2.jpg" alt="Slide 2">
+                    <img src="{{ asset('img/img/pict2.jpg') }}" alt="Slide 2">
                 </div>
                 <div class="slide">
-                    <img src="img/img/pict3.jpg" alt="Slide 3">
+                    <img src="{{ asset('img/img/pict3.jpg') }}" alt="Slide 3">
                 </div>
                 <div class="slide">
-                    <img src="img/img/pict4.jpg" alt="Slide 4">
+                    <img src="{{ asset('img/img/pict4.jpg') }}" alt="Slide 4">
                 </div>
                 <div class="slide">
-                    <img src="img/img/pict5.jpg" alt="Slide 5">
+                    <img src="{{ asset('img/img/pict5.jpg') }}" alt="Slide 5">
                 </div>
             </div>
 
@@ -83,7 +83,7 @@
             <div class="promo-card-container">
                 <!-- Card 1 -->
                 <div class="promo-card">
-                    <img src="img/baju-img/model1.jpg" alt="Adidas">
+                    <img src="{{ asset('img/baju-img/model1.jpg') }}" alt="Adidas">
                     <div class="card-overlay">
                         <div class="sale-label">• 10.10 SALE • 10.10 SALE •</div>
                         <h3>ADIDAS</h3>
@@ -93,7 +93,7 @@
 
                 <!-- Card 2 -->
                 <div class="promo-card">
-                    <img src="img/baju-img/model2.jpg" alt="Nike">
+                    <img src="{{ asset('img/baju-img/model2.jpg') }}" alt="Nike">
                     <div class="card-overlay">
                         <div class="sale-label">• 10.10 SALE • 10.10 SALE •</div>
                         <h3>NIKE</h3>
@@ -103,7 +103,7 @@
 
                 <!-- Card 3 -->
                 <div class="promo-card">
-                    <img src="img/baju-img/model3.jpg" alt="Skechers">
+                    <img src="{{ asset('img/baju-img/model3.jpg') }}" alt="Skechers">
                     <div class="card-overlay">
                         <div class="sale-label">• 10.10 SALE • 10.10 SALE •</div>
                         <h3>SKECHERS</h3>
@@ -113,7 +113,7 @@
 
                 <!-- Card 4 -->
                 <div class="promo-card">
-                    <img src="img/baju-img/model4.jpg" alt="New Balance">
+                    <img src="{{ asset('img/baju-img/model4.jpg') }}" alt="New Balance">
                     <div class="card-overlay">
                         <div class="sale-label">• 10.10 SALE • 10.10 SALE •</div>
                         <h3>NEW BALANCE</h3>
@@ -128,7 +128,7 @@
             <div class="attention-wrapper">
                 <!-- Kiri: Gambar -->
                 <div class="attention-image">
-                    <img src="img/baju-img/pictpromo.jpg" alt="Promo Barang Karung">
+                    <img src="{{ asset('img/baju-img/pictpromo.jpg') }}" alt="Promo Barang Karung">
                 </div>
 
                 <!-- Kanan: Teks dan Tombol -->
