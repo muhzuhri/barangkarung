@@ -10,6 +10,9 @@
             "src": "/build/manifest.json",
             "dest": "/public/build/manifest.json"
         },
+        { "src": "/css/(.*)", "dest": "/public/css/$1" },
+        { "src": "/img/(.*)", "dest": "/public/img/$1" },
+        { "src": "/js/(.*)", "dest": "/public/js/$1" },
         { "src": "/(.*)", "dest": "/api/index.php" }
     ],
     "public": true,
