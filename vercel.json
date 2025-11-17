@@ -15,13 +15,24 @@
         { "src": "/js/(.*)", "dest": "/public/js/$1" },
         { "src": "/(.*)", "dest": "/api/index.php" }
     ],
+    "headers": [
+        {
+            "source": "/(.*)",
+            "headers": [
+                {
+                    "key": "X-Forwarded-Proto",
+                    "value": "https"
+                }
+            ]
+        }
+    ],
     "public": true,
     "buildCommand": "npm run build",
     "outputDirectory": "public",
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "https://yourproductionurl.com",
+        "APP_URL": "https://barangkarung-2wad.vercel.app",
         "APP_KEY": "base64:TGaVaXwhWgjn9akhE4SCSIjGG/cQqvICUQ+PgLA3Bs0=",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
