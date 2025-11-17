@@ -44,7 +44,7 @@
 
         <div class="form-group-profile">
             <label for="current_password">Password Lama (untuk mengubah password)</label>
-            <input type="password" id="current_password" name="current_password">
+            <input type="password" id="curreint_password" name="current_password">
         </div>
 
         <div class="form-group-profile">
