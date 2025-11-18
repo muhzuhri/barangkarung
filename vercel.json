@@ -1,14 +1,19 @@
 {
     "version": 2,
-    "framework": "laravel",
-    "nodeVersion": "22",
-    "buildCommand": "composer install --no-dev --optimize-autoloader && php artisan key:generate && npm ci && npm run build",
-    "outputDirectory": "public",
+    "framework": null,
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.7.4"
         }
     },
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ],
+    "buildCommand": "composer install --no-dev --optimize-autoloader && php artisan key:generate && npm ci && npm run build",
+    "outputDirectory": "public",
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
