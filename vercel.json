@@ -1,29 +1,7 @@
 {
     "version": 2,
-    "framework": null,
-    "functions": {
-        "api/index.php": {
-            "runtime": "vercel-php@0.7.4"
-        }
-    },
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/api/index.php"
-        }
-    ],
-    "headers": [
-        {
-            "source": "/(.*)",
-            "headers": [
-                {
-                    "key": "X-Forwarded-Proto",
-                    "value": "https"
-                }
-            ]
-        }
-    ],
-    "buildCommand": "npm run build",
+    "framework": "laravel",
+    "buildCommand": "composer install --no-dev && php artisan key:generate && npm run build",
     "outputDirectory": "public",
     "env": {
         "APP_ENV": "production",
