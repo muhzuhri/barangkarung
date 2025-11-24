@@ -18,16 +18,22 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
+    // public function boot(): void
+    // {
+    //     if (class_exists(\Midtrans\Config::class)) {
+    //         $midtrans = config('services.midtrans');
+    //         if (!empty($midtrans['server_key'])) {
+    //             \Midtrans\Config::$serverKey = $midtrans['server_key'];
+    //             \Midtrans\Config::$isProduction = (bool) ($midtrans['is_production'] ?? false);
+    //             \Midtrans\Config::$isSanitized = (bool) ($midtrans['is_sanitized'] ?? true);
+    //             \Midtrans\Config::$is3ds = (bool) ($midtrans['is_3ds'] ?? true);
+    //         }
+    //     }
+    // }
     public function boot(): void
     {
-        if (class_exists(\Midtrans\Config::class)) {
-            $midtrans = config('services.midtrans');
-            if (!empty($midtrans['server_key'])) {
-                \Midtrans\Config::$serverKey = $midtrans['server_key'];
-                \Midtrans\Config::$isProduction = (bool) ($midtrans['is_production'] ?? false);
-                \Midtrans\Config::$isSanitized = (bool) ($midtrans['is_sanitized'] ?? true);
-                \Midtrans\Config::$is3ds = (bool) ($midtrans['is_3ds'] ?? true);
-            }
+        if ($this->app->environment('production')) {
+            \URL::forceScheme('https');
         }
     }
 }
