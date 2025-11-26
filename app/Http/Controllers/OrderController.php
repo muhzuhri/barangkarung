@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class OrderController extends Controller
 {
@@ -94,8 +95,8 @@ class OrderController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
-        // Hanya untuk metode transfer
-        $transferMethods = ['dana', 'mandiri', 'qris'];
+        // Ambil metode pembayaran transfer dari payment_settings
+        $transferMethods = \App\Models\PaymentSetting::where('is_active', true)->pluck('payment_method')->toArray();
         if (!in_array($order->payment_method, $transferMethods)) {
             return back()->with('error', 'Upload bukti hanya untuk pembayaran transfer.');
         }
@@ -111,14 +112,37 @@ class OrderController extends Controller
 
         $file = $request->file('payment_proof');
 
-        // Simpan file ke disk default yang dikonfigurasi (local atau s3)
-        $storageDisk = config('filesystems.default', 'local');
-        $path = $file->store('payment_proofs', $storageDisk);
-
-        $order->update([
-            'payment_proof' => $path,
-            'payment_status' => 'pending'
-        ]);
+        try {
+            // Cek apakah Cloudinary tersedia (untuk Vercel)
+            $cloudinaryUrl = config('cloudinary.cloud_url');
+            if ($cloudinaryUrl && !empty($cloudinaryUrl)) {
+                // Upload ke Cloudinary untuk Vercel compatibility
+                $uploadedFile = Cloudinary::upload($file->getRealPath(), [
+                    'folder' => 'barangkarung/payments',
+                    'resource_type' => 'image',
+                ]);
+                $proofPath = $uploadedFile->getSecurePath();
+            } else {
+                // Fallback ke local storage untuk development
+                $proofPath = $file->store('payments', 'public');
+            }
+            
+            $order->update([
+                'payment_proof' => $proofPath,
+                'payment_status' => 'pending'
+            ]);
+        } catch (\Exception $e) {
+            // Fallback ke local storage jika Cloudinary error
+            try {
+                $proofPath = $file->store('payments', 'public');
+                $order->update([
+                    'payment_proof' => $proofPath,
+                    'payment_status' => 'pending'
+                ]);
+            } catch (\Exception $e2) {
+                return back()->with('error', 'Gagal mengupload bukti pembayaran: ' . $e2->getMessage());
+            }
+        }
 
         return back()->with('success', 'Bukti pembayaran berhasil diupload! Menunggu konfirmasi admin.');
     }

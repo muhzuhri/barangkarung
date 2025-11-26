@@ -96,4 +96,23 @@ class PaymentSettingController extends Controller
         return redirect()->route('admin.setting.payment')
             ->with('success', 'Metode pembayaran berhasil ditambahkan!');
     }
+
+    public function destroy($id)
+    {
+        $payment = PaymentSetting::findOrFail($id);
+        
+        // Hapus file gambar jika ada
+        if ($payment->icon_image && Storage::disk('public')->exists($payment->icon_image)) {
+            Storage::disk('public')->delete($payment->icon_image);
+        }
+        
+        if ($payment->qris_image && Storage::disk('public')->exists($payment->qris_image)) {
+            Storage::disk('public')->delete($payment->qris_image);
+        }
+        
+        $payment->delete();
+
+        return redirect()->route('admin.setting.payment')
+            ->with('success', 'Metode pembayaran berhasil dihapus!');
+    }
 }

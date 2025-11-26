@@ -110,9 +110,11 @@
                         <div class="option-label">Metode Pembayaran</div>
                         <select id="paymentMethod" name="payment_method" class="option-select">
                             <option value="cod" selected>COD (Bayar di Tempat)</option>
-                            <option value="dana">DANA (Transfer)</option>
-                            <option value="mandiri">Mandiri (Transfer)</option>
-                            <option value="qris">QRIS Umum</option>
+                            @foreach($paymentSettings as $payment)
+                                <option value="{{ $payment->payment_method }}">
+                                    {{ $payment->label ?? ucfirst($payment->payment_method) }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -290,76 +292,44 @@
         const rekeningInfo = document.getElementById('rekeningInfo');
         const qrisImageContainer = document.getElementById('qrisImageContainer');
 
+        // Daftar metode pembayaran yang memerlukan bukti transfer (dinamis dari payment_settings)
+        const transferMethods = @json($transferMethods ?? []);
+        
         document.getElementById('paymentMethod').addEventListener('change', function() {
             const val = this.value;
             const qrisImage = document.getElementById('qrisImage');
             const qrisInstructions = document.getElementById('qrisInstructions');
             const paymentData = paymentSettingsData[val];
             
-            if(val === 'dana') {
+            // Jika metode pembayaran adalah transfer (bukan COD)
+            if(transferMethods.includes(val)) {
                 transferInfoBox.style.display = 'block';
                 if(paymentData) {
                     if(paymentData.qris_image) {
                         // Jika ada QRIS, tampilkan QRIS saja
-                        rekeningLabel.textContent = paymentData.label || 'QRIS DANA';
+                        rekeningLabel.textContent = paymentData.label || 'QRIS';
                         rekeningInfo.textContent = '';
                         qrisImageContainer.style.display = 'block';
                         qrisImage.src = paymentData.qris_image;
                         qrisInstructions.textContent = paymentData.instructions || 'Scan QRIS di atas untuk melakukan pembayaran.';
                     } else {
                         // Jika tidak ada QRIS, tampilkan info rekening
-                        rekeningLabel.textContent = paymentData.label || 'Nomor DANA';
+                        rekeningLabel.textContent = paymentData.label || 'Informasi Rekening';
                         let rekeningText = paymentData.account_number || '';
                         if(paymentData.account_name) {
                             rekeningText += ' a.n. ' + paymentData.account_name;
                         }
-                        rekeningInfo.textContent = rekeningText || '0812xxxxxxx a.n. Contoh DANA';
+                        rekeningInfo.textContent = rekeningText || 'Informasi rekening belum diatur';
                         qrisImageContainer.style.display = 'none';
                     }
                 } else {
-                    rekeningLabel.textContent = 'Nomor DANA';
-                    rekeningInfo.textContent = '0812xxxxxxx a.n. Contoh DANA';
+                    // Fallback jika data tidak ditemukan
+                    rekeningLabel.textContent = 'Informasi Pembayaran';
+                    rekeningInfo.textContent = 'Informasi pembayaran belum diatur';
                     qrisImageContainer.style.display = 'none';
-                }
-            } else if(val === 'mandiri') {
-                transferInfoBox.style.display = 'block';
-                if(paymentData) {
-                    if(paymentData.qris_image) {
-                        // Jika ada QRIS, tampilkan QRIS saja
-                        rekeningLabel.textContent = paymentData.label || 'QRIS Mandiri';
-                        rekeningInfo.textContent = '';
-                        qrisImageContainer.style.display = 'block';
-                        qrisImage.src = paymentData.qris_image;
-                        qrisInstructions.textContent = paymentData.instructions || 'Scan QRIS di atas untuk melakukan pembayaran.';
-                    } else {
-                        // Jika tidak ada QRIS, tampilkan info rekening
-                        rekeningLabel.textContent = paymentData.label || 'Rekening Mandiri';
-                        let rekeningText = paymentData.account_number || '';
-                        if(paymentData.account_name) {
-                            rekeningText += ' a.n. ' + paymentData.account_name;
-                        }
-                        rekeningInfo.textContent = rekeningText || '123000xxxxx a.n. Contoh Mandiri';
-                        qrisImageContainer.style.display = 'none';
-                    }
-                } else {
-                    rekeningLabel.textContent = 'Rekening Mandiri';
-                    rekeningInfo.textContent = '123000xxxxx a.n. Contoh Mandiri';
-                    qrisImageContainer.style.display = 'none';
-                }
-            } else if(val === 'qris') {
-                transferInfoBox.style.display = 'block';
-                qrisImageContainer.style.display = 'block';
-                rekeningLabel.textContent = 'QRIS';
-                rekeningInfo.textContent = '';
-                
-                if(paymentData && paymentData.qris_image) {
-                    qrisImage.src = paymentData.qris_image;
-                    qrisInstructions.textContent = paymentData.instructions || 'Scan QRIS di atas untuk melakukan pembayaran.';
-                } else {
-                    qrisImage.src = "{{ asset('img/qris.jpeg') }}";
-                    qrisInstructions.textContent = "Scan QRIS di atas untuk melakukan pembayaran.";
                 }
             } else {
+                // COD atau metode lain yang tidak memerlukan bukti transfer
                 transferInfoBox.style.display = 'none';
                 qrisImageContainer.style.display = 'none';
                 rekeningLabel.textContent = '';

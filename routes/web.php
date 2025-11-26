@@ -77,8 +77,9 @@ Route::prefix('admin')->group(function () {
         Route::get('/profile', [AdminAuthController::class, 'profile'])->name('admin.setting.profile');
         Route::post('/profile', [AdminAuthController::class, 'updateProfile'])->name('admin.setting.profile.update');
         Route::get('/payment-settings', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'index'])->name('admin.setting.payment');
-        Route::put('/payment-settings/{id}', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'update'])->name('admin.setting.payment.update');
         Route::post('/payment-settings', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'store'])->name('admin.setting.payment.store');
+        Route::put('/payment-settings/{id}', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'update'])->name('admin.setting.payment.update');
+        Route::delete('/payment-settings/{id}', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'destroy'])->name('admin.setting.payment.destroy');
 
         // Product Management Routes
         Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');

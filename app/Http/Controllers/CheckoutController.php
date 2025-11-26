@@ -10,6 +10,7 @@ use App\Models\OrderItem;
 use App\Models\PaymentSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 // Midtrans classes will be referenced via FQN and guarded by class_exists
 
 
@@ -50,7 +51,7 @@ class CheckoutController extends Controller
         $discount = 0;
         $total = $subtotal + $shippingCost + $serviceFee - $discount;
 
-        // Ambil payment settings
+        // Ambil payment settings yang aktif
         $paymentSettings = PaymentSetting::where('is_active', true)->get()->keyBy('payment_method');
 
         // Prepare payment settings data untuk JavaScript dengan key payment_method
@@ -65,7 +66,13 @@ class CheckoutController extends Controller
             ];
         }
 
-        return view('checkout', compact('cartItems', 'subtotal', 'shippingCost', 'serviceFee', 'discount', 'total', 'user', 'paymentSettings', 'paymentSettingsJs'));
+        // Tentukan metode pembayaran yang memerlukan bukti transfer
+        // Metode yang memerlukan bukti: semua metode transfer (bukan COD)
+        $transferMethods = $paymentSettings->keys()->toArray();
+        // Tambahkan COD sebagai opsi default jika belum ada
+        $allPaymentMethods = array_merge(['cod'], $transferMethods);
+
+        return view('checkout', compact('cartItems', 'subtotal', 'shippingCost', 'serviceFee', 'discount', 'total', 'user', 'paymentSettings', 'paymentSettingsJs', 'allPaymentMethods', 'transferMethods'));
     }
 
     /**
@@ -89,7 +96,9 @@ class CheckoutController extends Controller
             'payment_method' => 'required|string',
             'notes' => 'nullable|string|max:500',
         ];
-        if (in_array($request->payment_method, ['dana', 'mandiri', 'qris'])) {
+        // Ambil metode pembayaran yang memerlukan bukti transfer dari payment_settings
+        $transferMethods = PaymentSetting::where('is_active', true)->pluck('payment_method')->toArray();
+        if (in_array($request->payment_method, $transferMethods)) {
             $rules['payment_proof'] = 'required|image|mimes:jpg,jpeg,png|max:2048';
         }
         $validated = $request->validate($rules);
@@ -131,30 +140,42 @@ class CheckoutController extends Controller
             'total' => $total,
         ];
 
-        if (in_array($request->payment_method, ['dana', 'mandiri', 'qris'])) {
+        // Ambil metode pembayaran yang memerlukan bukti transfer dari payment_settings
+        $transferMethods = PaymentSetting::where('is_active', true)->pluck('payment_method')->toArray();
+        
+        if (in_array($request->payment_method, $transferMethods)) {
             if ($request->hasFile('payment_proof')) {
                 try {
-                    // Use configured filesystem disk (default or s3)
-                    $storageDisk = config('filesystems.default', 'local');
-                    $path = $request->file('payment_proof')->store('payments', $storageDisk);
-
-                    // Verify file saved on the correct disk
-                    if (!\Illuminate\Support\Facades\Storage::disk($storageDisk)->exists($path)) {
-                        Log::error("Payment proof file not saved on disk {$storageDisk}: {$path}");
-                        return redirect()->back()->withInput()->with('error', 'Gagal menyimpan bukti transfer. Silakan coba lagi.');
+                    // Cek apakah Cloudinary tersedia (untuk Vercel)
+                    $cloudinaryUrl = config('cloudinary.cloud_url');
+                    if ($cloudinaryUrl && !empty($cloudinaryUrl)) {
+                        // Upload ke Cloudinary untuk Vercel compatibility
+                        $uploadedFile = Cloudinary::upload($request->file('payment_proof')->getRealPath(), [
+                            'folder' => 'barangkarung/payments',
+                            'resource_type' => 'image',
+                        ]);
+                        $orderData['payment_proof'] = $uploadedFile->getSecurePath();
+                        Log::info("Payment proof uploaded to Cloudinary: {$orderData['payment_proof']}");
+                    } else {
+                        // Fallback ke local storage untuk development
+                        $path = $request->file('payment_proof')->store('payments', 'public');
+                        $orderData['payment_proof'] = $path;
+                        Log::info("Payment proof saved to local storage: {$path}");
                     }
-
-                    $orderData['payment_proof'] = $path;
-                    Log::info("Payment proof saved on disk {$storageDisk}: {$path}");
                 } catch (\Exception $e) {
                     Log::error("Payment proof upload error: " . $e->getMessage());
-                    return redirect()->back()->withInput()->with('error', 'Gagal mengupload bukti transfer: ' . $e->getMessage());
+                    // Fallback ke local storage jika Cloudinary error
+                    try {
+                        $path = $request->file('payment_proof')->store('payments', 'public');
+                        $orderData['payment_proof'] = $path;
+                        Log::info("Payment proof saved to local storage (fallback): {$path}");
+                    } catch (\Exception $e2) {
+                        return redirect()->back()->withInput()->with('error', 'Gagal mengupload bukti transfer: ' . $e2->getMessage());
+                    }
                 }
             } else {
                 // Jika metode pembayaran memerlukan bukti tapi tidak ada file
-                if (in_array($request->payment_method, ['dana', 'mandiri'])) {
-                    return redirect()->back()->withInput()->with('error', 'Bukti transfer wajib diupload untuk metode pembayaran ini.');
-                }
+                return redirect()->back()->withInput()->with('error', 'Bukti transfer wajib diupload untuk metode pembayaran ini.');
             }
             $orderData['payment_status'] = 'pending';
             $orderData['status'] = 'pending';

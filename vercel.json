@@ -56,6 +56,11 @@
 
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie"
+        "SESSION_DRIVER": "cookie",
+
+        "CLOUDINARY_URL": "cloudinary://365426496675328:WhlcS2TQsYoPOXdPSX_Od7FZKp0@dk1fcgwuy",
+        "CLOUDINARY_CLOUD_NAME": "dk1fcgwuy",
+        "CLOUDINARY_KEY": "365426496675328",
+        "CLOUDINARY_SECRET": "WhlcS2TQsYoPOXdPSX_Od7FZKp0"
     }
 }

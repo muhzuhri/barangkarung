@@ -331,17 +331,22 @@
                         <div class="label">Gambar Bukti Transfer :</div>
                         @php
                             $isDataUri = Str::startsWith($order->payment_proof, 'data:');
-                            if (!$isDataUri && $order->payment_proof) {
-                                $storageDisk = config('filesystems.default', 'local');
-                                $proofUrl = \Illuminate\Support\Facades\Storage::disk($storageDisk)->url(
-                                    $order->payment_proof,
-                                );
-                                $fileExists = \Illuminate\Support\Facades\Storage::disk($storageDisk)->exists(
-                                    $order->payment_proof,
-                                );
-                            } else {
+                            $isCloudinary = Str::contains($order->payment_proof, 'cloudinary.com') || Str::contains($order->payment_proof, 'res.cloudinary.com');
+                            
+                            if ($isDataUri) {
                                 $proofUrl = $order->payment_proof;
                                 $fileExists = true;
+                            } elseif ($isCloudinary) {
+                                // File dari Cloudinary (untuk Vercel)
+                                $proofUrl = $order->payment_proof;
+                                $fileExists = true;
+                            } elseif ($order->payment_proof) {
+                                // File dari local storage (fallback untuk local development)
+                                $proofUrl = asset('storage/' . $order->payment_proof);
+                                $fileExists = \Illuminate\Support\Facades\Storage::disk('public')->exists($order->payment_proof);
+                            } else {
+                                $proofUrl = '';
+                                $fileExists = false;
                             }
                         @endphp
 
@@ -364,7 +369,7 @@
                                 <small>Path DB: {{ $order->payment_proof }}</small><br>
                                 <small>URL: <a href="{{ $proofUrl }}"
                                         target="_blank">{{ $proofUrl }}</a></small><br>
-                                <small>Storage Disk: {{ $storageDisk }}</small>
+                                <small>Storage Disk: public</small>
                             </div>
                         @endif
                     </div>

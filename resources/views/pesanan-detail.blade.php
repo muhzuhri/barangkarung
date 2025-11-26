@@ -110,21 +110,32 @@
                     <div class="detail-label">Status Pembayaran</div>
                     <div class="detail-value">
                         @php
-                            $transferMethods = ['dana', 'mandiri', 'qris'];
+                            // Ambil metode pembayaran transfer dari payment_settings
+                            $transferMethods = \App\Models\PaymentSetting::where('is_active', true)->pluck('payment_method')->toArray();
                         @endphp
                         @if (in_array($order->payment_method, $transferMethods))
                             <strong>{{ ucfirst($order->payment_status ?? '-') }}</strong>
 
                             @if ($order->payment_proof)
                                 <br>
-                                @if (Str::startsWith($order->payment_proof, 'data:'))
-                                    <img src="{{ $order->payment_proof }}" alt="Bukti Pembayaran"
-                                        style="max-width: 300px; margin-top: 8px;">
-                                @else
-                                    <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank">Lihat
-                                        Bukti
-                                        Transfer</a>
-                                @endif
+                                @php
+                                    $isDataUri = Str::startsWith($order->payment_proof, 'data:');
+                                    $isCloudinary = Str::contains($order->payment_proof, 'cloudinary.com') || Str::contains($order->payment_proof, 'res.cloudinary.com');
+                                    
+                                    if ($isDataUri) {
+                                        $proofUrl = $order->payment_proof;
+                                    } elseif ($isCloudinary) {
+                                        $proofUrl = $order->payment_proof;
+                                    } else {
+                                        $proofUrl = asset('storage/' . $order->payment_proof);
+                                    }
+                                @endphp
+                                <a href="{{ $proofUrl }}" target="_blank">
+                                    <img src="{{ $proofUrl }}" alt="Bukti Pembayaran"
+                                        style="max-width: 300px; margin-top: 8px; border: 1px solid #e5e7eb; border-radius: 8px; cursor: pointer;"
+                                        onerror="this.onerror=null; this.parentElement.innerHTML='<span style=\'color: #ef4444;\'>⚠ Gambar tidak dapat dimuat. <a href=\'{{ $proofUrl }}\' target=\'_blank\'>Coba buka link ini</a></span>';">
+                                </a>
+                                <br><small style="color: #6b7280; margin-top: 4px; display: inline-block;">Klik gambar untuk melihat ukuran penuh</small>
                             @endif
 
                             <br>
