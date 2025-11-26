@@ -131,8 +131,14 @@
                             <p id="qrisInstructions" style="font-size: 12px; color: #666; margin-top: 0.5rem;"></p>
                         </div>
 
-                        <div class="option-label">Upload Bukti Transfer</div>
+                        <div class="option-label">
+                            Upload Bukti Transfer 
+                            <span style="color: #6b7280; font-size: 0.85rem; font-weight: normal;">(Opsional - bisa upload nanti)</span>
+                        </div>
                         <input type="file" name="payment_proof" accept="image/*" class="option-input">
+                        <small style="color: #6b7280; font-size: 0.85rem; display: block; margin-top: 0.25rem;">
+                            Jika mengalami masalah upload, Anda bisa upload bukti pembayaran nanti di halaman detail pesanan.
+                        </small>
                     </div>
 
                     <!-- Pesan untuk Penjual -->

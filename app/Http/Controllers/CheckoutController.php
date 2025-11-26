@@ -120,8 +120,9 @@ class CheckoutController extends Controller
         ];
         // Ambil metode pembayaran yang memerlukan bukti transfer dari payment_settings
         $transferMethods = PaymentSetting::where('is_active', true)->pluck('payment_method')->toArray();
+        // Payment proof dibuat optional - user bisa upload nanti
         if (in_array($request->payment_method, $transferMethods)) {
-            $rules['payment_proof'] = 'required|image|mimes:jpg,jpeg,png|max:2048';
+            $rules['payment_proof'] = 'nullable|image|mimes:jpg,jpeg,png|max:2048';
         }
         $validated = $request->validate($rules);
 
@@ -166,6 +167,7 @@ class CheckoutController extends Controller
         $transferMethods = PaymentSetting::where('is_active', true)->pluck('payment_method')->toArray();
         
         if (in_array($request->payment_method, $transferMethods)) {
+            // Payment proof sekarang optional - user bisa upload nanti
             if ($request->hasFile('payment_proof')) {
                 // Cek apakah di Vercel atau Cloudinary tersedia
                 $isVercel = env('VERCEL') === '1' || env('APP_ENV') === 'production';
@@ -178,110 +180,97 @@ class CheckoutController extends Controller
                 // Di Vercel atau jika Cloudinary tersedia, gunakan Cloudinary
                 if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
                     try {
-                        // Upload ke Cloudinary menggunakan Cloudinary facade
                         $file = $request->file('payment_proof');
-                        
-                        // Coba upload dengan berbagai cara
-                        $uploadedFile = null;
                         $secureUrl = null;
                         
-                        // Method 1: Coba menggunakan Cloudinary facade
+                        // Method 1: Coba menggunakan UploadApi langsung (lebih reliable)
                         try {
-                            $uploadedFile = Cloudinary::upload($file->getRealPath(), [
+                            $uploadApi = new UploadApi();
+                            $result = $uploadApi->upload($file->getRealPath(), [
                                 'folder' => 'barangkarung/payments',
                                 'resource_type' => 'image',
                             ]);
                             
-                            Log::info("Cloudinary upload - Response type: " . gettype($uploadedFile));
-                            Log::info("Cloudinary upload - Response class: " . (is_object($uploadedFile) ? get_class($uploadedFile) : 'not object'));
-                            
-                            // Coba berbagai cara untuk mendapatkan URL
-                            if (is_object($uploadedFile)) {
-                                // Coba method getSecurePath()
-                                if (method_exists($uploadedFile, 'getSecurePath')) {
-                                    try {
-                                        $secureUrl = $uploadedFile->getSecurePath();
-                                        Log::info("Got URL via getSecurePath(): " . $secureUrl);
-                                    } catch (\Exception $e) {
-                                        Log::warning("getSecurePath() failed: " . $e->getMessage());
-                                    }
-                                }
-                                
-                                // Coba convert ke array
-                                if (!$secureUrl) {
-                                    try {
-                                        $json = json_encode($uploadedFile);
-                                        $array = json_decode($json, true);
-                                        if (isset($array['secure_url'])) {
-                                            $secureUrl = $array['secure_url'];
-                                            Log::info("Got URL via json_encode: " . $secureUrl);
-                                        }
-                                    } catch (\Exception $e) {
-                                        Log::warning("json_encode failed: " . $e->getMessage());
-                                    }
-                                }
-                                
-                                // Coba property langsung
-                                if (!$secureUrl && property_exists($uploadedFile, 'secure_url')) {
-                                    try {
-                                        $secureUrl = $uploadedFile->secure_url;
-                                        Log::info("Got URL via property: " . $secureUrl);
-                                    } catch (\Exception $e) {
-                                        Log::warning("Property access failed: " . $e->getMessage());
-                                    }
-                                }
-                                
-                                // Coba array access
-                                if (!$secureUrl && isset($uploadedFile['secure_url'])) {
-                                    $secureUrl = $uploadedFile['secure_url'];
-                                    Log::info("Got URL via array access: " . $secureUrl);
-                                }
-                            } elseif (is_array($uploadedFile)) {
-                                $secureUrl = $uploadedFile['secure_url'] ?? null;
-                                Log::info("Got URL from array: " . $secureUrl);
+                            if (isset($result['secure_url']) && !empty($result['secure_url'])) {
+                                $secureUrl = $result['secure_url'];
+                                Log::info("Payment proof uploaded via UploadApi: " . $secureUrl);
+                            } else {
+                                Log::warning("UploadApi returned no secure_url. Result: " . print_r($result, true));
                             }
-                            
-                            // Jika masih belum dapat, gunakan helper function
-                            if (!$secureUrl) {
-                                $secureUrl = getCloudinarySecureUrl($uploadedFile);
-                                if ($secureUrl) {
-                                    Log::info("Got URL via helper function: " . $secureUrl);
-                                }
-                            }
-                            
                         } catch (\Exception $e) {
-                            Log::error("Cloudinary facade upload failed: " . $e->getMessage());
-                            throw $e;
+                            Log::error("UploadApi failed: " . $e->getMessage());
                         }
                         
-                        // Method 2: Jika masih gagal, coba menggunakan UploadApi langsung
+                        // Method 2: Fallback ke Cloudinary facade
                         if (!$secureUrl) {
                             try {
-                                $uploadApi = new UploadApi();
-                                $result = $uploadApi->upload($file->getRealPath(), [
+                                $uploadedFile = Cloudinary::upload($file->getRealPath(), [
                                     'folder' => 'barangkarung/payments',
                                     'resource_type' => 'image',
                                 ]);
                                 
-                                if (isset($result['secure_url'])) {
-                                    $secureUrl = $result['secure_url'];
-                                    Log::info("Got URL via UploadApi: " . $secureUrl);
+                                // Coba berbagai cara untuk mendapatkan URL
+                                if (is_array($uploadedFile) && isset($uploadedFile['secure_url'])) {
+                                    $secureUrl = $uploadedFile['secure_url'];
+                                } elseif (is_object($uploadedFile)) {
+                                    // Coba method getSecurePath()
+                                    if (method_exists($uploadedFile, 'getSecurePath')) {
+                                        try {
+                                            $secureUrl = $uploadedFile->getSecurePath();
+                                        } catch (\Exception $e) {}
+                                    }
+                                    
+                                    // Coba convert ke array
+                                    if (!$secureUrl) {
+                                        try {
+                                            $json = json_encode($uploadedFile);
+                                            $array = json_decode($json, true);
+                                            $secureUrl = $array['secure_url'] ?? null;
+                                        } catch (\Exception $e) {}
+                                    }
+                                    
+                                    // Coba property
+                                    if (!$secureUrl && property_exists($uploadedFile, 'secure_url')) {
+                                        try {
+                                            $secureUrl = $uploadedFile->secure_url;
+                                        } catch (\Exception $e) {}
+                                    }
+                                    
+                                    // Coba helper function
+                                    if (!$secureUrl) {
+                                        $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                                    }
+                                }
+                                
+                                if ($secureUrl) {
+                                    Log::info("Payment proof uploaded via Cloudinary facade: " . $secureUrl);
                                 }
                             } catch (\Exception $e) {
-                                Log::error("UploadApi failed: " . $e->getMessage());
+                                Log::error("Cloudinary facade failed: " . $e->getMessage());
                             }
                         }
                         
+                        // Jika semua method gagal, simpan file sebagai base64 sementara (fallback)
                         if (!$secureUrl) {
-                            Log::error("Cloudinary response structure: " . print_r($uploadedFile, true));
-                            throw new \Exception('Gagal mendapatkan URL dari Cloudinary. Silakan coba lagi atau hubungi admin.');
+                            Log::warning("All Cloudinary methods failed. Using base64 fallback.");
+                            try {
+                                $fileContent = file_get_contents($file->getRealPath());
+                                $base64 = base64_encode($fileContent);
+                                // Simpan dengan prefix khusus untuk identifikasi
+                                $orderData['payment_proof'] = 'base64:' . $base64;
+                                Log::info("Payment proof saved as base64 (temporary)");
+                            } catch (\Exception $e) {
+                                Log::error("Base64 fallback failed: " . $e->getMessage());
+                                // Jika semua gagal, biarkan null - user bisa upload nanti
+                                Log::warning("Payment proof upload completely failed. User can upload later.");
+                            }
+                        } else {
+                            $orderData['payment_proof'] = $secureUrl;
                         }
-                        
-                        $orderData['payment_proof'] = $secureUrl;
-                        Log::info("Payment proof uploaded to Cloudinary: {$orderData['payment_proof']}");
                     } catch (\Exception $e) {
-                        Log::error("Cloudinary upload error: " . $e->getMessage() . " | Trace: " . $e->getTraceAsString());
-                        return redirect()->back()->withInput()->with('error', 'Gagal mengupload bukti transfer ke Cloudinary: ' . $e->getMessage());
+                        Log::error("Payment proof upload error: " . $e->getMessage() . " | Trace: " . $e->getTraceAsString());
+                        // Jangan block checkout - user bisa upload nanti
+                        Log::warning("Payment proof upload failed but continuing checkout. User can upload later.");
                     }
                 } else {
                     // Hanya untuk local development, gunakan local storage
@@ -291,13 +280,12 @@ class CheckoutController extends Controller
                         Log::info("Payment proof saved to local storage: {$path}");
                     } catch (\Exception $e) {
                         Log::error("Local storage error: " . $e->getMessage());
-                        return redirect()->back()->withInput()->with('error', 'Gagal menyimpan bukti transfer: ' . $e->getMessage());
+                        // Jangan block checkout - user bisa upload nanti
+                        Log::warning("Local storage failed but continuing checkout. User can upload later.");
                     }
                 }
-            } else {
-                // Jika metode pembayaran memerlukan bukti tapi tidak ada file
-                return redirect()->back()->withInput()->with('error', 'Bukti transfer wajib diupload untuk metode pembayaran ini.');
             }
+            // Payment proof optional - tidak block checkout jika tidak ada
             $orderData['payment_status'] = 'pending';
             $orderData['status'] = 'pending';
         } else {

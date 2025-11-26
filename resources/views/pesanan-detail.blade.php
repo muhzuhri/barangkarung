@@ -120,9 +120,14 @@
                                 <br>
                                 @php
                                     $isDataUri = Str::startsWith($order->payment_proof, 'data:');
+                                    $isBase64 = Str::startsWith($order->payment_proof, 'base64:');
                                     $isCloudinary = Str::contains($order->payment_proof, 'cloudinary.com') || Str::contains($order->payment_proof, 'res.cloudinary.com');
                                     
-                                    if ($isDataUri) {
+                                    if ($isBase64) {
+                                        // Base64 fallback - convert ke data URI
+                                        $base64Data = substr($order->payment_proof, 7); // Remove 'base64:' prefix
+                                        $proofUrl = 'data:image/jpeg;base64,' . $base64Data;
+                                    } elseif ($isDataUri) {
                                         $proofUrl = $order->payment_proof;
                                     } elseif ($isCloudinary) {
                                         $proofUrl = $order->payment_proof;
@@ -136,6 +141,9 @@
                                         onerror="this.onerror=null; this.parentElement.innerHTML='<span style=\'color: #ef4444;\'>⚠ Gambar tidak dapat dimuat. <a href=\'{{ $proofUrl }}\' target=\'_blank\'>Coba buka link ini</a></span>';">
                                 </a>
                                 <br><small style="color: #6b7280; margin-top: 4px; display: inline-block;">Klik gambar untuk melihat ukuran penuh</small>
+                                @if ($isBase64)
+                                    <br><small style="color: #f59e0b; margin-top: 4px; display: inline-block;">⚠ Bukti pembayaran disimpan sementara. Silakan upload ulang untuk kualitas lebih baik.</small>
+                                @endif
                             @endif
 
                             <br>

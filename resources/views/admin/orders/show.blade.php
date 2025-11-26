@@ -331,9 +331,15 @@
                         <div class="label">Gambar Bukti Transfer :</div>
                         @php
                             $isDataUri = Str::startsWith($order->payment_proof, 'data:');
+                            $isBase64 = Str::startsWith($order->payment_proof, 'base64:');
                             $isCloudinary = Str::contains($order->payment_proof, 'cloudinary.com') || Str::contains($order->payment_proof, 'res.cloudinary.com');
                             
-                            if ($isDataUri) {
+                            if ($isBase64) {
+                                // Base64 fallback - convert ke data URI
+                                $base64Data = substr($order->payment_proof, 7); // Remove 'base64:' prefix
+                                $proofUrl = 'data:image/jpeg;base64,' . $base64Data;
+                                $fileExists = true;
+                            } elseif ($isDataUri) {
                                 $proofUrl = $order->payment_proof;
                                 $fileExists = true;
                             } elseif ($isCloudinary) {
@@ -350,10 +356,15 @@
                             }
                         @endphp
 
-                        @if ($isDataUri)
-                            <a href="{{ $order->payment_proof }}" target="_blank" class="proof-link">
-                                <img src="{{ $order->payment_proof }}" alt="Bukti Pembayaran" class="proof-image">
+                        @if ($isDataUri || $isBase64)
+                            <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
+                                <img src="{{ $proofUrl }}" alt="Bukti Pembayaran" class="proof-image">
                             </a>
+                            @if ($isBase64)
+                                <div class="note" style="color: #f59e0b; margin-top: 8px;">
+                                    ⚠ Bukti pembayaran disimpan sementara (base64). User disarankan untuk upload ulang.
+                                </div>
+                            @endif
                         @else
                             <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
                                 <img src="{{ $proofUrl }}" alt="Bukti Pembayaran"
