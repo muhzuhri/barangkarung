@@ -54,11 +54,29 @@ class PaymentSettingController extends Controller
                         }
                     }
                     
-                    $uploadedFile = Cloudinary::upload($request->file('icon_image')->getRealPath(), [
-                        'folder' => 'barangkarung/payment-icons',
-                        'resource_type' => 'image',
-                    ]);
-                    $data['icon_image'] = $uploadedFile->getSecurePath();
+                    // Upload ke Cloudinary - gunakan storeOnCloudinary
+                    $uploadedFile = $request->file('icon_image')->storeOnCloudinary('barangkarung/payment-icons');
+                    
+                    // Ambil URL - coba berbagai cara
+                    $secureUrl = null;
+                    if (is_object($uploadedFile)) {
+                        if (method_exists($uploadedFile, 'getSecurePath')) {
+                            $secureUrl = $uploadedFile->getSecurePath();
+                        } elseif (isset($uploadedFile->secure_url)) {
+                            $secureUrl = $uploadedFile->secure_url;
+                        } elseif (method_exists($uploadedFile, 'getArrayCopy')) {
+                            $array = $uploadedFile->getArrayCopy();
+                            $secureUrl = $array['secure_url'] ?? null;
+                        }
+                    } elseif (is_array($uploadedFile)) {
+                        $secureUrl = $uploadedFile['secure_url'] ?? null;
+                    }
+                    
+                    if (!$secureUrl) {
+                        throw new \Exception('Gagal mendapatkan URL icon dari Cloudinary');
+                    }
+                    
+                    $data['icon_image'] = $secureUrl;
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload icon: ' . $e->getMessage());
                 }
@@ -89,19 +107,22 @@ class PaymentSettingController extends Controller
                         }
                     }
                     
-                    $uploadedFile = Cloudinary::upload($request->file('qris_image')->getRealPath(), [
-                        'folder' => 'barangkarung/qris',
-                        'resource_type' => 'image',
-                    ]);
+                    // Upload ke Cloudinary - gunakan storeOnCloudinary
+                    $uploadedFile = $request->file('qris_image')->storeOnCloudinary('barangkarung/qris');
                     
-                    // Ambil URL dengan cara yang lebih aman
+                    // Ambil URL - coba berbagai cara
                     $secureUrl = null;
-                    if (is_object($uploadedFile) && method_exists($uploadedFile, 'getSecurePath')) {
-                        $secureUrl = $uploadedFile->getSecurePath();
-                    } elseif (is_array($uploadedFile) && isset($uploadedFile['secure_url'])) {
-                        $secureUrl = $uploadedFile['secure_url'];
-                    } elseif (is_object($uploadedFile) && isset($uploadedFile->secure_url)) {
-                        $secureUrl = $uploadedFile->secure_url;
+                    if (is_object($uploadedFile)) {
+                        if (method_exists($uploadedFile, 'getSecurePath')) {
+                            $secureUrl = $uploadedFile->getSecurePath();
+                        } elseif (isset($uploadedFile->secure_url)) {
+                            $secureUrl = $uploadedFile->secure_url;
+                        } elseif (method_exists($uploadedFile, 'getArrayCopy')) {
+                            $array = $uploadedFile->getArrayCopy();
+                            $secureUrl = $array['secure_url'] ?? null;
+                        }
+                    } elseif (is_array($uploadedFile)) {
+                        $secureUrl = $uploadedFile['secure_url'] ?? null;
                     }
                     
                     if (!$secureUrl) {
@@ -153,19 +174,22 @@ class PaymentSettingController extends Controller
             if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
                 // Upload ke Cloudinary
                 try {
-                    $uploadedFile = Cloudinary::upload($request->file('icon_image')->getRealPath(), [
-                        'folder' => 'barangkarung/payment-icons',
-                        'resource_type' => 'image',
-                    ]);
+                    // Upload ke Cloudinary - gunakan storeOnCloudinary
+                    $uploadedFile = $request->file('icon_image')->storeOnCloudinary('barangkarung/payment-icons');
                     
-                    // Ambil URL dengan cara yang lebih aman
+                    // Ambil URL - coba berbagai cara
                     $secureUrl = null;
-                    if (is_object($uploadedFile) && method_exists($uploadedFile, 'getSecurePath')) {
-                        $secureUrl = $uploadedFile->getSecurePath();
-                    } elseif (is_array($uploadedFile) && isset($uploadedFile['secure_url'])) {
-                        $secureUrl = $uploadedFile['secure_url'];
-                    } elseif (is_object($uploadedFile) && isset($uploadedFile->secure_url)) {
-                        $secureUrl = $uploadedFile->secure_url;
+                    if (is_object($uploadedFile)) {
+                        if (method_exists($uploadedFile, 'getSecurePath')) {
+                            $secureUrl = $uploadedFile->getSecurePath();
+                        } elseif (isset($uploadedFile->secure_url)) {
+                            $secureUrl = $uploadedFile->secure_url;
+                        } elseif (method_exists($uploadedFile, 'getArrayCopy')) {
+                            $array = $uploadedFile->getArrayCopy();
+                            $secureUrl = $array['secure_url'] ?? null;
+                        }
+                    } elseif (is_array($uploadedFile)) {
+                        $secureUrl = $uploadedFile['secure_url'] ?? null;
                     }
                     
                     if (!$secureUrl) {
@@ -189,19 +213,22 @@ class PaymentSettingController extends Controller
             if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
                 // Upload ke Cloudinary
                 try {
-                    $uploadedFile = Cloudinary::upload($request->file('qris_image')->getRealPath(), [
-                        'folder' => 'barangkarung/qris',
-                        'resource_type' => 'image',
-                    ]);
+                    // Upload ke Cloudinary - gunakan storeOnCloudinary
+                    $uploadedFile = $request->file('qris_image')->storeOnCloudinary('barangkarung/qris');
                     
-                    // Ambil URL dengan cara yang lebih aman
+                    // Ambil URL - coba berbagai cara
                     $secureUrl = null;
-                    if (is_object($uploadedFile) && method_exists($uploadedFile, 'getSecurePath')) {
-                        $secureUrl = $uploadedFile->getSecurePath();
-                    } elseif (is_array($uploadedFile) && isset($uploadedFile['secure_url'])) {
-                        $secureUrl = $uploadedFile['secure_url'];
-                    } elseif (is_object($uploadedFile) && isset($uploadedFile->secure_url)) {
-                        $secureUrl = $uploadedFile->secure_url;
+                    if (is_object($uploadedFile)) {
+                        if (method_exists($uploadedFile, 'getSecurePath')) {
+                            $secureUrl = $uploadedFile->getSecurePath();
+                        } elseif (isset($uploadedFile->secure_url)) {
+                            $secureUrl = $uploadedFile->secure_url;
+                        } elseif (method_exists($uploadedFile, 'getArrayCopy')) {
+                            $array = $uploadedFile->getArrayCopy();
+                            $secureUrl = $array['secure_url'] ?? null;
+                        }
+                    } elseif (is_array($uploadedFile)) {
+                        $secureUrl = $uploadedFile['secure_url'] ?? null;
                     }
                     
                     if (!$secureUrl) {

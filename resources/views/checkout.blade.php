@@ -187,6 +187,9 @@
     <script>
         // Simpan payment settings data untuk JavaScript
         const paymentSettingsData = @json($paymentSettingsJs ?? []);
+        
+        // Debug: Log payment settings data
+        console.log('Payment Settings Data:', paymentSettingsData);
 
         function editAddress() {
             // Ambil elemen teks alamat
@@ -301,16 +304,24 @@
             const qrisInstructions = document.getElementById('qrisInstructions');
             const paymentData = paymentSettingsData[val];
             
+            console.log('Payment method changed to:', val);
+            console.log('Payment data:', paymentData);
+            
             // Jika metode pembayaran adalah transfer (bukan COD)
             if(transferMethods.includes(val)) {
                 transferInfoBox.style.display = 'block';
                 if(paymentData) {
+                    console.log('QRIS image URL:', paymentData.qris_image);
                     if(paymentData.qris_image) {
                         // Jika ada QRIS, tampilkan QRIS saja
                         rekeningLabel.textContent = paymentData.label || 'QRIS';
                         rekeningInfo.textContent = '';
                         qrisImageContainer.style.display = 'block';
                         qrisImage.src = paymentData.qris_image;
+                        qrisImage.onerror = function() {
+                            console.error('Failed to load QRIS image:', paymentData.qris_image);
+                            this.parentElement.innerHTML = '<div class="image-error"><strong>⚠ Gambar QRIS tidak dapat dimuat</strong><br><small>' + paymentData.qris_image + '</small></div>';
+                        };
                         qrisInstructions.textContent = paymentData.instructions || 'Scan QRIS di atas untuk melakukan pembayaran.';
                     } else {
                         // Jika tidak ada QRIS, tampilkan info rekening
@@ -324,6 +335,7 @@
                     }
                 } else {
                     // Fallback jika data tidak ditemukan
+                    console.warn('Payment data not found for:', val);
                     rekeningLabel.textContent = 'Informasi Pembayaran';
                     rekeningInfo.textContent = 'Informasi pembayaran belum diatur';
                     qrisImageContainer.style.display = 'none';
