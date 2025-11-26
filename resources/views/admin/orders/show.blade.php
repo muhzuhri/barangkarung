@@ -330,26 +330,41 @@
                     <div class="payment-proof">
                         <div class="label">Gambar Bukti Transfer :</div>
                         @php
-                            $proofUrl = asset('storage/' . $order->payment_proof);
-                            $storagePath = storage_path('app/public/' . $order->payment_proof);
-                            $publicPath = public_path('storage/' . $order->payment_proof);
-                            $fileExists = file_exists($storagePath) || file_exists($publicPath);
+                            $isDataUri = Str::startsWith($order->payment_proof, 'data:');
+                            if (!$isDataUri && $order->payment_proof) {
+                                $storageDisk = config('filesystems.default', 'local');
+                                $proofUrl = \Illuminate\Support\Facades\Storage::disk($storageDisk)->url(
+                                    $order->payment_proof,
+                                );
+                                $fileExists = \Illuminate\Support\Facades\Storage::disk($storageDisk)->exists(
+                                    $order->payment_proof,
+                                );
+                            } else {
+                                $proofUrl = $order->payment_proof;
+                                $fileExists = true;
+                            }
                         @endphp
 
-                        <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
-                            <img src="{{ $proofUrl }}" alt="Bukti Pembayaran"
-                                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><strong>⚠ Gambar tidak dapat dimuat</strong><br><small>{{ $proofUrl }}</small></div>';"
-                                class="proof-image">
-                        </a>
+                        @if ($isDataUri)
+                            <a href="{{ $order->payment_proof }}" target="_blank" class="proof-link">
+                                <img src="{{ $order->payment_proof }}" alt="Bukti Pembayaran" class="proof-image">
+                            </a>
+                        @else
+                            <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
+                                <img src="{{ $proofUrl }}" alt="Bukti Pembayaran"
+                                    onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><strong>⚠ Gambar tidak dapat dimuat</strong><br><small>{{ $proofUrl }}</small></div>';"
+                                    class="proof-image">
+                            </a>
+                        @endif
                         <div class="note">Klik gambar untuk melihat ukuran penuh</div>
 
-                        @if (!$fileExists)
+                        @if (!$isDataUri && !$fileExists)
                             <div class="debug-info">
                                 <strong>⚠ Debug Info:</strong><br>
                                 <small>Path DB: {{ $order->payment_proof }}</small><br>
                                 <small>URL: <a href="{{ $proofUrl }}"
                                         target="_blank">{{ $proofUrl }}</a></small><br>
-                                <small>Storage: {{ $storagePath }}</small>
+                                <small>Storage Disk: {{ $storageDisk }}</small>
                             </div>
                         @endif
                     </div>

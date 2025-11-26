@@ -109,20 +109,43 @@
                 <div>
                     <div class="detail-label">Status Pembayaran</div>
                     <div class="detail-value">
-                        @if ($order->payment_method === 'dana' || $order->payment_method === 'mandiri')
+                        @php
+                            $transferMethods = ['dana', 'mandiri', 'qris'];
+                        @endphp
+                        @if (in_array($order->payment_method, $transferMethods))
                             <strong>{{ ucfirst($order->payment_status ?? '-') }}</strong>
+
                             @if ($order->payment_proof)
                                 <br>
-                                <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank">Lihat Bukti
-                                    Transfer</a>
+                                @if (Str::startsWith($order->payment_proof, 'data:'))
+                                    <img src="{{ $order->payment_proof }}" alt="Bukti Pembayaran"
+                                        style="max-width: 300px; margin-top: 8px;">
+                                @else
+                                    <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank">Lihat
+                                        Bukti
+                                        Transfer</a>
+                                @endif
                             @endif
+
                             <br>
+
                             @if ($order->payment_status === 'pending')
                                 Menunggu konfirmasi admin
                             @elseif($order->payment_status === 'verified')
                                 Pembayaran terkonfirmasi
                             @elseif($order->payment_status === 'rejected')
                                 Pembayaran ditolak, silakan hubungi admin
+                            @endif
+
+                            @if (!$order->payment_proof && in_array($order->payment_status, [null, 'pending']))
+                                <form action="{{ route('pesanan.uploadProof', $order->id) }}" method="POST"
+                                    enctype="multipart/form-data" style="margin-top: 12px;">
+                                    @csrf
+                                    <label for="payment_proof">Upload Bukti Pembayaran:</label><br>
+                                    <input type="file" id="payment_proof" name="payment_proof" accept="image/*"
+                                        required>
+                                    <button type="submit" style="margin-left: 8px;">Upload</button>
+                                </form>
                             @endif
                         @else
                             Non-Transfer (Bayar di Tempat/COD)

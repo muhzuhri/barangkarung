@@ -134,16 +134,18 @@ class CheckoutController extends Controller
         if (in_array($request->payment_method, ['dana', 'mandiri', 'qris'])) {
             if ($request->hasFile('payment_proof')) {
                 try {
-                    $path = $request->file('payment_proof')->store('payments', 'public');
+                    // Use configured filesystem disk (default or s3)
+                    $storageDisk = config('filesystems.default', 'local');
+                    $path = $request->file('payment_proof')->store('payments', $storageDisk);
 
-                    // Verifikasi file benar-benar tersimpan
-                    if (!\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
-                        Log::error("Payment proof file not saved: {$path}");
+                    // Verify file saved on the correct disk
+                    if (!\Illuminate\Support\Facades\Storage::disk($storageDisk)->exists($path)) {
+                        Log::error("Payment proof file not saved on disk {$storageDisk}: {$path}");
                         return redirect()->back()->withInput()->with('error', 'Gagal menyimpan bukti transfer. Silakan coba lagi.');
                     }
 
                     $orderData['payment_proof'] = $path;
-                    Log::info("Payment proof saved: {$path}");
+                    Log::info("Payment proof saved on disk {$storageDisk}: {$path}");
                 } catch (\Exception $e) {
                     Log::error("Payment proof upload error: " . $e->getMessage());
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload bukti transfer: ' . $e->getMessage());

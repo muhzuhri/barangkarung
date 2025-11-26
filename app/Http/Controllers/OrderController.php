@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -80,5 +82,44 @@ class OrderController extends Controller
             ->get();
 
         return view('pesanan-history', compact('orders'));
+    }
+
+    /**
+     * Upload bukti pembayaran oleh user
+     */
+    public function uploadProof(Request $request, Order $order)
+    {
+        // Authorize: hanya owner order
+        if ($order->user_id !== auth()->id()) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        // Hanya untuk metode transfer
+        $transferMethods = ['dana', 'mandiri', 'qris'];
+        if (!in_array($order->payment_method, $transferMethods)) {
+            return back()->with('error', 'Upload bukti hanya untuk pembayaran transfer.');
+        }
+
+        // Sudah ada proof atau sudah verified
+        if ($order->payment_proof || in_array($order->payment_status ?? '', ['verified', 'rejected'])) {
+            return back()->with('error', 'Bukti pembayaran sudah diupload atau diproses.');
+        }
+
+        $request->validate([
+            'payment_proof' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048', // 2MB
+        ]);
+
+        $file = $request->file('payment_proof');
+
+        // Simpan file ke disk default yang dikonfigurasi (local atau s3)
+        $storageDisk = config('filesystems.default', 'local');
+        $path = $file->store('payment_proofs', $storageDisk);
+
+        $order->update([
+            'payment_proof' => $path,
+            'payment_status' => 'pending'
+        ]);
+
+        return back()->with('success', 'Bukti pembayaran berhasil diupload! Menunggu konfirmasi admin.');
     }
 }
