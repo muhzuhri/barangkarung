@@ -372,8 +372,12 @@
         // });
 
         // trigger di load jika (misal reload dari validasi)
-        document.addEventListener('DOMContentLoaded', ()=>{
-          document.getElementById('paymentMethod').dispatchEvent(new Event('change'));
+        document.addEventListener('DOMContentLoaded', function(){
+          // Trigger change event untuk menampilkan QRIS/image saat halaman pertama kali dimuat
+          const paymentSelect = document.getElementById('paymentMethod');
+          if (paymentSelect) {
+            paymentSelect.dispatchEvent(new Event('change'));
+          }
         });
     </script>
 </body>

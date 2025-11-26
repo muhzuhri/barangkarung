@@ -124,7 +124,22 @@ class OrderController extends Controller
                     'folder' => 'barangkarung/payments',
                     'resource_type' => 'image',
                 ]);
-                $proofPath = $uploadedFile->getSecurePath();
+                
+                // Ambil URL dengan cara yang lebih aman
+                $secureUrl = null;
+                if (is_object($uploadedFile) && method_exists($uploadedFile, 'getSecurePath')) {
+                    $secureUrl = $uploadedFile->getSecurePath();
+                } elseif (is_array($uploadedFile) && isset($uploadedFile['secure_url'])) {
+                    $secureUrl = $uploadedFile['secure_url'];
+                } elseif (is_object($uploadedFile) && isset($uploadedFile->secure_url)) {
+                    $secureUrl = $uploadedFile->secure_url;
+                }
+                
+                if (!$secureUrl) {
+                    throw new \Exception('Gagal mendapatkan URL dari Cloudinary response');
+                }
+                
+                $proofPath = $secureUrl;
             } catch (\Exception $e) {
                 return back()->with('error', 'Gagal mengupload bukti pembayaran ke Cloudinary: ' . $e->getMessage());
             }

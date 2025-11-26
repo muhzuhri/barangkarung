@@ -93,7 +93,22 @@ class PaymentSettingController extends Controller
                         'folder' => 'barangkarung/qris',
                         'resource_type' => 'image',
                     ]);
-                    $data['qris_image'] = $uploadedFile->getSecurePath();
+                    
+                    // Ambil URL dengan cara yang lebih aman
+                    $secureUrl = null;
+                    if (is_object($uploadedFile) && method_exists($uploadedFile, 'getSecurePath')) {
+                        $secureUrl = $uploadedFile->getSecurePath();
+                    } elseif (is_array($uploadedFile) && isset($uploadedFile['secure_url'])) {
+                        $secureUrl = $uploadedFile['secure_url'];
+                    } elseif (is_object($uploadedFile) && isset($uploadedFile->secure_url)) {
+                        $secureUrl = $uploadedFile->secure_url;
+                    }
+                    
+                    if (!$secureUrl) {
+                        throw new \Exception('Gagal mendapatkan URL QRIS dari Cloudinary');
+                    }
+                    
+                    $data['qris_image'] = $secureUrl;
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload QRIS: ' . $e->getMessage());
                 }
@@ -142,7 +157,22 @@ class PaymentSettingController extends Controller
                         'folder' => 'barangkarung/payment-icons',
                         'resource_type' => 'image',
                     ]);
-                    $data['icon_image'] = $uploadedFile->getSecurePath();
+                    
+                    // Ambil URL dengan cara yang lebih aman
+                    $secureUrl = null;
+                    if (is_object($uploadedFile) && method_exists($uploadedFile, 'getSecurePath')) {
+                        $secureUrl = $uploadedFile->getSecurePath();
+                    } elseif (is_array($uploadedFile) && isset($uploadedFile['secure_url'])) {
+                        $secureUrl = $uploadedFile['secure_url'];
+                    } elseif (is_object($uploadedFile) && isset($uploadedFile->secure_url)) {
+                        $secureUrl = $uploadedFile->secure_url;
+                    }
+                    
+                    if (!$secureUrl) {
+                        throw new \Exception('Gagal mendapatkan URL icon dari Cloudinary');
+                    }
+                    
+                    $data['icon_image'] = $secureUrl;
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload icon: ' . $e->getMessage());
                 }
@@ -163,7 +193,22 @@ class PaymentSettingController extends Controller
                         'folder' => 'barangkarung/qris',
                         'resource_type' => 'image',
                     ]);
-                    $data['qris_image'] = $uploadedFile->getSecurePath();
+                    
+                    // Ambil URL dengan cara yang lebih aman
+                    $secureUrl = null;
+                    if (is_object($uploadedFile) && method_exists($uploadedFile, 'getSecurePath')) {
+                        $secureUrl = $uploadedFile->getSecurePath();
+                    } elseif (is_array($uploadedFile) && isset($uploadedFile['secure_url'])) {
+                        $secureUrl = $uploadedFile['secure_url'];
+                    } elseif (is_object($uploadedFile) && isset($uploadedFile->secure_url)) {
+                        $secureUrl = $uploadedFile->secure_url;
+                    }
+                    
+                    if (!$secureUrl) {
+                        throw new \Exception('Gagal mendapatkan URL QRIS dari Cloudinary');
+                    }
+                    
+                    $data['qris_image'] = $secureUrl;
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload QRIS: ' . $e->getMessage());
                 }

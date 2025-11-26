@@ -164,10 +164,25 @@ class CheckoutController extends Controller
                             'folder' => 'barangkarung/payments',
                             'resource_type' => 'image',
                         ]);
-                        $orderData['payment_proof'] = $uploadedFile->getSecurePath();
+                        
+                        // Ambil URL dengan cara yang lebih aman
+                        $secureUrl = null;
+                        if (is_object($uploadedFile) && method_exists($uploadedFile, 'getSecurePath')) {
+                            $secureUrl = $uploadedFile->getSecurePath();
+                        } elseif (is_array($uploadedFile) && isset($uploadedFile['secure_url'])) {
+                            $secureUrl = $uploadedFile['secure_url'];
+                        } elseif (is_object($uploadedFile) && isset($uploadedFile->secure_url)) {
+                            $secureUrl = $uploadedFile->secure_url;
+                        }
+                        
+                        if (!$secureUrl) {
+                            throw new \Exception('Gagal mendapatkan URL dari Cloudinary response');
+                        }
+                        
+                        $orderData['payment_proof'] = $secureUrl;
                         Log::info("Payment proof uploaded to Cloudinary: {$orderData['payment_proof']}");
                     } catch (\Exception $e) {
-                        Log::error("Cloudinary upload error: " . $e->getMessage());
+                        Log::error("Cloudinary upload error: " . $e->getMessage() . " | Trace: " . $e->getTraceAsString());
                         return redirect()->back()->withInput()->with('error', 'Gagal mengupload bukti transfer ke Cloudinary: ' . $e->getMessage());
                     }
                 } else {
