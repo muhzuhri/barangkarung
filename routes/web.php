@@ -122,3 +122,25 @@ Route::prefix('admin')->group(function () {
         ]);
     });
 });
+
+// Test route untuk debug Cloudinary (hapus setelah selesai debug)
+Route::get('/test-cloudinary', function() {
+    try {
+        $cloudinaryUrl = env('CLOUDINARY_URL') ?: config('cloudinary.cloud_url');
+        $isVercel = env('VERCEL') === '1';
+        
+        return response()->json([
+            'cloudinary_configured' => !empty($cloudinaryUrl),
+            'cloudinary_url_set' => !empty($cloudinaryUrl),
+            'cloudinary_url_preview' => $cloudinaryUrl ? substr($cloudinaryUrl, 0, 30) . '...' : 'Not Set',
+            'is_vercel' => $isVercel,
+            'app_env' => env('APP_ENV'),
+            'vercel_env' => env('VERCEL'),
+            'cloudinary_cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+            'cloudinary_key' => env('CLOUDINARY_KEY') ? 'Set' : 'Not Set',
+            'cloudinary_secret' => env('CLOUDINARY_SECRET') ? 'Set' : 'Not Set',
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+})->name('test.cloudinary');

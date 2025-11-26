@@ -346,12 +346,30 @@
                         @php
                             // Cek apakah dari Cloudinary atau local storage
                             $isCloudinary = str_contains($payment->qris_image, 'cloudinary.com') || str_contains($payment->qris_image, 'res.cloudinary.com');
-                            $qrisUrl = $isCloudinary ? $payment->qris_image : asset('storage/' . $payment->qris_image);
+                            $isVercel = env('VERCEL') === '1' || env('APP_ENV') === 'production';
+                            
+                            if ($isCloudinary) {
+                                $qrisUrl = $payment->qris_image;
+                            } elseif ($isVercel) {
+                                // Di Vercel, local storage tidak bisa diakses
+                                $qrisUrl = null;
+                            } else {
+                                // Local development
+                                $qrisUrl = asset('storage/' . $payment->qris_image);
+                            }
                         @endphp
-                        <a href="{{ $qrisUrl }}" target="_blank" class="qris-preview">
-                            <img src="{{ $qrisUrl }}" alt="QRIS" class="qris-image"
-                                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><strong>⚠ Gambar tidak dapat dimuat</strong><br><small>{{ $qrisUrl }}</small></div>';">
-                        </a>
+                        @if ($qrisUrl)
+                            <a href="{{ $qrisUrl }}" target="_blank" class="qris-preview">
+                                <img src="{{ $qrisUrl }}" alt="QRIS" class="qris-image"
+                                    onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><strong>⚠ Gambar tidak dapat dimuat</strong><br><small>{{ $qrisUrl }}</small></div>';">
+                            </a>
+                        @else
+                            <div class="image-error" style="margin-bottom: 1rem;">
+                                <strong>⚠ Gambar QRIS menggunakan local storage</strong><br>
+                                <small>Silakan re-upload gambar QRIS untuk menyimpannya di Cloudinary (diperlukan untuk Vercel)</small><br>
+                                <small style="color: #6b7280;">Path saat ini: {{ $payment->qris_image }}</small>
+                            </div>
+                        @endif
                     @endif
                     <div class="file-upload-box">
                         <input type="file" id="image" name="qris_image" class="form-file" accept="image/*">

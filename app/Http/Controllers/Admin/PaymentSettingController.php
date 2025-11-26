@@ -192,15 +192,22 @@ class PaymentSettingController extends Controller
                         'resource_type' => 'image',
                     ]);
                     
+                    // Log untuk debug
+                    \Illuminate\Support\Facades\Log::info("QRIS upload - Response type: " . gettype($uploadedFile));
+                    \Illuminate\Support\Facades\Log::info("QRIS upload - Response class: " . (is_object($uploadedFile) ? get_class($uploadedFile) : 'not object'));
+                    
                     // Gunakan helper function untuk mendapatkan URL
                     $secureUrl = getCloudinarySecureUrl($uploadedFile);
                     
                     if (!$secureUrl) {
-                        throw new \Exception('Gagal mendapatkan URL QRIS dari Cloudinary');
+                        \Illuminate\Support\Facades\Log::error("QRIS upload - Failed to get URL. Response: " . print_r($uploadedFile, true));
+                        throw new \Exception('Gagal mendapatkan URL QRIS dari Cloudinary. Silakan coba lagi atau hubungi admin.');
                     }
                     
+                    \Illuminate\Support\Facades\Log::info("QRIS upload - Success. URL: " . $secureUrl);
                     $data['qris_image'] = $secureUrl;
                 } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("QRIS upload error: " . $e->getMessage() . " | Trace: " . $e->getTraceAsString());
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload QRIS: ' . $e->getMessage());
                 }
             } else {

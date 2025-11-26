@@ -56,12 +56,26 @@ class CheckoutController extends Controller
 
         // Prepare payment settings data untuk JavaScript dengan key payment_method
         $paymentSettingsJs = [];
+        $isVercel = env('VERCEL') === '1' || env('APP_ENV') === 'production';
+        
         foreach ($paymentSettings as $payment) {
             // Cek apakah qris_image dari Cloudinary atau local storage
             $qrisImageUrl = null;
             if ($payment->qris_image) {
                 $isCloudinary = str_contains($payment->qris_image, 'cloudinary.com') || str_contains($payment->qris_image, 'res.cloudinary.com');
-                $qrisImageUrl = $isCloudinary ? $payment->qris_image : asset('storage/' . $payment->qris_image);
+                
+                if ($isCloudinary) {
+                    // URL Cloudinary - langsung pakai
+                    $qrisImageUrl = $payment->qris_image;
+                } elseif ($isVercel) {
+                    // Di Vercel, local storage path tidak bisa diakses
+                    // Set null agar tidak error, tapi user perlu re-upload
+                    $qrisImageUrl = null;
+                    Log::warning("QRIS image for payment method '{$payment->payment_method}' is using local storage path in Vercel. Please re-upload to Cloudinary.");
+                } else {
+                    // Local development - bisa pakai local storage
+                    $qrisImageUrl = asset('storage/' . $payment->qris_image);
+                }
             }
             
             $paymentSettingsJs[$payment->payment_method] = [
