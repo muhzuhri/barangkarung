@@ -310,7 +310,9 @@
                     <label class="form-label-payment">Icon/Logo Metode Pembayaran</label>
                     @if ($payment->icon_image)
                         @php
-                            $iconUrl = asset('storage/' . $payment->icon_image);
+                            // Cek apakah dari Cloudinary atau local storage
+                            $isCloudinary = str_contains($payment->icon_image, 'cloudinary.com') || str_contains($payment->icon_image, 'res.cloudinary.com');
+                            $iconUrl = $isCloudinary ? $payment->icon_image : asset('storage/' . $payment->icon_image);
                         @endphp
                         <a href="{{ $iconUrl }}" target="_blank" class="icon-preview">
                             <img src="{{ $iconUrl }}" alt="Icon" class="icon-image"
@@ -342,7 +344,9 @@
                     <label class="form-label-payment">Gambar QRIS</label>
                     @if ($payment->qris_image)
                         @php
-                            $qrisUrl = asset('storage/' . $payment->qris_image);
+                            // Cek apakah dari Cloudinary atau local storage
+                            $isCloudinary = str_contains($payment->qris_image, 'cloudinary.com') || str_contains($payment->qris_image, 'res.cloudinary.com');
+                            $qrisUrl = $isCloudinary ? $payment->qris_image : asset('storage/' . $payment->qris_image);
                         @endphp
                         <a href="{{ $qrisUrl }}" target="_blank" class="qris-preview">
                             <img src="{{ $qrisUrl }}" alt="QRIS" class="qris-image"

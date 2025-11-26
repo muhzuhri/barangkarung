@@ -57,11 +57,18 @@ class CheckoutController extends Controller
         // Prepare payment settings data untuk JavaScript dengan key payment_method
         $paymentSettingsJs = [];
         foreach ($paymentSettings as $payment) {
+            // Cek apakah qris_image dari Cloudinary atau local storage
+            $qrisImageUrl = null;
+            if ($payment->qris_image) {
+                $isCloudinary = str_contains($payment->qris_image, 'cloudinary.com') || str_contains($payment->qris_image, 'res.cloudinary.com');
+                $qrisImageUrl = $isCloudinary ? $payment->qris_image : asset('storage/' . $payment->qris_image);
+            }
+            
             $paymentSettingsJs[$payment->payment_method] = [
                 'label' => $payment->label ?? ucfirst($payment->payment_method),
                 'account_number' => $payment->account_number ?? '',
                 'account_name' => $payment->account_name ?? '',
-                'qris_image' => $payment->qris_image ? asset('storage/' . $payment->qris_image) : null,
+                'qris_image' => $qrisImageUrl,
                 'instructions' => $payment->instructions ?? ''
             ];
         }
@@ -145,32 +152,33 @@ class CheckoutController extends Controller
         
         if (in_array($request->payment_method, $transferMethods)) {
             if ($request->hasFile('payment_proof')) {
-                try {
-                    // Cek apakah Cloudinary tersedia (untuk Vercel)
-                    $cloudinaryUrl = config('cloudinary.cloud_url');
-                    if ($cloudinaryUrl && !empty($cloudinaryUrl)) {
-                        // Upload ke Cloudinary untuk Vercel compatibility
+                // Cek apakah di Vercel atau Cloudinary tersedia
+                $isVercel = env('VERCEL') === '1' || env('APP_ENV') === 'production';
+                $cloudinaryUrl = env('CLOUDINARY_URL') ?: config('cloudinary.cloud_url');
+                
+                // Di Vercel atau jika Cloudinary tersedia, gunakan Cloudinary
+                if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
+                    try {
+                        // Upload ke Cloudinary
                         $uploadedFile = Cloudinary::upload($request->file('payment_proof')->getRealPath(), [
                             'folder' => 'barangkarung/payments',
                             'resource_type' => 'image',
                         ]);
                         $orderData['payment_proof'] = $uploadedFile->getSecurePath();
                         Log::info("Payment proof uploaded to Cloudinary: {$orderData['payment_proof']}");
-                    } else {
-                        // Fallback ke local storage untuk development
-                        $path = $request->file('payment_proof')->store('payments', 'public');
-                        $orderData['payment_proof'] = $path;
-                        Log::info("Payment proof saved to local storage: {$path}");
+                    } catch (\Exception $e) {
+                        Log::error("Cloudinary upload error: " . $e->getMessage());
+                        return redirect()->back()->withInput()->with('error', 'Gagal mengupload bukti transfer ke Cloudinary: ' . $e->getMessage());
                     }
-                } catch (\Exception $e) {
-                    Log::error("Payment proof upload error: " . $e->getMessage());
-                    // Fallback ke local storage jika Cloudinary error
+                } else {
+                    // Hanya untuk local development, gunakan local storage
                     try {
                         $path = $request->file('payment_proof')->store('payments', 'public');
                         $orderData['payment_proof'] = $path;
-                        Log::info("Payment proof saved to local storage (fallback): {$path}");
-                    } catch (\Exception $e2) {
-                        return redirect()->back()->withInput()->with('error', 'Gagal mengupload bukti transfer: ' . $e2->getMessage());
+                        Log::info("Payment proof saved to local storage: {$path}");
+                    } catch (\Exception $e) {
+                        Log::error("Local storage error: " . $e->getMessage());
+                        return redirect()->back()->withInput()->with('error', 'Gagal menyimpan bukti transfer: ' . $e->getMessage());
                     }
                 }
             } else {

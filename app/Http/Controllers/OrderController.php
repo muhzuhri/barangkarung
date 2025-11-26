@@ -112,37 +112,35 @@ class OrderController extends Controller
 
         $file = $request->file('payment_proof');
 
-        try {
-            // Cek apakah Cloudinary tersedia (untuk Vercel)
-            $cloudinaryUrl = config('cloudinary.cloud_url');
-            if ($cloudinaryUrl && !empty($cloudinaryUrl)) {
-                // Upload ke Cloudinary untuk Vercel compatibility
+        // Cek apakah di Vercel atau Cloudinary tersedia
+        $isVercel = env('VERCEL') === '1' || env('APP_ENV') === 'production';
+        $cloudinaryUrl = env('CLOUDINARY_URL') ?: config('cloudinary.cloud_url');
+        
+        // Di Vercel atau jika Cloudinary tersedia, gunakan Cloudinary
+        if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
+            try {
+                // Upload ke Cloudinary
                 $uploadedFile = Cloudinary::upload($file->getRealPath(), [
                     'folder' => 'barangkarung/payments',
                     'resource_type' => 'image',
                 ]);
                 $proofPath = $uploadedFile->getSecurePath();
-            } else {
-                // Fallback ke local storage untuk development
-                $proofPath = $file->store('payments', 'public');
+            } catch (\Exception $e) {
+                return back()->with('error', 'Gagal mengupload bukti pembayaran ke Cloudinary: ' . $e->getMessage());
             }
-            
-            $order->update([
-                'payment_proof' => $proofPath,
-                'payment_status' => 'pending'
-            ]);
-        } catch (\Exception $e) {
-            // Fallback ke local storage jika Cloudinary error
+        } else {
+            // Hanya untuk local development, gunakan local storage
             try {
                 $proofPath = $file->store('payments', 'public');
-                $order->update([
-                    'payment_proof' => $proofPath,
-                    'payment_status' => 'pending'
-                ]);
-            } catch (\Exception $e2) {
-                return back()->with('error', 'Gagal mengupload bukti pembayaran: ' . $e2->getMessage());
+            } catch (\Exception $e) {
+                return back()->with('error', 'Gagal menyimpan bukti pembayaran: ' . $e->getMessage());
             }
         }
+        
+        $order->update([
+            'payment_proof' => $proofPath,
+            'payment_status' => 'pending'
+        ]);
 
         return back()->with('success', 'Bukti pembayaran berhasil diupload! Menunggu konfirmasi admin.');
     }
