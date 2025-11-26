@@ -54,29 +54,13 @@ class PaymentSettingController extends Controller
                         }
                     }
                     
-                    // Upload ke Cloudinary - gunakan storeOnCloudinary
-                    $uploadedFile = $request->file('icon_image')->storeOnCloudinary('barangkarung/payment-icons');
+                    // Upload ke Cloudinary menggunakan Cloudinary facade
+                    $uploadedFile = Cloudinary::upload($request->file('icon_image')->getRealPath(), [
+                        'folder' => 'barangkarung/payment-icons',
+                        'resource_type' => 'image',
+                    ]);
                     
-                    // Ambil URL - coba berbagai cara
-                    $secureUrl = null;
-                    if (is_object($uploadedFile)) {
-                        if (method_exists($uploadedFile, 'getSecurePath')) {
-                            $secureUrl = $uploadedFile->getSecurePath();
-                        } elseif (isset($uploadedFile->secure_url)) {
-                            $secureUrl = $uploadedFile->secure_url;
-                        } elseif (method_exists($uploadedFile, 'getArrayCopy')) {
-                            $array = $uploadedFile->getArrayCopy();
-                            $secureUrl = $array['secure_url'] ?? null;
-                        }
-                    } elseif (is_array($uploadedFile)) {
-                        $secureUrl = $uploadedFile['secure_url'] ?? null;
-                    }
-                    
-                    if (!$secureUrl) {
-                        throw new \Exception('Gagal mendapatkan URL icon dari Cloudinary');
-                    }
-                    
-                    $data['icon_image'] = $secureUrl;
+                    $data['icon_image'] = $uploadedFile->getSecurePath();
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload icon: ' . $e->getMessage());
                 }
@@ -107,29 +91,13 @@ class PaymentSettingController extends Controller
                         }
                     }
                     
-                    // Upload ke Cloudinary - gunakan storeOnCloudinary
-                    $uploadedFile = $request->file('qris_image')->storeOnCloudinary('barangkarung/qris');
+                    // Upload ke Cloudinary menggunakan Cloudinary facade
+                    $uploadedFile = Cloudinary::upload($request->file('qris_image')->getRealPath(), [
+                        'folder' => 'barangkarung/qris',
+                        'resource_type' => 'image',
+                    ]);
                     
-                    // Ambil URL - coba berbagai cara
-                    $secureUrl = null;
-                    if (is_object($uploadedFile)) {
-                        if (method_exists($uploadedFile, 'getSecurePath')) {
-                            $secureUrl = $uploadedFile->getSecurePath();
-                        } elseif (isset($uploadedFile->secure_url)) {
-                            $secureUrl = $uploadedFile->secure_url;
-                        } elseif (method_exists($uploadedFile, 'getArrayCopy')) {
-                            $array = $uploadedFile->getArrayCopy();
-                            $secureUrl = $array['secure_url'] ?? null;
-                        }
-                    } elseif (is_array($uploadedFile)) {
-                        $secureUrl = $uploadedFile['secure_url'] ?? null;
-                    }
-                    
-                    if (!$secureUrl) {
-                        throw new \Exception('Gagal mendapatkan URL QRIS dari Cloudinary');
-                    }
-                    
-                    $data['qris_image'] = $secureUrl;
+                    $data['qris_image'] = $uploadedFile->getSecurePath();
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload QRIS: ' . $e->getMessage());
                 }
@@ -174,29 +142,13 @@ class PaymentSettingController extends Controller
             if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
                 // Upload ke Cloudinary
                 try {
-                    // Upload ke Cloudinary - gunakan storeOnCloudinary
-                    $uploadedFile = $request->file('icon_image')->storeOnCloudinary('barangkarung/payment-icons');
+                    // Upload ke Cloudinary menggunakan Cloudinary facade
+                    $uploadedFile = Cloudinary::upload($request->file('icon_image')->getRealPath(), [
+                        'folder' => 'barangkarung/payment-icons',
+                        'resource_type' => 'image',
+                    ]);
                     
-                    // Ambil URL - coba berbagai cara
-                    $secureUrl = null;
-                    if (is_object($uploadedFile)) {
-                        if (method_exists($uploadedFile, 'getSecurePath')) {
-                            $secureUrl = $uploadedFile->getSecurePath();
-                        } elseif (isset($uploadedFile->secure_url)) {
-                            $secureUrl = $uploadedFile->secure_url;
-                        } elseif (method_exists($uploadedFile, 'getArrayCopy')) {
-                            $array = $uploadedFile->getArrayCopy();
-                            $secureUrl = $array['secure_url'] ?? null;
-                        }
-                    } elseif (is_array($uploadedFile)) {
-                        $secureUrl = $uploadedFile['secure_url'] ?? null;
-                    }
-                    
-                    if (!$secureUrl) {
-                        throw new \Exception('Gagal mendapatkan URL icon dari Cloudinary');
-                    }
-                    
-                    $data['icon_image'] = $secureUrl;
+                    $data['icon_image'] = $uploadedFile->getSecurePath();
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload icon: ' . $e->getMessage());
                 }
@@ -213,29 +165,13 @@ class PaymentSettingController extends Controller
             if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
                 // Upload ke Cloudinary
                 try {
-                    // Upload ke Cloudinary - gunakan storeOnCloudinary
-                    $uploadedFile = $request->file('qris_image')->storeOnCloudinary('barangkarung/qris');
+                    // Upload ke Cloudinary menggunakan Cloudinary facade
+                    $uploadedFile = Cloudinary::upload($request->file('qris_image')->getRealPath(), [
+                        'folder' => 'barangkarung/qris',
+                        'resource_type' => 'image',
+                    ]);
                     
-                    // Ambil URL - coba berbagai cara
-                    $secureUrl = null;
-                    if (is_object($uploadedFile)) {
-                        if (method_exists($uploadedFile, 'getSecurePath')) {
-                            $secureUrl = $uploadedFile->getSecurePath();
-                        } elseif (isset($uploadedFile->secure_url)) {
-                            $secureUrl = $uploadedFile->secure_url;
-                        } elseif (method_exists($uploadedFile, 'getArrayCopy')) {
-                            $array = $uploadedFile->getArrayCopy();
-                            $secureUrl = $array['secure_url'] ?? null;
-                        }
-                    } elseif (is_array($uploadedFile)) {
-                        $secureUrl = $uploadedFile['secure_url'] ?? null;
-                    }
-                    
-                    if (!$secureUrl) {
-                        throw new \Exception('Gagal mendapatkan URL QRIS dari Cloudinary');
-                    }
-                    
-                    $data['qris_image'] = $secureUrl;
+                    $data['qris_image'] = $uploadedFile->getSecurePath();
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload QRIS: ' . $e->getMessage());
                 }

@@ -159,41 +159,18 @@ class CheckoutController extends Controller
                 // Di Vercel atau jika Cloudinary tersedia, gunakan Cloudinary
                 if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
                     try {
-                        // Upload ke Cloudinary - gunakan storeOnCloudinary untuk lebih reliable
+                        // Upload ke Cloudinary menggunakan Cloudinary facade
                         $file = $request->file('payment_proof');
-                        $uploadedFile = $file->storeOnCloudinary('barangkarung/payments');
+                        $uploadedFile = Cloudinary::upload($file->getRealPath(), [
+                            'folder' => 'barangkarung/payments',
+                            'resource_type' => 'image',
+                        ]);
                         
-                        // Log untuk debug
-                        Log::info("Cloudinary upload response type: " . gettype($uploadedFile));
-                        Log::info("Cloudinary upload response: " . json_encode($uploadedFile));
-                        
-                        // Ambil URL - coba berbagai cara
-                        $secureUrl = null;
-                        if (is_object($uploadedFile)) {
-                            // Coba method getSecurePath()
-                            if (method_exists($uploadedFile, 'getSecurePath')) {
-                                $secureUrl = $uploadedFile->getSecurePath();
-                            }
-                            // Coba property secure_url
-                            if (!$secureUrl && isset($uploadedFile->secure_url)) {
-                                $secureUrl = $uploadedFile->secure_url;
-                            }
-                            // Coba method getArrayCopy() atau toArray()
-                            if (!$secureUrl && method_exists($uploadedFile, 'getArrayCopy')) {
-                                $array = $uploadedFile->getArrayCopy();
-                                $secureUrl = $array['secure_url'] ?? null;
-                            }
-                            if (!$secureUrl && method_exists($uploadedFile, 'toArray')) {
-                                $array = $uploadedFile->toArray();
-                                $secureUrl = $array['secure_url'] ?? null;
-                            }
-                        } elseif (is_array($uploadedFile)) {
-                            $secureUrl = $uploadedFile['secure_url'] ?? null;
-                        }
+                        // Ambil URL - Cloudinary Laravel package mengembalikan object dengan method getSecurePath()
+                        $secureUrl = $uploadedFile->getSecurePath();
                         
                         if (!$secureUrl) {
-                            Log::error("Cloudinary response structure: " . print_r($uploadedFile, true));
-                            throw new \Exception('Gagal mendapatkan URL dari Cloudinary. Response: ' . json_encode($uploadedFile));
+                            throw new \Exception('Gagal mendapatkan URL dari Cloudinary response');
                         }
                         
                         $orderData['payment_proof'] = $secureUrl;
