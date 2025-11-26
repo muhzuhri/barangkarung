@@ -125,8 +125,8 @@ class OrderController extends Controller
                     'resource_type' => 'image',
                 ]);
                 
-                // Ambil URL
-                $proofPath = $uploadedFile->getSecurePath();
+                // Gunakan helper function untuk mendapatkan URL
+                $proofPath = getCloudinarySecureUrl($uploadedFile);
                 
                 if (!$proofPath) {
                     throw new \Exception('Gagal mendapatkan URL dari Cloudinary response');

@@ -156,6 +156,10 @@ class CheckoutController extends Controller
                 $isVercel = env('VERCEL') === '1' || env('APP_ENV') === 'production';
                 $cloudinaryUrl = env('CLOUDINARY_URL') ?: config('cloudinary.cloud_url');
                 
+                // Log untuk debug
+                Log::info("Is Vercel: " . ($isVercel ? 'yes' : 'no'));
+                Log::info("Cloudinary URL configured: " . (!empty($cloudinaryUrl) ? 'yes' : 'no'));
+                
                 // Di Vercel atau jika Cloudinary tersedia, gunakan Cloudinary
                 if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
                     try {
@@ -166,11 +170,23 @@ class CheckoutController extends Controller
                             'resource_type' => 'image',
                         ]);
                         
-                        // Ambil URL - Cloudinary Laravel package mengembalikan object dengan method getSecurePath()
-                        $secureUrl = $uploadedFile->getSecurePath();
+                        // Log untuk debug
+                        Log::info("Cloudinary upload response type: " . gettype($uploadedFile));
+                        Log::info("Cloudinary upload response class: " . (is_object($uploadedFile) ? get_class($uploadedFile) : 'not object'));
+                        
+                        // Gunakan helper function untuk mendapatkan URL
+                        $secureUrl = getCloudinarySecureUrl($uploadedFile);
                         
                         if (!$secureUrl) {
-                            throw new \Exception('Gagal mendapatkan URL dari Cloudinary response');
+                            Log::error("Cloudinary response structure: " . print_r($uploadedFile, true));
+                            // Coba serialize untuk melihat struktur
+                            try {
+                                $serialized = serialize($uploadedFile);
+                                Log::error("Cloudinary serialized (first 500 chars): " . substr($serialized, 0, 500));
+                            } catch (\Exception $e) {
+                                // Ignore
+                            }
+                            throw new \Exception('Gagal mendapatkan URL dari Cloudinary. Response type: ' . gettype($uploadedFile));
                         }
                         
                         $orderData['payment_proof'] = $secureUrl;

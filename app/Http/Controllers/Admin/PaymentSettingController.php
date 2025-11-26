@@ -60,7 +60,14 @@ class PaymentSettingController extends Controller
                         'resource_type' => 'image',
                     ]);
                     
-                    $data['icon_image'] = $uploadedFile->getSecurePath();
+                    // Gunakan helper function untuk mendapatkan URL
+                    $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                    
+                    if (!$secureUrl) {
+                        throw new \Exception('Gagal mendapatkan URL icon dari Cloudinary');
+                    }
+                    
+                    $data['icon_image'] = $secureUrl;
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload icon: ' . $e->getMessage());
                 }
@@ -97,7 +104,14 @@ class PaymentSettingController extends Controller
                         'resource_type' => 'image',
                     ]);
                     
-                    $data['qris_image'] = $uploadedFile->getSecurePath();
+                    // Gunakan helper function untuk mendapatkan URL
+                    $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                    
+                    if (!$secureUrl) {
+                        throw new \Exception('Gagal mendapatkan URL QRIS dari Cloudinary');
+                    }
+                    
+                    $data['qris_image'] = $secureUrl;
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload QRIS: ' . $e->getMessage());
                 }
@@ -148,7 +162,14 @@ class PaymentSettingController extends Controller
                         'resource_type' => 'image',
                     ]);
                     
-                    $data['icon_image'] = $uploadedFile->getSecurePath();
+                    // Gunakan helper function untuk mendapatkan URL
+                    $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                    
+                    if (!$secureUrl) {
+                        throw new \Exception('Gagal mendapatkan URL icon dari Cloudinary');
+                    }
+                    
+                    $data['icon_image'] = $secureUrl;
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload icon: ' . $e->getMessage());
                 }
@@ -171,7 +192,14 @@ class PaymentSettingController extends Controller
                         'resource_type' => 'image',
                     ]);
                     
-                    $data['qris_image'] = $uploadedFile->getSecurePath();
+                    // Gunakan helper function untuk mendapatkan URL
+                    $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                    
+                    if (!$secureUrl) {
+                        throw new \Exception('Gagal mendapatkan URL QRIS dari Cloudinary');
+                    }
+                    
+                    $data['qris_image'] = $secureUrl;
                 } catch (\Exception $e) {
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload QRIS: ' . $e->getMessage());
                 }
