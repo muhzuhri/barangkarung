@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Api\Upload\UploadApi;
 
 class OrderController extends Controller
 {
@@ -119,14 +120,61 @@ class OrderController extends Controller
         // Di Vercel atau jika Cloudinary tersedia, gunakan Cloudinary
         if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
             try {
-                // Upload ke Cloudinary menggunakan Cloudinary facade
-                $uploadedFile = Cloudinary::upload($file->getRealPath(), [
-                    'folder' => 'barangkarung/payments',
-                    'resource_type' => 'image',
-                ]);
+                // Upload ke Cloudinary - coba berbagai cara
+                $proofPath = null;
                 
-                // Gunakan helper function untuk mendapatkan URL
-                $proofPath = getCloudinarySecureUrl($uploadedFile);
+                // Method 1: Cloudinary facade
+                try {
+                    $uploadedFile = Cloudinary::upload($file->getRealPath(), [
+                        'folder' => 'barangkarung/payments',
+                        'resource_type' => 'image',
+                    ]);
+                    
+                    // Coba berbagai cara untuk mendapatkan URL
+                    if (is_object($uploadedFile)) {
+                        if (method_exists($uploadedFile, 'getSecurePath')) {
+                            try {
+                                $proofPath = $uploadedFile->getSecurePath();
+                            } catch (\Exception $e) {}
+                        }
+                        
+                        if (!$proofPath) {
+                            try {
+                                $json = json_encode($uploadedFile);
+                                $array = json_decode($json, true);
+                                $proofPath = $array['secure_url'] ?? null;
+                            } catch (\Exception $e) {}
+                        }
+                        
+                        if (!$proofPath && property_exists($uploadedFile, 'secure_url')) {
+                            try {
+                                $proofPath = $uploadedFile->secure_url;
+                            } catch (\Exception $e) {}
+                        }
+                    } elseif (is_array($uploadedFile)) {
+                        $proofPath = $uploadedFile['secure_url'] ?? null;
+                    }
+                    
+                    if (!$proofPath) {
+                        $proofPath = getCloudinarySecureUrl($uploadedFile);
+                    }
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("Cloudinary facade failed: " . $e->getMessage());
+                }
+                
+                // Method 2: UploadApi langsung
+                if (!$proofPath) {
+                    try {
+                        $uploadApi = new UploadApi();
+                        $result = $uploadApi->upload($file->getRealPath(), [
+                            'folder' => 'barangkarung/payments',
+                            'resource_type' => 'image',
+                        ]);
+                        $proofPath = $result['secure_url'] ?? null;
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error("UploadApi failed: " . $e->getMessage());
+                    }
+                }
                 
                 if (!$proofPath) {
                     throw new \Exception('Gagal mendapatkan URL dari Cloudinary response');

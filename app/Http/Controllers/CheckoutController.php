@@ -11,6 +11,7 @@ use App\Models\PaymentSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Api\Upload\UploadApi;
 // Midtrans classes will be referenced via FQN and guarded by class_exists
 
 
@@ -179,28 +180,101 @@ class CheckoutController extends Controller
                     try {
                         // Upload ke Cloudinary menggunakan Cloudinary facade
                         $file = $request->file('payment_proof');
-                        $uploadedFile = Cloudinary::upload($file->getRealPath(), [
-                            'folder' => 'barangkarung/payments',
-                            'resource_type' => 'image',
-                        ]);
                         
-                        // Log untuk debug
-                        Log::info("Cloudinary upload response type: " . gettype($uploadedFile));
-                        Log::info("Cloudinary upload response class: " . (is_object($uploadedFile) ? get_class($uploadedFile) : 'not object'));
+                        // Coba upload dengan berbagai cara
+                        $uploadedFile = null;
+                        $secureUrl = null;
                         
-                        // Gunakan helper function untuk mendapatkan URL
-                        $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                        // Method 1: Coba menggunakan Cloudinary facade
+                        try {
+                            $uploadedFile = Cloudinary::upload($file->getRealPath(), [
+                                'folder' => 'barangkarung/payments',
+                                'resource_type' => 'image',
+                            ]);
+                            
+                            Log::info("Cloudinary upload - Response type: " . gettype($uploadedFile));
+                            Log::info("Cloudinary upload - Response class: " . (is_object($uploadedFile) ? get_class($uploadedFile) : 'not object'));
+                            
+                            // Coba berbagai cara untuk mendapatkan URL
+                            if (is_object($uploadedFile)) {
+                                // Coba method getSecurePath()
+                                if (method_exists($uploadedFile, 'getSecurePath')) {
+                                    try {
+                                        $secureUrl = $uploadedFile->getSecurePath();
+                                        Log::info("Got URL via getSecurePath(): " . $secureUrl);
+                                    } catch (\Exception $e) {
+                                        Log::warning("getSecurePath() failed: " . $e->getMessage());
+                                    }
+                                }
+                                
+                                // Coba convert ke array
+                                if (!$secureUrl) {
+                                    try {
+                                        $json = json_encode($uploadedFile);
+                                        $array = json_decode($json, true);
+                                        if (isset($array['secure_url'])) {
+                                            $secureUrl = $array['secure_url'];
+                                            Log::info("Got URL via json_encode: " . $secureUrl);
+                                        }
+                                    } catch (\Exception $e) {
+                                        Log::warning("json_encode failed: " . $e->getMessage());
+                                    }
+                                }
+                                
+                                // Coba property langsung
+                                if (!$secureUrl && property_exists($uploadedFile, 'secure_url')) {
+                                    try {
+                                        $secureUrl = $uploadedFile->secure_url;
+                                        Log::info("Got URL via property: " . $secureUrl);
+                                    } catch (\Exception $e) {
+                                        Log::warning("Property access failed: " . $e->getMessage());
+                                    }
+                                }
+                                
+                                // Coba array access
+                                if (!$secureUrl && isset($uploadedFile['secure_url'])) {
+                                    $secureUrl = $uploadedFile['secure_url'];
+                                    Log::info("Got URL via array access: " . $secureUrl);
+                                }
+                            } elseif (is_array($uploadedFile)) {
+                                $secureUrl = $uploadedFile['secure_url'] ?? null;
+                                Log::info("Got URL from array: " . $secureUrl);
+                            }
+                            
+                            // Jika masih belum dapat, gunakan helper function
+                            if (!$secureUrl) {
+                                $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                                if ($secureUrl) {
+                                    Log::info("Got URL via helper function: " . $secureUrl);
+                                }
+                            }
+                            
+                        } catch (\Exception $e) {
+                            Log::error("Cloudinary facade upload failed: " . $e->getMessage());
+                            throw $e;
+                        }
+                        
+                        // Method 2: Jika masih gagal, coba menggunakan UploadApi langsung
+                        if (!$secureUrl) {
+                            try {
+                                $uploadApi = new UploadApi();
+                                $result = $uploadApi->upload($file->getRealPath(), [
+                                    'folder' => 'barangkarung/payments',
+                                    'resource_type' => 'image',
+                                ]);
+                                
+                                if (isset($result['secure_url'])) {
+                                    $secureUrl = $result['secure_url'];
+                                    Log::info("Got URL via UploadApi: " . $secureUrl);
+                                }
+                            } catch (\Exception $e) {
+                                Log::error("UploadApi failed: " . $e->getMessage());
+                            }
+                        }
                         
                         if (!$secureUrl) {
                             Log::error("Cloudinary response structure: " . print_r($uploadedFile, true));
-                            // Coba serialize untuk melihat struktur
-                            try {
-                                $serialized = serialize($uploadedFile);
-                                Log::error("Cloudinary serialized (first 500 chars): " . substr($serialized, 0, 500));
-                            } catch (\Exception $e) {
-                                // Ignore
-                            }
-                            throw new \Exception('Gagal mendapatkan URL dari Cloudinary. Response type: ' . gettype($uploadedFile));
+                            throw new \Exception('Gagal mendapatkan URL dari Cloudinary. Silakan coba lagi atau hubungi admin.');
                         }
                         
                         $orderData['payment_proof'] = $secureUrl;

@@ -7,6 +7,7 @@ use App\Models\PaymentSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Api\Upload\UploadApi;
 
 class PaymentSettingController extends Controller
 {
@@ -54,17 +55,64 @@ class PaymentSettingController extends Controller
                         }
                     }
                     
-                    // Upload ke Cloudinary menggunakan Cloudinary facade
-                    $uploadedFile = Cloudinary::upload($request->file('icon_image')->getRealPath(), [
-                        'folder' => 'barangkarung/payment-icons',
-                        'resource_type' => 'image',
-                    ]);
+                    // Upload ke Cloudinary - coba berbagai cara
+                    $secureUrl = null;
                     
-                    // Gunakan helper function untuk mendapatkan URL
-                    $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                    // Method 1: Cloudinary facade
+                    try {
+                        $uploadedFile = Cloudinary::upload($request->file('icon_image')->getRealPath(), [
+                            'folder' => 'barangkarung/payment-icons',
+                            'resource_type' => 'image',
+                        ]);
+                        
+                        // Coba berbagai cara untuk mendapatkan URL
+                        if (is_object($uploadedFile)) {
+                            if (method_exists($uploadedFile, 'getSecurePath')) {
+                                try {
+                                    $secureUrl = $uploadedFile->getSecurePath();
+                                } catch (\Exception $e) {}
+                            }
+                            
+                            if (!$secureUrl) {
+                                try {
+                                    $json = json_encode($uploadedFile);
+                                    $array = json_decode($json, true);
+                                    $secureUrl = $array['secure_url'] ?? null;
+                                } catch (\Exception $e) {}
+                            }
+                            
+                            if (!$secureUrl && property_exists($uploadedFile, 'secure_url')) {
+                                try {
+                                    $secureUrl = $uploadedFile->secure_url;
+                                } catch (\Exception $e) {}
+                            }
+                        } elseif (is_array($uploadedFile)) {
+                            $secureUrl = $uploadedFile['secure_url'] ?? null;
+                        }
+                        
+                        if (!$secureUrl) {
+                            $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                        }
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error("Icon upload via facade failed: " . $e->getMessage());
+                    }
+                    
+                    // Method 2: UploadApi langsung
+                    if (!$secureUrl) {
+                        try {
+                            $uploadApi = new UploadApi();
+                            $result = $uploadApi->upload($request->file('icon_image')->getRealPath(), [
+                                'folder' => 'barangkarung/payment-icons',
+                                'resource_type' => 'image',
+                            ]);
+                            $secureUrl = $result['secure_url'] ?? null;
+                        } catch (\Exception $e) {
+                            \Illuminate\Support\Facades\Log::error("Icon upload via UploadApi failed: " . $e->getMessage());
+                        }
+                    }
                     
                     if (!$secureUrl) {
-                        throw new \Exception('Gagal mendapatkan URL icon dari Cloudinary');
+                        throw new \Exception('Gagal mendapatkan URL icon dari Cloudinary. Silakan coba lagi.');
                     }
                     
                     $data['icon_image'] = $secureUrl;
@@ -98,17 +146,67 @@ class PaymentSettingController extends Controller
                         }
                     }
                     
-                    // Upload ke Cloudinary menggunakan Cloudinary facade
-                    $uploadedFile = Cloudinary::upload($request->file('qris_image')->getRealPath(), [
-                        'folder' => 'barangkarung/qris',
-                        'resource_type' => 'image',
-                    ]);
+                    // Upload ke Cloudinary - coba berbagai cara
+                    $secureUrl = null;
                     
-                    // Gunakan helper function untuk mendapatkan URL
-                    $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                    // Method 1: Cloudinary facade
+                    try {
+                        $uploadedFile = Cloudinary::upload($request->file('qris_image')->getRealPath(), [
+                            'folder' => 'barangkarung/qris',
+                            'resource_type' => 'image',
+                        ]);
+                        
+                        \Illuminate\Support\Facades\Log::info("QRIS upload (update) - Response type: " . gettype($uploadedFile));
+                        
+                        // Coba berbagai cara untuk mendapatkan URL
+                        if (is_object($uploadedFile)) {
+                            if (method_exists($uploadedFile, 'getSecurePath')) {
+                                try {
+                                    $secureUrl = $uploadedFile->getSecurePath();
+                                } catch (\Exception $e) {}
+                            }
+                            
+                            if (!$secureUrl) {
+                                try {
+                                    $json = json_encode($uploadedFile);
+                                    $array = json_decode($json, true);
+                                    $secureUrl = $array['secure_url'] ?? null;
+                                } catch (\Exception $e) {}
+                            }
+                            
+                            if (!$secureUrl && property_exists($uploadedFile, 'secure_url')) {
+                                try {
+                                    $secureUrl = $uploadedFile->secure_url;
+                                } catch (\Exception $e) {}
+                            }
+                        } elseif (is_array($uploadedFile)) {
+                            $secureUrl = $uploadedFile['secure_url'] ?? null;
+                        }
+                        
+                        if (!$secureUrl) {
+                            $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                        }
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error("QRIS upload via facade failed: " . $e->getMessage());
+                    }
+                    
+                    // Method 2: UploadApi langsung
+                    if (!$secureUrl) {
+                        try {
+                            $uploadApi = new UploadApi();
+                            $result = $uploadApi->upload($request->file('qris_image')->getRealPath(), [
+                                'folder' => 'barangkarung/qris',
+                                'resource_type' => 'image',
+                            ]);
+                            $secureUrl = $result['secure_url'] ?? null;
+                        } catch (\Exception $e) {
+                            \Illuminate\Support\Facades\Log::error("QRIS upload via UploadApi failed: " . $e->getMessage());
+                        }
+                    }
                     
                     if (!$secureUrl) {
-                        throw new \Exception('Gagal mendapatkan URL QRIS dari Cloudinary');
+                        \Illuminate\Support\Facades\Log::error("QRIS upload (update) - All methods failed");
+                        throw new \Exception('Gagal mendapatkan URL QRIS dari Cloudinary. Silakan coba lagi.');
                     }
                     
                     $data['qris_image'] = $secureUrl;
@@ -156,17 +254,64 @@ class PaymentSettingController extends Controller
             if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
                 // Upload ke Cloudinary
                 try {
-                    // Upload ke Cloudinary menggunakan Cloudinary facade
-                    $uploadedFile = Cloudinary::upload($request->file('icon_image')->getRealPath(), [
-                        'folder' => 'barangkarung/payment-icons',
-                        'resource_type' => 'image',
-                    ]);
+                    // Upload ke Cloudinary - coba berbagai cara
+                    $secureUrl = null;
                     
-                    // Gunakan helper function untuk mendapatkan URL
-                    $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                    // Method 1: Cloudinary facade
+                    try {
+                        $uploadedFile = Cloudinary::upload($request->file('icon_image')->getRealPath(), [
+                            'folder' => 'barangkarung/payment-icons',
+                            'resource_type' => 'image',
+                        ]);
+                        
+                        // Coba berbagai cara untuk mendapatkan URL
+                        if (is_object($uploadedFile)) {
+                            if (method_exists($uploadedFile, 'getSecurePath')) {
+                                try {
+                                    $secureUrl = $uploadedFile->getSecurePath();
+                                } catch (\Exception $e) {}
+                            }
+                            
+                            if (!$secureUrl) {
+                                try {
+                                    $json = json_encode($uploadedFile);
+                                    $array = json_decode($json, true);
+                                    $secureUrl = $array['secure_url'] ?? null;
+                                } catch (\Exception $e) {}
+                            }
+                            
+                            if (!$secureUrl && property_exists($uploadedFile, 'secure_url')) {
+                                try {
+                                    $secureUrl = $uploadedFile->secure_url;
+                                } catch (\Exception $e) {}
+                            }
+                        } elseif (is_array($uploadedFile)) {
+                            $secureUrl = $uploadedFile['secure_url'] ?? null;
+                        }
+                        
+                        if (!$secureUrl) {
+                            $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                        }
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error("Icon upload via facade failed: " . $e->getMessage());
+                    }
+                    
+                    // Method 2: UploadApi langsung
+                    if (!$secureUrl) {
+                        try {
+                            $uploadApi = new UploadApi();
+                            $result = $uploadApi->upload($request->file('icon_image')->getRealPath(), [
+                                'folder' => 'barangkarung/payment-icons',
+                                'resource_type' => 'image',
+                            ]);
+                            $secureUrl = $result['secure_url'] ?? null;
+                        } catch (\Exception $e) {
+                            \Illuminate\Support\Facades\Log::error("Icon upload via UploadApi failed: " . $e->getMessage());
+                        }
+                    }
                     
                     if (!$secureUrl) {
-                        throw new \Exception('Gagal mendapatkan URL icon dari Cloudinary');
+                        throw new \Exception('Gagal mendapatkan URL icon dari Cloudinary. Silakan coba lagi.');
                     }
                     
                     $data['icon_image'] = $secureUrl;
@@ -186,21 +331,85 @@ class PaymentSettingController extends Controller
             if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
                 // Upload ke Cloudinary
                 try {
-                    // Upload ke Cloudinary menggunakan Cloudinary facade
-                    $uploadedFile = Cloudinary::upload($request->file('qris_image')->getRealPath(), [
-                        'folder' => 'barangkarung/qris',
-                        'resource_type' => 'image',
-                    ]);
+                    // Upload ke Cloudinary - coba berbagai cara
+                    $secureUrl = null;
                     
-                    // Log untuk debug
-                    \Illuminate\Support\Facades\Log::info("QRIS upload - Response type: " . gettype($uploadedFile));
-                    \Illuminate\Support\Facades\Log::info("QRIS upload - Response class: " . (is_object($uploadedFile) ? get_class($uploadedFile) : 'not object'));
+                    // Method 1: Cloudinary facade
+                    try {
+                        $uploadedFile = Cloudinary::upload($request->file('qris_image')->getRealPath(), [
+                            'folder' => 'barangkarung/qris',
+                            'resource_type' => 'image',
+                        ]);
+                        
+                        \Illuminate\Support\Facades\Log::info("QRIS upload - Response type: " . gettype($uploadedFile));
+                        \Illuminate\Support\Facades\Log::info("QRIS upload - Response class: " . (is_object($uploadedFile) ? get_class($uploadedFile) : 'not object'));
+                        
+                        // Coba berbagai cara untuk mendapatkan URL
+                        if (is_object($uploadedFile)) {
+                            if (method_exists($uploadedFile, 'getSecurePath')) {
+                                try {
+                                    $secureUrl = $uploadedFile->getSecurePath();
+                                    \Illuminate\Support\Facades\Log::info("QRIS - Got URL via getSecurePath()");
+                                } catch (\Exception $e) {
+                                    \Illuminate\Support\Facades\Log::warning("QRIS - getSecurePath() failed: " . $e->getMessage());
+                                }
+                            }
+                            
+                            if (!$secureUrl) {
+                                try {
+                                    $json = json_encode($uploadedFile);
+                                    $array = json_decode($json, true);
+                                    $secureUrl = $array['secure_url'] ?? null;
+                                    if ($secureUrl) {
+                                        \Illuminate\Support\Facades\Log::info("QRIS - Got URL via json_encode");
+                                    }
+                                } catch (\Exception $e) {
+                                    \Illuminate\Support\Facades\Log::warning("QRIS - json_encode failed: " . $e->getMessage());
+                                }
+                            }
+                            
+                            if (!$secureUrl && property_exists($uploadedFile, 'secure_url')) {
+                                try {
+                                    $secureUrl = $uploadedFile->secure_url;
+                                    \Illuminate\Support\Facades\Log::info("QRIS - Got URL via property");
+                                } catch (\Exception $e) {
+                                    \Illuminate\Support\Facades\Log::warning("QRIS - Property access failed: " . $e->getMessage());
+                                }
+                            }
+                        } elseif (is_array($uploadedFile)) {
+                            $secureUrl = $uploadedFile['secure_url'] ?? null;
+                            \Illuminate\Support\Facades\Log::info("QRIS - Got URL from array");
+                        }
+                        
+                        if (!$secureUrl) {
+                            $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                            if ($secureUrl) {
+                                \Illuminate\Support\Facades\Log::info("QRIS - Got URL via helper function");
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error("QRIS upload via facade failed: " . $e->getMessage());
+                    }
                     
-                    // Gunakan helper function untuk mendapatkan URL
-                    $secureUrl = getCloudinarySecureUrl($uploadedFile);
+                    // Method 2: UploadApi langsung
+                    if (!$secureUrl) {
+                        try {
+                            $uploadApi = new UploadApi();
+                            $result = $uploadApi->upload($request->file('qris_image')->getRealPath(), [
+                                'folder' => 'barangkarung/qris',
+                                'resource_type' => 'image',
+                            ]);
+                            $secureUrl = $result['secure_url'] ?? null;
+                            if ($secureUrl) {
+                                \Illuminate\Support\Facades\Log::info("QRIS - Got URL via UploadApi");
+                            }
+                        } catch (\Exception $e) {
+                            \Illuminate\Support\Facades\Log::error("QRIS upload via UploadApi failed: " . $e->getMessage());
+                        }
+                    }
                     
                     if (!$secureUrl) {
-                        \Illuminate\Support\Facades\Log::error("QRIS upload - Failed to get URL. Response: " . print_r($uploadedFile, true));
+                        \Illuminate\Support\Facades\Log::error("QRIS upload - All methods failed. Response: " . print_r($uploadedFile ?? 'null', true));
                         throw new \Exception('Gagal mendapatkan URL QRIS dari Cloudinary. Silakan coba lagi atau hubungi admin.');
                     }
                     
