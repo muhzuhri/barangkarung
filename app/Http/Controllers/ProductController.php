@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -15,7 +14,7 @@ class ProductController extends Controller
         $products = Product::where('is_active', true)->get();
         // Add image_url to each product for JavaScript
         $products->each(function ($product) {
-            $product->image_url = $product->image ? asset($product->image) : null;
+            $product->image_url = $product->image_url;
         });
         return view('user.katalog.katalog', compact('products'));
     }
@@ -74,15 +73,18 @@ class ProductController extends Controller
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-
-            // Ensure directory exists on the public disk (storage/app/public)
-            Storage::disk('public')->makeDirectory('img/baju-img');
-            $storedPath = Storage::disk('public')->putFileAs('img/baju-img', $image, $imageName);
-
-            $data['image'] = 'storage/' . $storedPath;
-            Log::info('Image stored at: storage/' . $storedPath);
+            try {
+                $data['image'] = uploadImageWithCloudinaryFallback(
+                    $request->file('image'),
+                    'barangkarung/products',
+                    'img/baju-img'
+                );
+            } catch (\Throwable $e) {
+                Log::error('Product image upload failed: ' . $e->getMessage());
+                return redirect()->back()
+                    ->withErrors(['image' => 'Gagal mengupload gambar produk: ' . $e->getMessage()])
+                    ->withInput();
+            }
         }
 
         // Calculate discount percentage if original_price is provided
@@ -142,23 +144,20 @@ class ProductController extends Controller
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image if exists on local filesystem
-            if ($product->image) {
-                $existingPath = str_replace('storage/', '', $product->image);
-                if (Storage::disk('public')->exists($existingPath)) {
-                    Storage::disk('public')->delete($existingPath);
-                } elseif (file_exists(public_path($product->image))) {
-                    @unlink(public_path($product->image));
-                }
+            deleteUploadedAsset($product->image);
+
+            try {
+                $data['image'] = uploadImageWithCloudinaryFallback(
+                    $request->file('image'),
+                    'barangkarung/products',
+                    'img/baju-img'
+                );
+            } catch (\Throwable $e) {
+                Log::error('Product image re-upload failed: ' . $e->getMessage());
+                return redirect()->back()
+                    ->withErrors(['image' => 'Gagal mengupload gambar produk: ' . $e->getMessage()])
+                    ->withInput();
             }
-
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-
-            Storage::disk('public')->makeDirectory('img/baju-img');
-            $storedPath = Storage::disk('public')->putFileAs('img/baju-img', $image, $imageName);
-
-            $data['image'] = 'storage/' . $storedPath;
         }
 
         // Calculate discount percentage if original_price is provided
@@ -189,9 +188,7 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         // Delete image if exists
-        if ($product->image && file_exists(public_path($product->image))) {
-            unlink(public_path($product->image));
-        }
+        deleteUploadedAsset($product->image);
 
         $product->delete();
 

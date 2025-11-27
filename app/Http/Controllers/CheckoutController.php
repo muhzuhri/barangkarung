@@ -56,11 +56,20 @@ class CheckoutController extends Controller
         // Prepare payment settings data untuk JavaScript dengan key payment_method
         $paymentSettingsJs = [];
         foreach ($paymentSettings as $payment) {
+            $qrisImage = null;
+            if ($payment->qris_image) {
+                if (filter_var($payment->qris_image, FILTER_VALIDATE_URL)) {
+                    $qrisImage = $payment->qris_image;
+                } else {
+                    $qrisImage = asset('storage/' . ltrim($payment->qris_image, '/'));
+                }
+            }
+
             $paymentSettingsJs[$payment->payment_method] = [
                 'label' => $payment->label ?? ucfirst($payment->payment_method),
                 'account_number' => $payment->account_number ?? '',
                 'account_name' => $payment->account_name ?? '',
-                'qris_image' => $payment->qris_image ? asset('storage/' . $payment->qris_image) : null,
+                'qris_image' => $qrisImage,
                 'instructions' => $payment->instructions ?? ''
             ];
         }
@@ -141,17 +150,13 @@ class CheckoutController extends Controller
         if (in_array($request->payment_method, ['dana', 'mandiri', 'qris'])) {
             if ($request->hasFile('payment_proof')) {
                 try {
-                    $path = $request->file('payment_proof')->store('payments', 'public');
-
-                    // Verifikasi file benar-benar tersimpan
-                    if (!\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
-                        Log::error("Payment proof file not saved: {$path}");
-                        return redirect()->back()->withInput()->with('error', 'Gagal menyimpan bukti transfer. Silakan coba lagi.');
-                    }
-
-                    $orderData['payment_proof'] = $path;
-                    Log::info("Payment proof saved: {$path}");
-                } catch (\Exception $e) {
+                    $orderData['payment_proof'] = uploadImageWithCloudinaryFallback(
+                        $request->file('payment_proof'),
+                        'barangkarung/payments',
+                        'payments'
+                    );
+                    Log::info("Payment proof saved: {$orderData['payment_proof']}");
+                } catch (\Throwable $e) {
                     Log::error("Payment proof upload error: " . $e->getMessage());
                     return redirect()->back()->withInput()->with('error', 'Gagal mengupload bukti transfer: ' . $e->getMessage());
                 }

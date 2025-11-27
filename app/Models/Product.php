@@ -36,6 +36,10 @@ class Product extends Model
             return null;
         }
 
+        if (filter_var($this->image, FILTER_VALIDATE_URL)) {
+            return $this->image;
+        }
+
         if (str_starts_with($this->image, 'img/')) {
             return asset($this->image);
         }
@@ -44,6 +48,6 @@ class Product extends Model
             return asset($this->image);
         }
 
-        return asset('storage/' . $this->image);
+        return asset('storage/' . ltrim($this->image, '/'));
     }
 }

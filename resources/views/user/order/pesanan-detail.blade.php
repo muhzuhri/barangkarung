@@ -122,7 +122,12 @@
                             <strong>{{ ucfirst($order->payment_status ?? '-') }}</strong>
                             @if ($order->payment_proof)
                                 <br>
-                                <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank">Lihat Bukti
+                                @php
+                                    $isCloudProof = str_contains($order->payment_proof, 'http');
+                                    $relativeProof = ltrim(str_replace('storage/', '', $order->payment_proof), '/');
+                                    $proofUrl = $isCloudProof ? $order->payment_proof : asset('storage/' . $relativeProof);
+                                @endphp
+                                <a href="{{ $proofUrl }}" target="_blank">Lihat Bukti
                                     Transfer</a>
                             @endif
                             <br>

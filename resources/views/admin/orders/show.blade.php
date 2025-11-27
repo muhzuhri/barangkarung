@@ -330,10 +330,12 @@
                     <div class="payment-proof">
                         <div class="label">Gambar Bukti Transfer :</div>
                         @php
-                            $proofUrl = asset('storage/' . $order->payment_proof);
-                            $storagePath = storage_path('app/public/' . $order->payment_proof);
-                            $publicPath = public_path('storage/' . $order->payment_proof);
-                            $fileExists = file_exists($storagePath) || file_exists($publicPath);
+                            $isCloudProof = str_contains($order->payment_proof, 'http');
+                            $relativeProof = ltrim(str_replace('storage/', '', $order->payment_proof), '/');
+                            $proofUrl = $isCloudProof ? $order->payment_proof : asset('storage/' . $relativeProof);
+                            $storagePath = $isCloudProof ? null : storage_path('app/public/' . $relativeProof);
+                            $publicPath = $isCloudProof ? null : public_path('storage/' . $relativeProof);
+                            $fileExists = $isCloudProof ? true : (file_exists($storagePath) || file_exists($publicPath));
                         @endphp
 
                         <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
@@ -349,7 +351,9 @@
                                 <small>Path DB: {{ $order->payment_proof }}</small><br>
                                 <small>URL: <a href="{{ $proofUrl }}"
                                         target="_blank">{{ $proofUrl }}</a></small><br>
-                                <small>Storage: {{ $storagePath }}</small>
+                                @if ($storagePath)
+                                    <small>Storage: {{ $storagePath }}</small>
+                                @endif
                             </div>
                         @endif
                     </div>

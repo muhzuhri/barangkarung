@@ -1,5 +1,11 @@
 <?php
 
+use Cloudinary\Api\Upload\UploadApi;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+
 if (!function_exists('getCloudinarySecureUrl')) {
     /**
      * Helper function untuk mendapatkan secure URL dari Cloudinary response
@@ -89,9 +95,116 @@ if (!function_exists('getCloudinarySecureUrl')) {
         }
         
         // Log untuk debug jika tidak berhasil
-        \Illuminate\Support\Facades\Log::warning("CloudinaryHelper: Failed to get secure_url. Type: " . gettype($uploadedFile) . ", Class: " . (is_object($uploadedFile) ? get_class($uploadedFile) : 'N/A'));
+        Log::warning("CloudinaryHelper: Failed to get secure_url. Type: " . gettype($uploadedFile) . ", Class: " . (is_object($uploadedFile) ? get_class($uploadedFile) : 'N/A'));
         
         return null;
+    }
+}
+
+if (!function_exists('isCloudinaryUrl')) {
+    function isCloudinaryUrl(?string $path): bool {
+        if (!$path) {
+            return false;
+        }
+
+        return str_contains($path, 'cloudinary.com') || str_contains($path, 'res.cloudinary.com');
+    }
+}
+
+if (!function_exists('shouldUseCloudinaryUploads')) {
+    function shouldUseCloudinaryUploads(): bool {
+        $isVercel = env('VERCEL') === '1' || env('APP_ENV') === 'production';
+        $cloudinaryUrl = env('CLOUDINARY_URL') ?: config('cloudinary.cloud_url');
+
+        return $isVercel || !empty($cloudinaryUrl);
+    }
+}
+
+if (!function_exists('format_local_storage_path')) {
+    function format_local_storage_path(string $relativePath): string {
+        $relativePath = ltrim($relativePath, '/');
+        return ltrim(str_replace('storage/', '', $relativePath), '/');
+    }
+}
+
+if (!function_exists('uploadImageWithCloudinaryFallback')) {
+    /**
+     * Upload file ke Cloudinary jika tersedia, fallback ke local storage (public disk)
+     */
+    function uploadImageWithCloudinaryFallback(UploadedFile $file, string $cloudFolder, string $localFolder = 'uploads'): string {
+        $cloudFolder = trim($cloudFolder, '/');
+
+        if (shouldUseCloudinaryUploads()) {
+            try {
+                $uploadedFile = Cloudinary::upload($file->getRealPath(), [
+                    'folder' => $cloudFolder,
+                    'resource_type' => 'image',
+                ]);
+
+                $url = getCloudinarySecureUrl($uploadedFile);
+                if (!$url) {
+                    throw new \RuntimeException('Cloudinary tidak mengembalikan URL.');
+                }
+
+                Log::info("Cloudinary upload success: {$url}");
+
+                return $url;
+            } catch (\Throwable $e) {
+                Log::error('Cloudinary upload failed: ' . $e->getMessage());
+                throw new \RuntimeException('Gagal mengupload ke Cloudinary: ' . $e->getMessage(), 0, $e);
+            }
+        }
+
+        try {
+            $storedRelativePath = $file->store($localFolder, 'public');
+            $formattedPath = format_local_storage_path($storedRelativePath);
+            Log::info("Local upload success: {$formattedPath}");
+            return $formattedPath;
+        } catch (\Throwable $e) {
+            Log::error('Local upload failed: ' . $e->getMessage());
+            throw new \RuntimeException('Gagal menyimpan file lokal: ' . $e->getMessage(), 0, $e);
+        }
+    }
+}
+
+if (!function_exists('deleteUploadedAsset')) {
+    function deleteUploadedAsset(?string $path): void {
+        if (!$path) {
+            return;
+        }
+
+        if (isCloudinaryUrl($path)) {
+            try {
+                $parsedPath = parse_url($path, PHP_URL_PATH);
+                $publicId = null;
+
+                if ($parsedPath) {
+                    $segments = explode('/upload/', $parsedPath);
+                    $afterUpload = $segments[1] ?? ltrim($parsedPath, '/');
+                    $afterUpload = ltrim($afterUpload, '/');
+                    $publicId = preg_replace('/\.[^.]+$/', '', $afterUpload);
+                }
+
+                if ($publicId) {
+                    Cloudinary::destroy($publicId);
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Failed to delete Cloudinary asset: ' . $e->getMessage());
+            }
+
+            return;
+        }
+
+        $relativePath = ltrim(str_replace('storage/', '', $path), '/');
+        if (!$relativePath) {
+            return;
+        }
+
+        try {
+            Storage::disk('public')->delete($relativePath);
+        } catch (\Throwable $e) {
+            Log::warning('Failed to delete local asset: ' . $e->getMessage());
+        }
     }
 }
 
