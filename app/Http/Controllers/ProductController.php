@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -16,7 +17,7 @@ class ProductController extends Controller
         $products->each(function ($product) {
             $product->image_url = $product->image ? asset($product->image) : null;
         });
-        return view('katalog', compact('products'));
+        return view('user.katalog.katalog', compact('products'));
     }
 
     public function adminIndex()
@@ -75,10 +76,13 @@ class ProductController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            // Store in public/img/baju-img directory
-            $image->move(public_path('img/baju-img'), $imageName);
-            $data['image'] = 'img/baju-img/' . $imageName;
-            Log::info('Image stored at: public/img/baju-img/' . $imageName);
+
+            // Ensure directory exists on the public disk (storage/app/public)
+            Storage::disk('public')->makeDirectory('img/baju-img');
+            $storedPath = Storage::disk('public')->putFileAs('img/baju-img', $image, $imageName);
+
+            $data['image'] = 'storage/' . $storedPath;
+            Log::info('Image stored at: storage/' . $storedPath);
         }
 
         // Calculate discount percentage if original_price is provided
@@ -138,16 +142,23 @@ class ProductController extends Controller
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($product->image && file_exists(public_path($product->image))) {
-                unlink(public_path($product->image));
+            // Delete old image if exists on local filesystem
+            if ($product->image) {
+                $existingPath = str_replace('storage/', '', $product->image);
+                if (Storage::disk('public')->exists($existingPath)) {
+                    Storage::disk('public')->delete($existingPath);
+                } elseif (file_exists(public_path($product->image))) {
+                    @unlink(public_path($product->image));
+                }
             }
 
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            // Store in public/img/baju-img directory
-            $image->move(public_path('img/baju-img'), $imageName);
-            $data['image'] = 'img/baju-img/' . $imageName;
+
+            Storage::disk('public')->makeDirectory('img/baju-img');
+            $storedPath = Storage::disk('public')->putFileAs('img/baju-img', $image, $imageName);
+
+            $data['image'] = 'storage/' . $storedPath;
         }
 
         // Calculate discount percentage if original_price is provided
@@ -170,7 +181,7 @@ class ProductController extends Controller
         // Pastikan ada URL gambar untuk ditampilkan
         $product->image_url = $product->image ? asset($product->image) : asset('img/default.jpg');
 
-        return view('detail_product', compact('product'));
+        return view('user.katalog.detail_product', compact('product'));
     }
 
     public function destroy($id)

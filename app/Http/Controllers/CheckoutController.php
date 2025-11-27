@@ -65,7 +65,14 @@ class CheckoutController extends Controller
             ];
         }
 
-        return view('checkout', compact('cartItems', 'subtotal', 'shippingCost', 'serviceFee', 'discount', 'total', 'user', 'paymentSettings', 'paymentSettingsJs'));
+
+        // Tentukan metode pembayaran yang memerlukan bukti transfer
+        // Metode yang memerlukan bukti: semua metode transfer (bukan COD)
+        $transferMethods = $paymentSettings->keys()->toArray();
+        // Tambahkan COD sebagai opsi default jika belum ada
+        $allPaymentMethods = array_merge(['cod'], $transferMethods);
+
+        return view('user.checkout', compact('cartItems', 'subtotal', 'shippingCost', 'serviceFee', 'discount', 'total', 'user', 'paymentSettings', 'paymentSettingsJs', 'allPaymentMethods', 'transferMethods'));
     }
 
     /**

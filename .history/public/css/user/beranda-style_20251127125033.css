@@ -1,0 +1,709 @@
+/* ===== PROMO SECTION ===== */
+.promo-section {
+    background-color: #f5f5f5;
+    padding: 50px 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.promo-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    max-width: 1100px;
+    width: 100%;
+}
+
+.promo-text {
+    flex: 1.5;
+}
+
+.promo-text h1 {
+    font-size: 35px;
+    font-weight: 600;
+    letter-spacing: 0.9px;
+    margin-bottom: 10px;
+    color: #000000;
+}
+
+.promo-text h3 {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    color: #000000;
+    margin-bottom: 10px;
+}
+
+.promo-text p {
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: #595959;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.promo-btn {
+    display: inline-flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.7px;
+    color: #000;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.promo-btn:hover {
+    transform: translateY(-2px);
+}
+
+.promo-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.promo-image img {
+    height: 400px;
+    max-width: auto;
+    border-radius: 140px;
+    object-fit: contain;
+}
+
+/* ========== MOBILE MODE PROMO SECTION ========== */
+@media (max-width: 650px) {
+
+    .promo-section {
+        padding: 30px 8%;
+        text-align: center;
+    }
+
+    .promo-content {
+        flex-direction: column-reverse; /* gambar di bawah teks */
+        gap: 25px;
+    }
+
+    .promo-text {
+        flex: 1;
+    }
+
+    .promo-text h1 {
+        font-size: 26px;
+        letter-spacing: 0.7px;
+        margin-bottom: 8px;
+        line-height: 1.3;
+    }
+    
+    .promo-text h3 {
+        font-size: 16px;
+        letter-spacing: 0.7px;
+        margin-bottom: 9px;
+    }
+    
+    .promo-text p {
+        font-size: 15px;
+        letter-spacing: 0.5px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+        text-align: justify;
+        hyphens: auto;
+        text-align-last: left;
+    }
+
+    .promo-image img {
+        width: 100%;
+        max-width: 300px; /* kamu bisa ubah jadi 420px, 480px, dll */
+        height: auto;
+        border-radius: 90px;
+        object-fit: cover;
+    }
+
+    .promo-btn {
+        font-size: 15px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        display: inline-flex;
+        justify-content: center;
+        background: #e6e6e6;
+        transition: 0.3s;
+    }
+
+    .promo-btn:hover {
+        transform: translateY(-1px);
+        background: #d8d8d8;
+    }
+}
+
+
+/* ===== HERO SLIDER 5 GAMBAR ===== */
+.hero-slider {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 30px auto;
+    overflow: hidden;
+    border-radius: 11px;
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.6s ease-in-out;
+}
+
+.slide {
+    min-width: 100%;
+    transition: opacity 0.5s;
+}
+
+.slide img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Tombol navigasi kiri-kanan */
+.hero-slider button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(to right, #cfcfcf); /* gradasi hitam → abu muda */
+    color: black;
+    border: none;
+    border-radius: 80px;
+    width: 55px;
+    height: 32px;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-slider button:hover {
+    background: linear-gradient(to right, #000000, #b5b5b5);
+}
+
+/* Posisi kiri */
+.hero-slider .prev {
+    left: 15px;
+}
+
+/* Posisi kanan */
+.hero-slider .next {
+    right: 15px;
+}
+
+
+/* ==== SECTION PROMO BRAND ==== */
+.promo-brand {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f5f5f5;
+    margin: 25px 25px;
+}
+
+.promo-brand h2 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #222;
+    margin-bottom: 45px;
+}
+
+/* Grid container */
+.promo-card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    /* sedikit lebih kecil */
+    gap: 30px;
+    /* jarak antar card */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* CARD STYLE */
+.promo-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+}
+
+.promo-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+}
+
+/* Gambar card */
+.promo-card img {
+    width: 100%;
+    height: 340px;
+    /* sedikit lebih kecil dari versi sebelumnya */
+    object-fit: cover;
+    display: block;
+}
+
+/* Overlay bagian bawah */
+.card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 22px;
+    color: white;
+    text-align: center;
+    background: linear-gradient(to top, #000 40%, rgba(0, 0, 0, 0.6), transparent);
+    /* ganti pink → hitam */
+}
+
+/* Label SALE */
+.sale-label {
+    background: #000;
+    /* dari #ec4899 → hitam */
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.card-overlay h3 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.card-overlay p {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ==== RESPONSIVE PROMO BRAND (max-width: 768px) ==== */
+@media (max-width: 768px) {
+
+    .promo-brand {
+        padding: 35px 15px;
+        margin: 20px 15px;
+    }
+
+    .promo-brand h2 {
+        font-size: 24px;
+        margin-bottom: 25px;
+        letter-spacing: 1px;
+    }
+
+    /* Grid jadi 1 kolom */
+    .promo-card-container {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    /* Card style */
+    .promo-card {
+        border-radius: 12px;
+    }
+
+    /* Gambar card lebih kecil */
+    .promo-card img {
+        height: 300px; /* dari 340px → lebih proporsional mobile */
+        object-fit: cover;
+    }
+
+    /* Overlay */
+    .card-overlay {
+        padding: 18px;
+        background: linear-gradient(to top, #000 55%, rgba(0,0,0,0.4), transparent);
+    }
+
+    .sale-label {
+        font-size: 12px;
+        padding: 5px 12px;
+    }
+
+    .card-overlay h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    .card-overlay p {
+        font-size: 13px;
+    }
+}
+
+
+/* ==== SECTION ATTENTION ==== */
+.attention-section {
+    background: linear-gradient(135deg, #000, #1a1a1a);
+    color: #fff;
+    padding: 35px 30px;
+    margin: 30px 35px;
+    border-radius: 12px;
+    box-shadow:
+        0 1px 3px 0 rgb(0 0 0 / 0.1),
+        0 1px 2px -1px rgb(0 0 0 / 0.1);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Efek cahaya lembut di belakang */
+.attention-section::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to top, #000000 0%, #b5b5b5 100%);
+}
+
+/* Kontainer utama */
+.attention-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1050px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* Kiri: Gambar */
+.attention-image {
+    flex: 1 1 42%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.attention-image img {
+    width: 100%;
+    max-width: 360px;
+    /* ↓ dikurangi agar lebih ramping */
+    border-radius: 13px;
+}
+
+.attention-image img:hover {
+    transform: scale(1.04);
+}
+
+/* Kanan: Teks dan tombol */
+.attention-content {
+    flex: 1 1 50%;
+    text-align: left;
+    padding: 20px;
+    /* ↓ dikurangi dari 30px */
+}
+
+.attention-content h2 {
+    font-size: 33px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.attention-content p {
+    font-size: 16px;
+    letter-spacing: 0.6px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+/* List poin */
+.attention-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 25px;
+}
+
+.attention-list li {
+    font-size: 15px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.attention-list .material-icons {
+    font-size: 19px;
+    color: #000000;
+}
+
+/* Tombol CTA */
+.attention-btn {
+    display: inline-block;
+    background: #000000;
+    color: #fff;
+    padding: 12px 30px;
+    /* ↓ sedikit dikurangi */
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    transition: all 0.3s ease;
+    /* box-shadow: 0 4px 12px rgba(233, 30, 99, 0.35); */
+}
+
+.attention-btn:hover {
+    background: #fff;
+    color: #000;
+    transform: translateY(-3px);
+    /* box-shadow: 0 6px 16px rgba(255, 255, 255, 0.4); */
+}
+
+/* ==== RESPONSIVE MOBILE (max-width: 768px) ==== */
+@media (max-width: 768px) {
+
+    .attention-section {
+        padding: 25px 20px;
+        margin: 25px 30px;
+
+        border-radius: 15px;
+    }
+
+    .attention-wrapper {
+        flex-direction: column; /* dari dua kolom → satu kolom */
+        text-align: center;     /* teks jadi center */
+    }
+
+    /* Gambar */
+    .attention-image {
+        flex: none;
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 0;
+    }
+
+    .attention-image img {
+        margin-top: 5px;
+        max-width: 280px; /* dibuat lebih kecil */
+        border-radius: 15px;
+    }
+
+    /* Teks */
+    .attention-content {
+        flex: none;
+        width: 100%;
+        padding: 10px 5px;
+    }
+
+    .attention-content h2 {
+        font-size: 26px;
+        margin-bottom: 12px;
+    }
+
+    .attention-content p {
+        font-size: 15px;
+        margin-bottom: 18px;
+        line-height: 1.55;
+    }
+
+    /* List */
+    .attention-list {
+        margin-bottom: 22px;
+    }
+
+    .attention-list li {
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        justify-content: left; /* icon + text di tengah */
+    }
+
+    .attention-list .material-icons {
+        font-size: 17px;
+    }
+
+    /* Tombol */
+    .attention-btn {
+        padding: 10px 26px;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+    }
+}
+
+
+
+/* ==== SECTION SIZE PRODUCT ==== */
+.size-chart-section {
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+    color: #333;
+    padding: 40px 30px;
+    margin: 40px 35px;
+    border-radius: 12px;
+    box-shadow:
+        0 1px 3px 0 rgb(0 0 0 / 0.1),
+        0 1px 2px -1px rgb(0 0 0 / 0.1);
+    text-align: center;
+}
+
+.size-chart-section h2 {
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    color: #000;
+    margin-bottom: 15px;
+}
+
+/* ==== TABLE WRAPPER ==== */
+.size-table-container {
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow:
+        0 1px 3px 0 rgb(0 0 0 / 0.1),
+        0 1px 2px -1px rgb(0 0 0 / 0.1);
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+/* ==== TABLE STYLE ==== */
+.size-chart-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Poppins', sans-serif;
+}
+
+.size-chart-table thead {
+    background: rgb(21, 21, 21);
+    color: #fff;
+}
+
+.size-chart-table th,
+.size-chart-table td {
+    padding: 16px 20px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 15px;
+}
+
+.size-chart-table th {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.size-chart-table tbody tr:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+/* ==== FOOTNOTE ==== */
+.size-note {
+    font-size: 12px;
+    color: #535353;
+    margin-top: 15px;
+    font-style: italic;
+}
+
+/* ================= MOBILE MODE ================= */
+@media (max-width: 650px) {
+
+    /* === Wrapper section lebih kecil === */
+    .size-chart-section {
+        padding: 25px 20px;
+        margin: 25px 15px;
+        border-radius: 15px;
+    }
+
+    .size-chart-section h2 {
+        font-size: 20px;
+        letter-spacing: 1.4px;
+        margin-bottom: 12px;
+    }
+
+    /* === TABLE WRAPPER === */
+    .size-table-container {
+        overflow-x: auto;        /* membuat scroll horizontal */
+        -webkit-overflow-scrolling: touch; /* lebih smooth di HP */
+        border-radius: 10px;
+        margin: 0;
+    }
+
+    /* === TABLE === */
+    .size-chart-table {
+        width: 650px; /* memberi ruang agar scroll muncul */
+        font-size: 14px;
+    }
+
+    .size-chart-table th,
+    .size-chart-table td {
+        padding: 12px 14px;
+        font-size: 10px;
+        white-space: nowrap; /* supaya kolom tidak turun ke bawah */
+    }
+
+    /* Note */
+    .size-note {
+        font-size: 11px;
+        margin-top: 12px;
+        padding: 0 5px;
+    }
+}
+
+
+/* ==== SECTION FOOTER ==== */
+.footer {
+    background: #000;
+    color: #fff;
+    padding: 30px 20px;
+    text-align: center;
+    border-top: 2px solid #575657;
+    font-family: 'Poppins', sans-serif;
+}
+
+.footer-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.footer p {
+    font-size: 14px;
+    margin: 8px 0;
+}
+
+.footer .brand {
+    color: #878787;
+    font-weight: 600;
+}
+
+.footer-links {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.footer-links a {
+    font-size: 14px;
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #676767;
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 600px) {
+    .footer-links {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+

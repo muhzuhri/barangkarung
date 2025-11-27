@@ -1,0 +1,134 @@
+/* ===== KATALOG SECTION ===== */
+.katalog-section {
+    width: 100%;
+    padding: 30px 0;
+}
+
+.katalog-section h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+
+/* ===== GRID PRODUK – 3 PRODUK PER BARIS ===== */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Desktop: 3 kolom */
+    gap: 20px;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .product-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+
+/* ===== KARTU PRODUK ===== */
+.product-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #e6e6e6;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+
+/* ===== GAMBAR PRODUK ===== */
+.product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+
+/* ===== NAMA PRODUK ===== */
+.product-card a {
+    font-weight: 600;
+    margin: 10px 0 6px;
+    text-decoration: none;
+    color: #333;
+    text-align: center;
+    font-size: 15px;
+}
+
+.product-card a:hover {
+    color: #ff5e17;
+}
+
+
+/* ===== BRAND ===== */
+.brand {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 8px;
+}
+
+
+/* ===== HARGA ===== */
+.price {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.price .discount {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1d1d1d;
+}
+
+.price .original {
+    font-size: 12px;
+    text-decoration: line-through;
+    color: #999;
+    margin-left: 6px;
+}
+
+.price .off {
+    background: #ff3b30;
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 5px;
+}
+
+
+/* ===== BUTTON ADD TO CART ===== */
+.btn-cart {
+    width: 100%;
+    background: #1f2937;
+    color: white;
+    border: none;
+    padding: 10px 0;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.btn-cart:hover {
+    background: #111827;
+}

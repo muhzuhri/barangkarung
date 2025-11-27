@@ -31,7 +31,7 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('pesanan', compact('orders'));
+        return view('user.order.pesanan', compact('orders'));
     }
 
     /**
@@ -46,7 +46,7 @@ class OrderController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        return view('pesanan-detail', compact('order'));
+        return view('user.order.pesanan-detail', compact('order'));
     }
 
     /**
@@ -133,7 +133,7 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('pesanan-history', compact('orders'));
+        return view('user.order.pesanan-history', compact('orders'));
     }
 
     /**

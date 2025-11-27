@@ -40,6 +40,10 @@ class Product extends Model
             return asset($this->image);
         }
 
+        if (str_starts_with($this->image, 'storage/')) {
+            return asset($this->image);
+        }
+
         return asset('storage/' . $this->image);
     }
 }

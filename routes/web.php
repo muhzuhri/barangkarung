@@ -22,7 +22,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Protected Routes (User)
 Route::middleware('auth')->group(function () {
     Route::get('/beranda', function () {
-        return view('beranda');
+        return view('user.beranda');
     })->name('beranda');
 
     // Katalog Produk

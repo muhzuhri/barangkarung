@@ -1,5 +1,5 @@
 @include('admin.layout.header')
-<title>Setting Admin | BK</title>
+<title>Profile Admin | BK</title>
 
 @if (session('success'))
     <div class="alert alert-success">
