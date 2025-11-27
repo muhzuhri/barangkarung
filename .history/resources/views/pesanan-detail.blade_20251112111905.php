@@ -109,20 +109,62 @@
                 <div>
                     <div class="detail-label">Status Pembayaran</div>
                     <div class="detail-value">
-                        @if ($order->payment_method === 'dana' || $order->payment_method === 'mandiri')
+                        @php
+                            // Ambil metode pembayaran transfer dari payment_settings
+                            $transferMethods = \App\Models\PaymentSetting::where('is_active', true)->pluck('payment_method')->toArray();
+                        @endphp
+                        @if (in_array($order->payment_method, $transferMethods))
                             <strong>{{ ucfirst($order->payment_status ?? '-') }}</strong>
+
                             @if ($order->payment_proof)
                                 <br>
-                                <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank">Lihat Bukti
-                                    Transfer</a>
+                                @php
+                                    $isDataUri = Str::startsWith($order->payment_proof, 'data:');
+                                    $isBase64 = Str::startsWith($order->payment_proof, 'base64:');
+                                    $isCloudinary = Str::contains($order->payment_proof, 'cloudinary.com') || Str::contains($order->payment_proof, 'res.cloudinary.com');
+                                    
+                                    if ($isBase64) {
+                                        // Base64 fallback - convert ke data URI
+                                        $base64Data = substr($order->payment_proof, 7); // Remove 'base64:' prefix
+                                        $proofUrl = 'data:image/jpeg;base64,' . $base64Data;
+                                    } elseif ($isDataUri) {
+                                        $proofUrl = $order->payment_proof;
+                                    } elseif ($isCloudinary) {
+                                        $proofUrl = $order->payment_proof;
+                                    } else {
+                                        $proofUrl = asset('storage/' . $order->payment_proof);
+                                    }
+                                @endphp
+                                <a href="{{ $proofUrl }}" target="_blank">
+                                    <img src="{{ $proofUrl }}" alt="Bukti Pembayaran"
+                                        style="max-width: 300px; margin-top: 8px; border: 1px solid #e5e7eb; border-radius: 8px; cursor: pointer;"
+                                        onerror="this.onerror=null; this.parentElement.innerHTML='<span style=\'color: #ef4444;\'>⚠ Gambar tidak dapat dimuat. <a href=\'{{ $proofUrl }}\' target=\'_blank\'>Coba buka link ini</a></span>';">
+                                </a>
+                                <br><small style="color: #6b7280; margin-top: 4px; display: inline-block;">Klik gambar untuk melihat ukuran penuh</small>
+                                @if ($isBase64)
+                                    <br><small style="color: #f59e0b; margin-top: 4px; display: inline-block;">⚠ Bukti pembayaran disimpan sementara. Silakan upload ulang untuk kualitas lebih baik.</small>
+                                @endif
                             @endif
+
                             <br>
+
                             @if ($order->payment_status === 'pending')
                                 Menunggu konfirmasi admin
                             @elseif($order->payment_status === 'verified')
                                 Pembayaran terkonfirmasi
                             @elseif($order->payment_status === 'rejected')
                                 Pembayaran ditolak, silakan hubungi admin
+                            @endif
+
+                            @if (!$order->payment_proof && in_array($order->payment_status, [null, 'pending']))
+                                <form action="{{ route('pesanan.uploadProof', $order->id) }}" method="POST"
+                                    enctype="multipart/form-data" style="margin-top: 12px;">
+                                    @csrf
+                                    <label for="payment_proof">Upload Bukti Pembayaran:</label><br>
+                                    <input type="file" id="payment_proof" name="payment_proof" accept="image/*"
+                                        required>
+                                    <button type="submit" style="margin-left: 8px;">Upload</button>
+                                </form>
                             @endif
                         @else
                             Non-Transfer (Bayar di Tempat/COD)

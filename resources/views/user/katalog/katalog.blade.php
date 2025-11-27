@@ -29,19 +29,19 @@
     <section class="hero-slider">
         <div class="slides">
             <div class="slide active">
-                <img src="img/img/pict1.jpg" alt="Slide 1">
+                <img src="{{ asset('img/img/pict1.jpg') }}" alt="Slide 1">
             </div>
             <div class="slide">
-                <img src="img/img/pict2.jpg" alt="Slide 2">
+                <img src="{{ asset('img/img/pict2.jpg') }}" alt="Slide 2">
             </div>
             <div class="slide">
-                <img src="img/img/pict3.jpg" alt="Slide 3">
+                <img src="{{ asset('img/img/pict3.jpg') }}" alt="Slide 3">
             </div>
             <div class="slide">
-                <img src="img/img/pict4.jpg" alt="Slide 4">
+                <img src="{{ asset('img/img/pict4.jpg') }}" alt="Slide 4">
             </div>
             <div class="slide">
-                <img src="img/img/pict5.jpg" alt="Slide 5">
+                <img src="{{ asset('img/img/pict5.jpg') }}" alt="Slide 5">
             </div>
         </div>
 

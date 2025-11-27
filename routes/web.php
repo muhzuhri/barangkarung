@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
 
     // Keranjang
     Route::get('/keranjang', [CartController::class, 'index'])->name('keranjang');
-    
+
     // Cart API Routes
     Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
     Route::put('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
@@ -47,11 +47,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/chatbot/ask', [ChatbotController::class, 'ask'])->name('chatbot.ask');
     Route::get('/chatbot/faqs', [ChatbotController::class, 'getPopularFaqs'])->name('chatbot.faqs');
     Route::get('/chatbot/all-faqs', [ChatbotController::class, 'getAllFaqs'])->name('chatbot.all-faqs');
+    Route::get('/faq', function () {
+        return view('faq');
+    })->name('faq');
 
     // Pesanan
     Route::get('/pesanan', [OrderController::class, 'index'])->name('pesanan');
     Route::get('/pesanan/{id}', [OrderController::class, 'show'])->name('pesanan.detail');
     Route::post('/pesanan/{id}/selesai', [OrderController::class, 'complete'])->name('pesanan.selesai');
+    Route::post('/pesanan/{order}/upload-bukti', [OrderController::class, 'uploadProof'])->name('pesanan.uploadProof');
     Route::get('/pesanan-history', [OrderController::class, 'history'])->name('pesanan.history');
 
     // Profil
@@ -66,16 +70,17 @@ Route::prefix('admin')->group(function () {
     Route::get('/login', function () {
         return redirect()->route('login');
     })->name('admin.login');
-    
+
     // Protected Admin Routes
     Route::middleware('auth:admin')->group(function () {
         Route::get('/dashboard', [AdminAuthController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/profile', [AdminAuthController::class, 'profile'])->name('admin.setting.profile');
         Route::post('/profile', [AdminAuthController::class, 'updateProfile'])->name('admin.setting.profile.update');
         Route::get('/payment-settings', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'index'])->name('admin.setting.payment');
-        Route::put('/payment-settings/{id}', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'update'])->name('admin.setting.payment.update');
         Route::post('/payment-settings', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'store'])->name('admin.setting.payment.store');
-        
+        Route::put('/payment-settings/{id}', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'update'])->name('admin.setting.payment.update');
+        Route::delete('/payment-settings/{id}', [\App\Http\Controllers\Admin\PaymentSettingController::class, 'destroy'])->name('admin.setting.payment.destroy');
+
         // Product Management Routes
         Route::post('/products', [ProductController::class, 'store'])->name('admin.products.store');
         Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');
@@ -83,7 +88,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
         Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
         Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
-        
+
         // Order Management Routes
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
         Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
@@ -117,3 +122,25 @@ Route::prefix('admin')->group(function () {
         ]);
     });
 });
+
+// Test route untuk debug Cloudinary (hapus setelah selesai debug)
+Route::get('/test-cloudinary', function() {
+    try {
+        $cloudinaryUrl = env('CLOUDINARY_URL') ?: config('cloudinary.cloud_url');
+        $isVercel = env('VERCEL') === '1';
+        
+        return response()->json([
+            'cloudinary_configured' => !empty($cloudinaryUrl),
+            'cloudinary_url_set' => !empty($cloudinaryUrl),
+            'cloudinary_url_preview' => $cloudinaryUrl ? substr($cloudinaryUrl, 0, 30) . '...' : 'Not Set',
+            'is_vercel' => $isVercel,
+            'app_env' => env('APP_ENV'),
+            'vercel_env' => env('VERCEL'),
+            'cloudinary_cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+            'cloudinary_key' => env('CLOUDINARY_KEY') ? 'Set' : 'Not Set',
+            'cloudinary_secret' => env('CLOUDINARY_SECRET') ? 'Set' : 'Not Set',
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+})->name('test.cloudinary');

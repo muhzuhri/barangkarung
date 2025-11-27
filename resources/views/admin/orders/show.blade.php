@@ -330,26 +330,57 @@
                     <div class="payment-proof">
                         <div class="label">Gambar Bukti Transfer :</div>
                         @php
-                            $proofUrl = asset('storage/' . $order->payment_proof);
-                            $storagePath = storage_path('app/public/' . $order->payment_proof);
-                            $publicPath = public_path('storage/' . $order->payment_proof);
-                            $fileExists = file_exists($storagePath) || file_exists($publicPath);
+                            $isDataUri = Str::startsWith($order->payment_proof, 'data:');
+                            $isBase64 = Str::startsWith($order->payment_proof, 'base64:');
+                            $isCloudinary = Str::contains($order->payment_proof, 'cloudinary.com') || Str::contains($order->payment_proof, 'res.cloudinary.com');
+                            
+                            if ($isBase64) {
+                                // Base64 fallback - convert ke data URI
+                                $base64Data = substr($order->payment_proof, 7); // Remove 'base64:' prefix
+                                $proofUrl = 'data:image/jpeg;base64,' . $base64Data;
+                                $fileExists = true;
+                            } elseif ($isDataUri) {
+                                $proofUrl = $order->payment_proof;
+                                $fileExists = true;
+                            } elseif ($isCloudinary) {
+                                // File dari Cloudinary (untuk Vercel)
+                                $proofUrl = $order->payment_proof;
+                                $fileExists = true;
+                            } elseif ($order->payment_proof) {
+                                // File dari local storage (fallback untuk local development)
+                                $proofUrl = asset('storage/' . $order->payment_proof);
+                                $fileExists = \Illuminate\Support\Facades\Storage::disk('public')->exists($order->payment_proof);
+                            } else {
+                                $proofUrl = '';
+                                $fileExists = false;
+                            }
                         @endphp
 
-                        <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
-                            <img src="{{ $proofUrl }}" alt="Bukti Pembayaran"
-                                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><strong>⚠ Gambar tidak dapat dimuat</strong><br><small>{{ $proofUrl }}</small></div>';"
-                                class="proof-image">
-                        </a>
+                        @if ($isDataUri || $isBase64)
+                            <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
+                                <img src="{{ $proofUrl }}" alt="Bukti Pembayaran" class="proof-image">
+                            </a>
+                            @if ($isBase64)
+                                <div class="note" style="color: #f59e0b; margin-top: 8px;">
+                                    ⚠ Bukti pembayaran disimpan sementara (base64). User disarankan untuk upload ulang.
+                                </div>
+                            @endif
+                        @else
+                            <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
+                                <img src="{{ $proofUrl }}" alt="Bukti Pembayaran"
+                                    onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><strong>⚠ Gambar tidak dapat dimuat</strong><br><small>{{ $proofUrl }}</small></div>';"
+                                    class="proof-image">
+                            </a>
+                        @endif
                         <div class="note">Klik gambar untuk melihat ukuran penuh</div>
 
-                        @if (!$fileExists)
+                        @if (!$isDataUri && !$fileExists)
                             <div class="debug-info">
                                 <strong>⚠ Debug Info:</strong><br>
                                 <small>Path DB: {{ $order->payment_proof }}</small><br>
                                 <small>URL: <a href="{{ $proofUrl }}"
                                         target="_blank">{{ $proofUrl }}</a></small><br>
-                                <small>Storage: {{ $storagePath }}</small>
+                                <small>Storage Disk: public</small>
                             </div>
                         @endif
                     </div>

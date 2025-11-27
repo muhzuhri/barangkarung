@@ -6,6 +6,9 @@ use App\Models\Faq;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+
+
+
 class ChatbotController extends Controller
 {
     /**
@@ -397,5 +400,3 @@ class ChatbotController extends Controller
         return 'Terima kasih! Bisa jelaskan pertanyaan Anda tentang pakaian atau cara belanja? Saya akan bantu.';
     }
 }
-
-
