@@ -115,7 +115,7 @@
 
     .promo-image img {
         width: 100%;
-        max-width: 310px; /* kamu bisa ubah jadi 420px, 480px, dll */
+        max-width: 300px; /* kamu bisa ubah jadi 420px, 480px, dll */
         height: auto;
         border-radius: 90px;
         object-fit: cover;
@@ -138,15 +138,14 @@
 }
 
 
-/* ===== SECTION HERO SLIDER 5 GAMBAR ===== */
+/* ===== HERO SLIDER 5 GAMBAR ===== */
 .hero-slider {
     position: relative;
     width: 100%;
     max-width: 1200px;
-    margin: 20px auto; /* aman */
+    margin: 30px auto;
     overflow: hidden;
-    border-radius: 12px;
-    box-sizing: border-box;
+    border-radius: 11px;
 }
 
 .slides {
@@ -164,18 +163,17 @@
     height: 450px;
     object-fit: cover;
     display: block;
-    border-radius: 0; /* biar tidak bikin overflow */
 }
 
-/* Tombol navigasi */
+/* Tombol navigasi kiri-kanan */
 .hero-slider button {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255,255,255,0.5);
+    background: linear-gradient(to right, #cfcfcf); /* gradasi hitam → abu muda */
     color: black;
     border: none;
-    border-radius: 50px;
+    border-radius: 80px;
     width: 55px;
     height: 32px;
     font-size: 22px;
@@ -185,75 +183,21 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(4px);
 }
 
 .hero-slider button:hover {
-    background: rgba(0,0,0,0.75);
-    color: white;
+    background: linear-gradient(to right, #000000, #b5b5b5);
 }
 
-/* Posisi tombol */
-.hero-slider .prev { left: 15px; }
-.hero-slider .next { right: 15px; }
-
-
-/* ===== RESPONSIVE TABLET ===== */
-@media (max-width: 768px) {
-
-    .hero-slider {
-        width: calc(100% - 30px); /* aman dari overflow */
-        margin: 18px auto;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
-    }
-
-    .slide img {
-        height: 280px;
-    }
-
-    .hero-slider button {
-        width: 40px;
-        height: 26px;
-        font-size: 17px;
-        border-radius: 40px;
-        background: rgba(255, 255, 255, 0.65);
-        backdrop-filter: blur(4px);
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
-    }
-
-    .hero-slider .prev { left: 12px; }
-    .hero-slider .next { right: 12px; }
+/* Posisi kiri */
+.hero-slider .prev {
+    left: 15px;
 }
 
-
-/* ===== RESPONSIVE HP KECIL ===== */
-@media (max-width: 480px) {
-
-    .hero-slider {
-        width: calc(100% - 20px);
-        margin: 14px auto;
-        border-radius: 10px;
-    }
-
-    .slide img {
-        height: 210px;
-    }
-
-    .hero-slider button {
-        width: 34px;
-        height: 24px;
-        font-size: 15px;
-        background: rgba(255, 255, 255, 0.55);
-        backdrop-filter: blur(3px);
-    }
-
-    .hero-slider .prev { left: 8px; }
-    .hero-slider .next { right: 8px; }
+/* Posisi kanan */
+.hero-slider .next {
+    right: 15px;
 }
-
-
 
 
 /* ==== SECTION PROMO BRAND ==== */
@@ -346,14 +290,18 @@
 
 /* ==== RESPONSIVE PROMO BRAND (max-width: 768px) ==== */
 @media (max-width: 768px) {
+
     .promo-brand {
-        padding: 35px 15px;
-        margin: 20px 15px;
+        /* padding: 40px 15px;
+        margin: 20px 15px; */
+
+        /* padding: 30px 20px;
+        margin: 25px 15px; */
     }
 
     .promo-brand h2 {
-        font-size: 24px;
-        margin-bottom: 25px;
+        font-size: 22px;
+        margin-bottom: 30px;
         letter-spacing: 1px;
     }
 
@@ -370,7 +318,7 @@
 
     /* Gambar card lebih kecil */
     .promo-card img {
-        height: 300px; /* dari 340px → lebih proporsional mobile */
+        height: 260px; /* dari 340px → lebih proporsional mobile */
         object-fit: cover;
     }
 
@@ -523,7 +471,7 @@
 
     .attention-section {
         padding: 25px 20px;
-        margin: 25px 30px;
+        margin: 25px 15px;
         border-radius: 15px;
     }
 
@@ -541,7 +489,7 @@
     }
 
     .attention-image img {
-        margin-top: 3px;
+        margin-top: 5px;
         max-width: 280px; /* dibuat lebih kecil */
         border-radius: 15px;
     }
@@ -669,7 +617,7 @@
     /* === Wrapper section lebih kecil === */
     .size-chart-section {
         padding: 25px 20px;
-        margin: 25px 30px;
+        margin: 25px 15px;
         border-radius: 15px;
     }
 

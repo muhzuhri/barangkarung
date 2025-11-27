@@ -86,22 +86,18 @@
 
 <!-- ===== SECTION CATEGORY MENU ===== -->
 <nav class="category-menu" id="categoryMenu">
+    <a href="{{ route('beranda') }}" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">Beranda</a>
+    <a href="{{ route('katalog') }}" class="{{ request()->routeIs('katalog') ? 'active' : '' }}">Katalog</a>
+    <a href="{{ route('pesanan') }}" class="{{ request()->routeIs('pesanan') ? 'active' : '' }}">Pesanan</a>
+    <a href="{{ route('pesanan.history') }}"
+        class="{{ request()->routeIs('pesanan.history') ? 'active' : '' }}">Riwayat</a>
+    <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile') ? 'active' : '' }}">Profile</a>
 
-    <div class="menu-links">
-        <a href="{{ route('beranda') }}" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">Beranda</a>
-        <a href="{{ route('katalog') }}" class="{{ request()->routeIs('katalog') ? 'active' : '' }}">Katalog</a>
-        <a href="{{ route('pesanan') }}" class="{{ request()->routeIs('pesanan') ? 'active' : '' }}">Pesanan</a>
-        <a href="{{ route('pesanan.history') }}"
-            class="{{ request()->routeIs('pesanan.history') ? 'active' : '' }}">Riwayat</a>
-        <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile') ? 'active' : '' }}">Profile</a>
-    </div>
-
+    <!-- HAMBURGER DI DALAM CATEGORY MENU -->
     <div class="hamburger" id="hamburgerBtn">
         <span class="material-icons" id="hamburgerIcon">menu</span>
     </div>
-
 </nav>
-
 
 {{-- SCRIPT HAMBURGER MENU --}}
 <script>
@@ -109,21 +105,15 @@
     const hamburgerIcon = document.getElementById("hamburgerIcon");
     const categoryMenu = document.getElementById("categoryMenu");
 
-    hamburgerBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); // mencegah klik merambat ke nav
-
+        hamburgerBtn.addEventListener("click", () => {
         categoryMenu.classList.toggle("active");
 
-        hamburgerIcon.textContent =
-            categoryMenu.classList.contains("active") ? "close" : "menu";
-    });
-
-    // Tutup menu saat klik link
-    document.querySelectorAll(".menu-links a").forEach(link => {
-        link.addEventListener("click", () => {
-            categoryMenu.classList.remove("active");
+        // Ganti icon menu <-> close
+        if (categoryMenu.classList.contains("active")) {
+            hamburgerIcon.textContent = "close";
+        } else {
             hamburgerIcon.textContent = "menu";
-        });
+        }
     });
 </script>
 
@@ -135,15 +125,9 @@
         <div
             style="background:#111827; color:#fff; padding:14px 16px; display:flex; align-items:center; justify-content:space-between;">
             <div style="font-weight:600; font-size:16px;">Asisten BarangKarung</div>
-            <div style="display:flex; align-items:center; gap:8px;">
-                <button id="bk-chatbot-fullscreen"
-                    style="background:transparent; border:none; color:#fff; font-size:18px; cursor:pointer; padding:4px;"
-                    title="Fullscreen">
-                    <span style="font-size:16px;">⛶</span>
-                </button>
-                <button id="bk-chatbot-close"
-                    style="background:transparent; border:none; color:#fff; font-size:20px; cursor:pointer;">×</button>
-            </div>
+
+            <button id="bk-chatbot-close"
+                style="background:transparent; border:none; color:#fff; font-size:20px; cursor:pointer;">×</button>
         </div>
         <div id="bk-chatbot-messages" style="flex:1; padding:16px; overflow-y:auto; background:#f9fafb;"></div>
         <div id="bk-chatbot-quick-replies"
@@ -227,34 +211,41 @@
                 return text;
             }
 
-            function toggleFullscreen() {
-                isFullscreen = !isFullscreen;
-                if (isFullscreen) {
-                    // Masuk mode fullscreen
-                    win.style.width = '90vw';
-                    win.style.height = '90vh';
-                    win.style.maxWidth = 'none';
-                    win.style.maxHeight = 'none';
-                    win.style.position = 'fixed';
-                    win.style.top = '5vh';
-                    win.style.left = '5vw';
-                    win.style.zIndex = '10000';
-                    fullscreenBtn.innerHTML = '<span style="font-size:16px;">⛶</span>';
-                    fullscreenBtn.title = 'Exit Fullscreen';
-                } else {
-                    // Keluar mode fullscreen
-                    win.style.width = '400px';
-                    win.style.height = '550px';
-                    win.style.maxWidth = '';
-                    win.style.maxHeight = '';
-                    win.style.position = '';
-                    win.style.top = '';
-                    win.style.left = '';
-                    win.style.zIndex = '';
-                    fullscreenBtn.innerHTML = '<span style="font-size:16px;">⛶</span>';
-                    fullscreenBtn.title = 'Fullscreen';
+            <<
+            << << < HEAD
+                ===
+                === =
+                function toggleFullscreen() {
+                    isFullscreen = !isFullscreen;
+                    if (isFullscreen) {
+                        // Masuk mode fullscreen
+                        win.style.width = '90vw';
+                        win.style.height = '90vh';
+                        win.style.maxWidth = 'none';
+                        win.style.maxHeight = 'none';
+                        win.style.position = 'fixed';
+                        win.style.top = '5vh';
+                        win.style.left = '5vw';
+                        win.style.zIndex = '10000';
+                        fullscreenBtn.innerHTML = '<span style="font-size:16px;">⛶</span>';
+                        fullscreenBtn.title = 'Exit Fullscreen';
+                    } else {
+                        // Keluar mode fullscreen
+                        win.style.width = '400px';
+                        win.style.height = '550px';
+                        win.style.maxWidth = '';
+                        win.style.maxHeight = '';
+                        win.style.position = '';
+                        win.style.top = '';
+                        win.style.left = '';
+                        win.style.zIndex = '';
+                        fullscreenBtn.innerHTML = '<span style="font-size:16px;">⛶</span>';
+                        fullscreenBtn.title = 'Fullscreen';
+                    }
                 }
-            }
+
+                >>>
+                >>> > 9750e04 f3028a430db4a1acece9da50e70801fbd
 
             function appendBubble(text, role) {
                 const wrap = document.createElement('div');

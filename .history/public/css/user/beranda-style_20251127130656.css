@@ -143,10 +143,9 @@
     position: relative;
     width: 100%;
     max-width: 1200px;
-    margin: 20px auto; /* aman */
+    margin: 30px auto;
     overflow: hidden;
-    border-radius: 12px;
-    box-sizing: border-box;
+    border-radius: 11px;
 }
 
 .slides {
@@ -164,18 +163,17 @@
     height: 450px;
     object-fit: cover;
     display: block;
-    border-radius: 0; /* biar tidak bikin overflow */
 }
 
-/* Tombol navigasi */
+/* Tombol navigasi kiri-kanan */
 .hero-slider button {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255,255,255,0.5);
+    background: linear-gradient(to right, #cfcfcf); /* gradasi hitam → abu muda */
     color: black;
     border: none;
-    border-radius: 50px;
+    border-radius: 80px;
     width: 55px;
     height: 32px;
     font-size: 22px;
@@ -185,60 +183,78 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(4px);
 }
 
 .hero-slider button:hover {
-    background: rgba(0,0,0,0.75);
-    color: white;
+    background: linear-gradient(to right, #000000, #b5b5b5);
 }
 
-/* Posisi tombol */
-.hero-slider .prev { left: 15px; }
-.hero-slider .next { right: 15px; }
+/* Posisi kiri */
+.hero-slider .prev {
+    left: 15px;
+}
 
+/* Posisi kanan */
+.hero-slider .next {
+    right: 15px;
+}
 
-/* ===== RESPONSIVE TABLET ===== */
+/* ===== RESPONSIVE HERO SLIDER (PREMIUM STYLE) ===== */
 @media (max-width: 768px) {
 
     .hero-slider {
-        width: calc(100% - 30px); /* aman dari overflow */
-        margin: 18px auto;
+        width: 100%;
+        margin: 18px 18px;
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
     }
 
     .slide img {
-        height: 280px;
+        height: 280px; 
+        object-fit: cover;
+        border-radius: 12px;
     }
 
+    /* Tombol navigasi kecil & elegan */
     .hero-slider button {
         width: 40px;
         height: 26px;
         font-size: 17px;
-        border-radius: 40px;
-        background: rgba(255, 255, 255, 0.65);
+        border-radius: 50px;
+        background: rgba(255, 255, 255, 0.65); 
+        /* semi-transparent agar tidak nutupi gambar */
         backdrop-filter: blur(4px);
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+        transition: all 0.25s ease;
     }
 
-    .hero-slider .prev { left: 12px; }
-    .hero-slider .next { right: 12px; }
+    .hero-slider button:hover {
+        background: rgba(0, 0, 0, 0.75);
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    /* Posisi tombol */
+    .hero-slider .prev {
+        left: 12px;
+    }
+
+    .hero-slider .next {
+        right: 12px;
+    }
 }
 
-
-/* ===== RESPONSIVE HP KECIL ===== */
+/* HP kecil — Extra responsive */
 @media (max-width: 480px) {
 
     .hero-slider {
-        width: calc(100% - 20px);
-        margin: 14px auto;
+        margin: 15px 12px;
         border-radius: 10px;
     }
 
     .slide img {
-        height: 210px;
+        height: 210px; /* supaya tidak terlalu tinggi di HP kecil */
     }
 
     .hero-slider button {
@@ -249,10 +265,14 @@
         backdrop-filter: blur(3px);
     }
 
-    .hero-slider .prev { left: 8px; }
-    .hero-slider .next { right: 8px; }
-}
+    .hero-slider .prev {
+        left: 8px;
+    }
 
+    .hero-slider .next {
+        right: 8px;
+    }
+}
 
 
 

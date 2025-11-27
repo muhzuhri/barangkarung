@@ -127,7 +127,7 @@
             </div>
         </section>
 
-        <!-- ===== SECTION  ATTENTION ===== -->
+        <!-- ===== ATTENTION ===== -->
         <section class="attention-section">
             <div class="attention-wrapper">
                 <!-- Kiri: Gambar -->

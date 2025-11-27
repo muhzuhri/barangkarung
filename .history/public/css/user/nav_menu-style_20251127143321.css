@@ -307,14 +307,14 @@ body {
 
     /* ------- MENU LINKS DROPDOWN ------- */
     .category-menu .menu-links {
-        margin-top: 1px;
+        margin-top: 8px;
         display: none;
         flex-direction: column;
         width: 100%;
         background: #ffffff;
         /* border-radius: 12px; */
         overflow: hidden;
-        /* box-shadow-bottom: 0 10px 30px rgba(0,0,0,0.12); */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
         position: absolute;
         left: 0;
         top: 100%;

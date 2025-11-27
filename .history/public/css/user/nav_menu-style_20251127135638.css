@@ -270,7 +270,7 @@ body {
 .category-menu .hamburger {
     margin-left: auto;
     /* margin-right: 3px !important; */
-    margin-bottom: -3px !important;
+    margin-bottom: -4px !important;
     cursor: pointer;
     display: none;
 }
@@ -278,7 +278,7 @@ body {
 .category-menu .hamburger .material-icons {
     font-size: 30px;
     color: #000;
-}
+}6
 
 /* ========== MOBILE MODE (650px ke bawah) ========== */
 @media (max-width: 650px) {
@@ -287,11 +287,10 @@ body {
     .category-menu {
         justify-content: space-between;
         align-items: center;
-        padding: 4px 16px;
+        padding: 4px 1px;
         width: 100%;
         background: #fff;
         border-bottom: 1px solid #e5e5e5;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
         position: relative;
         z-index: 20;
     }
@@ -307,14 +306,14 @@ body {
 
     /* ------- MENU LINKS DROPDOWN ------- */
     .category-menu .menu-links {
-        margin-top: 1px;
         display: none;
         flex-direction: column;
         width: 100%;
+        margin-top: 10px;
         background: #ffffff;
-        /* border-radius: 12px; */
+        border-radius: 12px;
         overflow: hidden;
-        /* box-shadow-bottom: 0 10px 30px rgba(0,0,0,0.12); */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
         position: absolute;
         left: 0;
         top: 100%;
@@ -328,9 +327,8 @@ body {
 
     /* style item link */
     .category-menu .menu-links a {
-        padding: 14px 30px;
-        font-size: 17px;
-        letter-spacing: 0.5px;
+        padding: 14px 18px;
+        font-size: 15px;
         border-bottom: 1px solid #f1f1f1;
         width: 100%;
         color: #2c2c2c;

@@ -91,15 +91,13 @@
         <a href="{{ route('beranda') }}" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">Beranda</a>
         <a href="{{ route('katalog') }}" class="{{ request()->routeIs('katalog') ? 'active' : '' }}">Katalog</a>
         <a href="{{ route('pesanan') }}" class="{{ request()->routeIs('pesanan') ? 'active' : '' }}">Pesanan</a>
-        <a href="{{ route('pesanan.history') }}"
-            class="{{ request()->routeIs('pesanan.history') ? 'active' : '' }}">Riwayat</a>
+        <a href="{{ route('pesanan.history') }}" class="{{ request()->routeIs('pesanan.history') ? 'active' : '' }}">Riwayat</a>
         <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile') ? 'active' : '' }}">Profile</a>
     </div>
 
     <div class="hamburger" id="hamburgerBtn">
         <span class="material-icons" id="hamburgerIcon">menu</span>
     </div>
-
 </nav>
 
 
@@ -109,21 +107,15 @@
     const hamburgerIcon = document.getElementById("hamburgerIcon");
     const categoryMenu = document.getElementById("categoryMenu");
 
-    hamburgerBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); // mencegah klik merambat ke nav
-
+        hamburgerBtn.addEventListener("click", () => {
         categoryMenu.classList.toggle("active");
 
-        hamburgerIcon.textContent =
-            categoryMenu.classList.contains("active") ? "close" : "menu";
-    });
-
-    // Tutup menu saat klik link
-    document.querySelectorAll(".menu-links a").forEach(link => {
-        link.addEventListener("click", () => {
-            categoryMenu.classList.remove("active");
+        // Ganti icon menu <-> close
+        if (categoryMenu.classList.contains("active")) {
+            hamburgerIcon.textContent = "close";
+        } else {
             hamburgerIcon.textContent = "menu";
-        });
+        }
     });
 </script>
 

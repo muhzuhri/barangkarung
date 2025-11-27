@@ -91,8 +91,7 @@
         <a href="{{ route('beranda') }}" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">Beranda</a>
         <a href="{{ route('katalog') }}" class="{{ request()->routeIs('katalog') ? 'active' : '' }}">Katalog</a>
         <a href="{{ route('pesanan') }}" class="{{ request()->routeIs('pesanan') ? 'active' : '' }}">Pesanan</a>
-        <a href="{{ route('pesanan.history') }}"
-            class="{{ request()->routeIs('pesanan.history') ? 'active' : '' }}">Riwayat</a>
+        <a href="{{ route('pesanan.history') }}" class="{{ request()->routeIs('pesanan.history') ? 'active' : '' }}">Riwayat</a>
         <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile') ? 'active' : '' }}">Profile</a>
     </div>
 
@@ -104,28 +103,27 @@
 
 
 {{-- SCRIPT HAMBURGER MENU --}}
-<script>
-    const hamburgerBtn = document.getElementById("hamburgerBtn");
-    const hamburgerIcon = document.getElementById("hamburgerIcon");
-    const categoryMenu = document.getElementById("categoryMenu");
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+const hamburgerIcon = document.getElementById("hamburgerIcon");
+const categoryMenu = document.getElementById("categoryMenu");
 
-    hamburgerBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); // mencegah klik merambat ke nav
+hamburgerBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // mencegah klik merambat ke nav
 
-        categoryMenu.classList.toggle("active");
+    categoryMenu.classList.toggle("active");
 
-        hamburgerIcon.textContent =
-            categoryMenu.classList.contains("active") ? "close" : "menu";
+    hamburgerIcon.textContent =
+        categoryMenu.classList.contains("active") ? "close" : "menu";
+});
+
+// Tutup menu saat klik link
+document.querySelectorAll(".menu-links a").forEach(link => {
+    link.addEventListener("click", () => {
+        categoryMenu.classList.remove("active");
+        hamburgerIcon.textContent = "menu";
     });
+});
 
-    // Tutup menu saat klik link
-    document.querySelectorAll(".menu-links a").forEach(link => {
-        link.addEventListener("click", () => {
-            categoryMenu.classList.remove("active");
-            hamburgerIcon.textContent = "menu";
-        });
-    });
-</script>
 
 <!-- ===== SECTION CHARBOT ===== -->
 <div id="bk-chatbot" data-token="{{ csrf_token() }}"

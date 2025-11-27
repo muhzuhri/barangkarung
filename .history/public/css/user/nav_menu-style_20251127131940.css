@@ -211,34 +211,27 @@ body {
 /* ========== STYLE CATEGORY MENU ========== */
 .category-menu {
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 40px;
+    gap: 50px;
     padding: 15px 0;
     border-bottom: 1px solid #e0e0e0;
-    background: #fff;
+    background-color: #fff;
+    transition: all 0.3s ease;
     position: relative;
 }
 
-/* Wrapper untuk link */
-.category-menu .menu-links {
-    display: flex;
-    gap: 40px;
-}
-
-/* Style link */
-.category-menu .menu-links a {
+.category-menu a {
     position: relative;
     text-decoration: none;
     color: #3c3c3c;
     font-weight: 500;
     font-size: 16px;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.8px;
     transition: color 0.3s;
 }
 
-/* underline */
-.category-menu .menu-links a::after {
+/* Garis bawah animasi */
+.category-menu a::after {
     content: "";
     position: absolute;
     left: 0;
@@ -249,133 +242,102 @@ body {
     transition: width 0.3s ease;
 }
 
-/* hover */
-.category-menu .menu-links a:hover {
-    color: #000;
+/* Efek hover */
+.category-menu a:hover {
+    color: #000000;
 }
 
-.category-menu .menu-links a:hover::after {
+/* .category-menu a:hover::after {
+    width: 100%;
+} */
+
+/* Efek active (halaman aktif) */
+.category-menu a.active {
+    color: #000000;
+}
+
+.category-menu a.active::after {
     width: 100%;
 }
 
-/* active */
-.category-menu .menu-links a.active {
-    color: #000;
-}
-.category-menu .menu-links a.active::after {
-    width: 100%;
-}
 
-/* ========== HAMBURGER ========== */
+/* ========== STYLE HAMBUGER (MATERIAL ICONS) ========== */
 .category-menu .hamburger {
     margin-left: auto;
-    /* margin-right: 3px !important; */
-    margin-bottom: -3px !important;
+    margin-right: 20px !important;
+    margin-bottom: -2px !important;
+    display: none; /* Hidden desktop */
     cursor: pointer;
-    display: none;
 }
 
-.category-menu .hamburger .material-icons {
-    font-size: 30px;
-    color: #000;
+.category-menu .hamburger span.material-icons {
+    font-size: 26px !important;
+    color: #000 !important;
 }
 
-/* ========== MOBILE MODE (650px ke bawah) ========== */
+/* ========== MOBILE MODE (HANYA BAGIAN INI) ========== */
 @media (max-width: 650px) {
 
-    /* Wrapper utama kategori */
-    .category-menu {
-        justify-content: space-between;
-        align-items: center;
-        padding: 4px 16px;
-        width: 100%;
-        background: #fff;
-        border-bottom: 1px solid #e5e5e5;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
-        position: relative;
-        z-index: 20;
-    }
-
-    /* ------- HAMBURGER ------- */
+    /* Tampilkan hamburger */
     .category-menu .hamburger {
         display: block;
-        cursor: pointer;
-        padding: 6px;
-        border-radius: 6px;
-        transition: 0.2s ease;
+        margin-left: auto;
+        margin-top: 2px;
     }
 
-    /* ------- MENU LINKS DROPDOWN ------- */
-    .category-menu .menu-links {
-        margin-top: 1px;
-        display: none;
-        flex-direction: column;
+    /* Sembunyikan semua link menu default */
+    .category-menu a {
+        display: none !important;
+        margin-left: 5px !important;
+        color: #4a4a4a;
+    }
+
+    /* Saat active → menu muncul sebagai dropdown */
+    .category-menu.active a {
+        display: block !important;
         width: 100%;
-        background: #ffffff;
-        /* border-radius: 12px; */
-        overflow: hidden;
-        /* box-shadow-bottom: 0 10px 30px rgba(0,0,0,0.12); */
-        position: absolute;
-        left: 0;
-        top: 100%;
-        animation: dropDown 0.25s ease;
-    }
-
-    /* ketika active, menu muncul */
-    .category-menu.active .menu-links {
-        display: flex;
-    }
-
-    /* style item link */
-    .category-menu .menu-links a {
-        padding: 14px 30px;
-        font-size: 17px;
-        letter-spacing: 0.5px;
-        border-bottom: 1px solid #f1f1f1;
-        width: 100%;
-        color: #2c2c2c;
+        text-align: left;
+        padding: 12px 18px;
         background: #fff;
-        transition: 0.2s;
+        border-bottom: 1px solid #e0e0e0;
+        animation: slideDown 0.25s ease;
     }
 
-    .category-menu .menu-links a:last-child {
-        border-bottom: none;
+    /* Category menu berubah menjadi column */
+    .category-menu {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 0;
+        gap: 0;
     }
 
-    /* hover */
-    .category-menu .menu-links a:hover {
-        background: #f9f9f9;
-        padding-left: 22px;
+    /* Dropdown terlihat rapi */
+    .category-menu.active {
+        width: 100%;
+        padding-bottom: 2px;
+        background: #fff;
+        overflow: hidden;
+        transition: 0.3s ease;
+        border-radius: 10px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     }
 
-    /* hilangkan underline animasi */
-    .category-menu .menu-links a::after {
+
+    /* Hilangkan underline animasi di mobile */
+    .category-menu a::after {
         display: none !important;
     }
 }
 
-/* animation */
-@keyframes dropDown {
+/* Smooth slide animation */
+@keyframes menuSlide {
     from {
         opacity: 0;
         transform: translateY(-8px);
     }
     to {
         opacity: 1;
-        transform: translateY(0px);
-    }
-}
-
-/* animation */
-@keyframes menuSlide {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
         transform: translateY(0);
     }
 }
-
 

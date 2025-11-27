@@ -269,100 +269,61 @@ body {
 /* ========== HAMBURGER ========== */
 .category-menu .hamburger {
     margin-left: auto;
-    /* margin-right: 3px !important; */
-    margin-bottom: -3px !important;
+    margin-right: 20px;
     cursor: pointer;
     display: none;
 }
 
 .category-menu .hamburger .material-icons {
-    font-size: 30px;
+    font-size: 28px;
     color: #000;
 }
 
-/* ========== MOBILE MODE (650px ke bawah) ========== */
+
+/* ========== MOBILE MODE ========== */
 @media (max-width: 650px) {
 
-    /* Wrapper utama kategori */
-    .category-menu {
-        justify-content: space-between;
-        align-items: center;
-        padding: 4px 16px;
-        width: 100%;
-        background: #fff;
-        border-bottom: 1px solid #e5e5e5;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
-        position: relative;
-        z-index: 20;
-    }
-
-    /* ------- HAMBURGER ------- */
+    /* hamburger muncul */
     .category-menu .hamburger {
         display: block;
-        cursor: pointer;
-        padding: 6px;
-        border-radius: 6px;
-        transition: 0.2s ease;
     }
 
-    /* ------- MENU LINKS DROPDOWN ------- */
+    /* link disembunyikan */
     .category-menu .menu-links {
-        margin-top: 1px;
         display: none;
         flex-direction: column;
         width: 100%;
-        background: #ffffff;
-        /* border-radius: 12px; */
+        background: #fff;
+        margin-top: 12px;
+        border-radius: 10px;
         overflow: hidden;
-        /* box-shadow-bottom: 0 10px 30px rgba(0,0,0,0.12); */
-        position: absolute;
-        left: 0;
-        top: 100%;
-        animation: dropDown 0.25s ease;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        animation: menuSlide 0.25s ease;
     }
 
-    /* ketika active, menu muncul */
+    /* saat active → menu links tampil */
     .category-menu.active .menu-links {
         display: flex;
     }
 
-    /* style item link */
     .category-menu .menu-links a {
-        padding: 14px 30px;
-        font-size: 17px;
-        letter-spacing: 0.5px;
-        border-bottom: 1px solid #f1f1f1;
+        padding: 14px 18px;
         width: 100%;
-        color: #2c2c2c;
-        background: #fff;
-        transition: 0.2s;
-    }
-
-    .category-menu .menu-links a:last-child {
-        border-bottom: none;
-    }
-
-    /* hover */
-    .category-menu .menu-links a:hover {
-        background: #f9f9f9;
-        padding-left: 22px;
+        color: #333;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 15px;
     }
 
     /* hilangkan underline animasi */
     .category-menu .menu-links a::after {
-        display: none !important;
+        display: none;
     }
-}
 
-/* animation */
-@keyframes dropDown {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0px);
+    /* category-menu menjadi row tetap */
+    .category-menu {
+        justify-content: flex-start;
+        gap: 0;
+        padding: 12px 15px;
     }
 }
 

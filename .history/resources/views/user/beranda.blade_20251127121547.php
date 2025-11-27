@@ -17,9 +17,8 @@
     <!-- Vue.js -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
-    {{--  --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('css/user/nav_menu-style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/user/beranda-style.css') }}">
@@ -127,7 +126,7 @@
             </div>
         </section>
 
-        <!-- ===== SECTION  ATTENTION ===== -->
+        <!-- ===== ATTENTION SECTION ===== -->
         <section class="attention-section">
             <div class="attention-wrapper">
                 <!-- Kiri: Gambar -->
@@ -157,7 +156,7 @@
             </div>
         </section>
 
-        <!-- ===== SECTION SIZE CHART SECTION ===== -->
+        <!-- ===== SIZE CHART SECTION ===== -->
         <section class="size-chart-section">
             <h2>Panduan Ukuran Pakaian</h2>
             <div class="size-table-container">
@@ -216,7 +215,7 @@
             </p>
         </section>
 
-        <!-- ===== SECTION FOOTER ===== -->
+        <!-- ===== FOOTER ===== -->
         <footer class="footer">
             <div class="footer-content">
                 <p>&copy; 2025 <span class="brand">Barang Karung ID</span>. Semua Hak Dilindungi.</p>
@@ -227,7 +226,7 @@
                 </div>
             </div>
         </footer>
-    
+
 </body>
 
 <script>

@@ -127,7 +127,7 @@
             </div>
         </section>
 
-        <!-- ===== SECTION  ATTENTION ===== -->
+        <!-- ===== ATTENTION SECTION ===== -->
         <section class="attention-section">
             <div class="attention-wrapper">
                 <!-- Kiri: Gambar -->
@@ -216,7 +216,7 @@
             </p>
         </section>
 
-        <!-- ===== SECTION FOOTER ===== -->
+        <!-- ===== FOOTER ===== -->
         <footer class="footer">
             <div class="footer-content">
                 <p>&copy; 2025 <span class="brand">Barang Karung ID</span>. Semua Hak Dilindungi.</p>

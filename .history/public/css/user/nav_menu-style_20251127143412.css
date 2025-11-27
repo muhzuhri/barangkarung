@@ -307,7 +307,7 @@ body {
 
     /* ------- MENU LINKS DROPDOWN ------- */
     .category-menu .menu-links {
-        margin-top: 1px;
+        margin-top: 2px;
         display: none;
         flex-direction: column;
         width: 100%;
