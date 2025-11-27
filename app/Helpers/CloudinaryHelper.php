@@ -101,6 +101,35 @@ if (!function_exists('getCloudinarySecureUrl')) {
     }
 }
 
+if (!function_exists('getCloudinaryCredentials')) {
+    function getCloudinaryCredentials(): ?array {
+        $cloudUrl = env('CLOUDINARY_URL') ?: config('cloudinary.cloud_url');
+        $cloudName = env('CLOUDINARY_CLOUD_NAME');
+        $apiKey = env('CLOUDINARY_KEY') ?: env('CLOUDINARY_API_KEY');
+        $apiSecret = env('CLOUDINARY_SECRET') ?: env('CLOUDINARY_API_SECRET');
+
+        if ((!$cloudName || !$apiKey || !$apiSecret) && $cloudUrl) {
+            $pattern = '#cloudinary://(?P<api_key>[^:]+):(?P<api_secret>[^@]+)@(?P<cloud_name>[^/]+)#';
+            if (preg_match($pattern, $cloudUrl, $matches)) {
+                $cloudName = $cloudName ?: ($matches['cloud_name'] ?? null);
+                $apiKey = $apiKey ?: ($matches['api_key'] ?? null);
+                $apiSecret = $apiSecret ?: ($matches['api_secret'] ?? null);
+            }
+        }
+
+        if ($cloudName && $apiKey && $apiSecret) {
+            return [
+                'cloud_name' => $cloudName,
+                'api_key' => $apiKey,
+                'api_secret' => $apiSecret,
+                'cloud_url' => $cloudUrl,
+            ];
+        }
+
+        return null;
+    }
+}
+
 if (!function_exists('isCloudinaryUrl')) {
     function isCloudinaryUrl(?string $path): bool {
         if (!$path) {
@@ -113,17 +142,20 @@ if (!function_exists('isCloudinaryUrl')) {
 
 if (!function_exists('shouldUseCloudinaryUploads')) {
     function shouldUseCloudinaryUploads(): bool {
-        $isVercel = env('VERCEL') === '1' || env('APP_ENV') === 'production';
-        $cloudinaryUrl = env('CLOUDINARY_URL') ?: config('cloudinary.cloud_url');
+        if (env('FORCE_LOCAL_UPLOADS')) {
+            return false;
+        }
 
-        return $isVercel || !empty($cloudinaryUrl);
+        return (bool) getCloudinaryCredentials();
     }
 }
 
 if (!function_exists('format_local_storage_path')) {
     function format_local_storage_path(string $relativePath): string {
         $relativePath = ltrim($relativePath, '/');
-        return ltrim(str_replace('storage/', '', $relativePath), '/');
+        $relativePath = ltrim(str_replace('storage/', '', $relativePath), '/');
+
+        return 'storage/' . $relativePath;
     }
 }
 
@@ -133,8 +165,37 @@ if (!function_exists('uploadImageWithCloudinaryFallback')) {
      */
     function uploadImageWithCloudinaryFallback(UploadedFile $file, string $cloudFolder, string $localFolder = 'uploads'): string {
         $cloudFolder = trim($cloudFolder, '/');
+        $cloudErrors = [];
+        $credentials = getCloudinaryCredentials();
+        $shouldUseCloudinary = shouldUseCloudinaryUploads() && (bool) $credentials;
 
-        if (shouldUseCloudinaryUploads()) {
+        if ($shouldUseCloudinary && $credentials) {
+            // Prefer direct UploadApi instantiation to bypass facade config issues
+            try {
+                $uploadApi = new UploadApi([
+                    'cloud_name' => $credentials['cloud_name'],
+                    'api_key' => $credentials['api_key'],
+                    'api_secret' => $credentials['api_secret'],
+                ]);
+
+                $result = $uploadApi->upload($file->getRealPath(), [
+                    'folder' => $cloudFolder,
+                    'resource_type' => 'image',
+                ]);
+
+                $url = $result['secure_url'] ?? $result['url'] ?? null;
+                if ($url) {
+                    Log::info("Cloudinary upload success (UploadApi): {$url}");
+                    return $url;
+                }
+
+                $cloudErrors[] = 'Cloudinary UploadApi tidak mengembalikan URL.';
+            } catch (\Throwable $e) {
+                $cloudErrors[] = $e->getMessage();
+                Log::error('Cloudinary UploadApi error: ' . $e->getMessage());
+            }
+
+            // Fallback to facade as secondary attempt
             try {
                 $uploadedFile = Cloudinary::upload($file->getRealPath(), [
                     'folder' => $cloudFolder,
@@ -142,17 +203,18 @@ if (!function_exists('uploadImageWithCloudinaryFallback')) {
                 ]);
 
                 $url = getCloudinarySecureUrl($uploadedFile);
-                if (!$url) {
-                    throw new \RuntimeException('Cloudinary tidak mengembalikan URL.');
+                if ($url) {
+                    Log::info("Cloudinary upload success (Facade fallback): {$url}");
+                    return $url;
                 }
 
-                Log::info("Cloudinary upload success: {$url}");
-
-                return $url;
+                $cloudErrors[] = 'Cloudinary facade tidak mengembalikan URL.';
             } catch (\Throwable $e) {
-                Log::error('Cloudinary upload failed: ' . $e->getMessage());
-                throw new \RuntimeException('Gagal mengupload ke Cloudinary: ' . $e->getMessage(), 0, $e);
+                $cloudErrors[] = $e->getMessage();
+                Log::error('Cloudinary facade error: ' . $e->getMessage());
             }
+        } elseif (!$credentials && shouldUseCloudinaryUploads()) {
+            $cloudErrors[] = 'Kredensial Cloudinary belum dikonfigurasi.';
         }
 
         try {
@@ -161,8 +223,12 @@ if (!function_exists('uploadImageWithCloudinaryFallback')) {
             Log::info("Local upload success: {$formattedPath}");
             return $formattedPath;
         } catch (\Throwable $e) {
-            Log::error('Local upload failed: ' . $e->getMessage());
-            throw new \RuntimeException('Gagal menyimpan file lokal: ' . $e->getMessage(), 0, $e);
+            $message = 'Gagal menyimpan file lokal: ' . $e->getMessage();
+            if ($cloudErrors) {
+                $message .= ' | Cloudinary: ' . implode(' | ', array_unique($cloudErrors));
+            }
+            Log::error($message);
+            throw new \RuntimeException($message, 0, $e);
         }
     }
 }
