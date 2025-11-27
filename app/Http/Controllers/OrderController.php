@@ -67,6 +67,56 @@ class OrderController extends Controller
     }
 
     /**
+     * Hapus pesanan (user - hanya bisa hapus order miliknya sendiri)
+     */
+    public function destroy($id)
+    {
+        $user = Auth::user();
+        
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+        
+        $order = Order::where('user_id', $user->id)
+            ->where('id', $id)
+            ->firstOrFail();
+        
+        // Hapus payment proof dari Cloudinary jika ada
+        if ($order->payment_proof) {
+            $isCloudinary = str_contains($order->payment_proof, 'cloudinary.com') || str_contains($order->payment_proof, 'res.cloudinary.com');
+            if ($isCloudinary) {
+                try {
+                    // Extract public_id dari URL Cloudinary
+                    $urlParts = parse_url($order->payment_proof);
+                    $path = $urlParts['path'] ?? '';
+                    $publicId = str_replace(['/', '.jpg', '.png', '.jpeg'], '', basename($path));
+                    if ($publicId) {
+                        Cloudinary::destroy('barangkarung/payments/' . $publicId);
+                    }
+                } catch (\Exception $e) {
+                    // Ignore jika file tidak ditemukan
+                }
+            } elseif (!str_starts_with($order->payment_proof, 'base64:') && !str_starts_with($order->payment_proof, 'data:')) {
+                // Hapus dari local storage jika ada
+                try {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($order->payment_proof);
+                } catch (\Exception $e) {
+                    // Ignore
+                }
+            }
+        }
+        
+        // Hapus order items terlebih dahulu
+        $order->items()->delete();
+        
+        // Hapus order
+        $order->delete();
+        
+        return redirect()->route('pesanan')
+            ->with('success', 'Pesanan berhasil dihapus!');
+    }
+
+    /**
      * Menampilkan riwayat pesanan (selesai) milik user
      */
     public function history()

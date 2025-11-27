@@ -71,12 +71,21 @@
                     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                         <a href="{{ route('pesanan.detail', $order->id) }}" class="btn-detail">Lihat Detail</a>
                         @if ($order->status === 'dikirim')
-                            <form method="POST" action="{{ route('pesanan.selesai', $order->id) }}">
+                            <form method="POST" action="{{ route('pesanan.selesai', $order->id) }}" style="display:inline;">
                                 @csrf
                                 <button type="submit" class="btn-detail" style="background:#10b981;">Tandai
                                     Selesai</button>
                             </form>
                         @endif
+                        <form method="POST" action="{{ route('pesanan.destroy', $order->id) }}" style="display:inline;"
+                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini? Tindakan ini tidak dapat dibatalkan.');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn-detail" 
+                                style="background:#ef4444; color:white; border:none; cursor:pointer;">
+                                Hapus
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

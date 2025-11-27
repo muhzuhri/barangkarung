@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/pesanan/{id}', [OrderController::class, 'show'])->name('pesanan.detail');
     Route::post('/pesanan/{id}/selesai', [OrderController::class, 'complete'])->name('pesanan.selesai');
     Route::post('/pesanan/{order}/upload-bukti', [OrderController::class, 'uploadProof'])->name('pesanan.uploadProof');
+    Route::delete('/pesanan/{id}', [OrderController::class, 'destroy'])->name('pesanan.destroy');
     Route::get('/pesanan-history', [OrderController::class, 'history'])->name('pesanan.history');
 
     // Profil
@@ -95,6 +96,7 @@ Route::prefix('admin')->group(function () {
         Route::patch('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
         Route::patch('/admin/orders/{id}/update-payment', [\App\Http\Controllers\Admin\OrderController::class, 'updatePayment'])->name('admin.orders.updatePayment');
         Route::patch('/admin/orders/{id}/update-status', [\App\Http\Controllers\Admin\OrderController::class, 'updateOrderStatus'])->name('admin.orders.updateOrderStatus');
+        Route::delete('/orders/{id}', [\App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('admin.orders.destroy');
 
         // Revenue Management
         Route::get('/revenue', [\App\Http\Controllers\Admin\RevenueController::class, 'index'])->name('admin.revenue.index');
