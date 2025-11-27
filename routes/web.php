@@ -56,7 +56,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/pesanan/{id}', [OrderController::class, 'show'])->name('pesanan.detail');
     Route::post('/pesanan/{id}/selesai', [OrderController::class, 'complete'])->name('pesanan.selesai');
     Route::post('/pesanan/{order}/upload-bukti', [OrderController::class, 'uploadProof'])->name('pesanan.uploadProof');
-    Route::delete('/pesanan/{id}', [OrderController::class, 'destroy'])->name('pesanan.destroy');
     Route::get('/pesanan-history', [OrderController::class, 'history'])->name('pesanan.history');
 
     // Profil

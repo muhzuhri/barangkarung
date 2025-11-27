@@ -80,4 +80,19 @@ class OrderController extends Controller
         $order->save();
         return redirect()->back()->with('success', 'Status pesanan diperbarui.');
     }
+
+    public function destroy($id)
+    {
+        $order = Order::with('items')->findOrFail($id);
+
+        if ($order->payment_proof) {
+            deleteUploadedAsset($order->payment_proof);
+        }
+
+        $order->items()->delete();
+        $order->delete();
+
+        return redirect()->route('admin.orders.index')
+            ->with('success', 'Pesanan berhasil dihapus.');
+    }
 }

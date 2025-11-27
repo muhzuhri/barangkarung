@@ -84,15 +84,6 @@
                                     Selesai</button>
                             </form>
                         @endif
-                        <form method="POST" action="{{ route('pesanan.destroy', $order->id) }}" style="display:inline;"
-                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini? Tindakan ini tidak dapat dibatalkan.');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-detail" 
-                                style="background:#ef4444; color:white; border:none; cursor:pointer;">
-                                Hapus
-                            </button>
-                        </form>
                     </div>
                 </div>
             </div>

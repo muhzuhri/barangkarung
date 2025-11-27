@@ -408,6 +408,14 @@
         </div>
     </form>
 
+    <form method="POST" action="{{ route('admin.orders.destroy', $order->id) }}" class="status-form-pesanan"
+        style="margin-top: 1.5rem;"
+        onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini? Tindakan tidak dapat dibatalkan.');">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn-submit" style="background:#dc2626;">Hapus Pesanan</button>
+    </form>
+
     <script>
         // Function to toggle tracking number field
         function toggleTrackingField() {

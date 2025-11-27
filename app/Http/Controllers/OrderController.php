@@ -62,36 +62,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Hapus pesanan (user - hanya bisa hapus order miliknya sendiri)
-     */
-    public function destroy($id)
-    {
-        $user = Auth::user();
-        
-        if (!$user) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
-        }
-        
-        $order = Order::where('user_id', $user->id)
-            ->where('id', $id)
-            ->firstOrFail();
-        
-        // Hapus payment proof dari Cloudinary jika ada
-        if ($order->payment_proof) {
-            deleteUploadedAsset($order->payment_proof);
-        }
-        
-        // Hapus order items terlebih dahulu
-        $order->items()->delete();
-        
-        // Hapus order
-        $order->delete();
-        
-        return redirect()->route('pesanan')
-            ->with('success', 'Pesanan berhasil dihapus!');
-    }
-
-    /**
      * Menampilkan riwayat pesanan (selesai) milik user
      */
     public function history()
