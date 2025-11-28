@@ -30,7 +30,10 @@
                 <div class="keranjang-item" data-cart-id="{{ $cartItem->id }}">
                     <input type="checkbox" class="item-check" data-price="{{ $cartItem->product->price }}"
                         data-quantity="{{ $cartItem->quantity }}">
-                    <img src="{{ asset($cartItem->product->image) }}" alt="{{ $cartItem->product->name }}">
+                    @php
+                        $imageUrl = $cartItem->product->image_url ?? asset('img/no-image.png');
+                    @endphp
+                    <img src="{{ $imageUrl }}" alt="{{ $cartItem->product->name }}">
                     <div class="item-info">
                         <h4>{{ $cartItem->product->name }}</h4>
                         <p>Rp {{ number_format($cartItem->product->price, 0, ',', '.') }}</p>

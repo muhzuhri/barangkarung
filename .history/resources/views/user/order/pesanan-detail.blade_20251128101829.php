@@ -81,12 +81,12 @@
 
                             @if ($order->payment_proof)
                                 <br>
-
-                                {{-- <a class="resi-link" href="{{ asset('storage/' . $order->payment_proof) }}"
+<<<<<<< HEAD
+                                <a class="resi-link" href="{{ asset('storage/' . $order->payment_proof) }}"
                                     target="_blank">
                                     Lihat Bukti Transfer
-                                </a> --}}
-
+                                </a>
+=======
                                 @php
                                     $isCloudProof = str_contains($order->payment_proof, 'http');
                                     $relativeProof = ltrim(str_replace('storage/', '', $order->payment_proof), '/');
@@ -94,7 +94,7 @@
                                 @endphp
                                 <a href="{{ $proofUrl }}" target="_blank">Lihat Bukti
                                     Transfer</a>
-
+>>>>>>> origin/main
                             @endif
                             <br>
 

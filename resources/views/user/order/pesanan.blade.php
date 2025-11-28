@@ -79,7 +79,7 @@
                     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                         <a href="{{ route('pesanan.detail', $order->id) }}" class="btn-detail">Lihat Detail Pesanan</a>
                         @if ($order->status === 'dikirim')
-                            <form method="POST" action="{{ route('pesanan.selesai', $order->id) }}">
+                            <form method="POST" action="{{ route('pesanan.selesai', $order->id) }}" style="display:inline;">
                                 @csrf
                                 <button type="submit" class="btn-detail">Tandai Selesai</button>
                             </form>

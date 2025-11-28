@@ -82,10 +82,10 @@
                             @if ($order->payment_proof)
                                 <br>
 
-                                {{-- <a class="resi-link" href="{{ asset('storage/' . $order->payment_proof) }}"
+                                <a class="resi-link" href="{{ asset('storage/' . $order->payment_proof) }}"
                                     target="_blank">
                                     Lihat Bukti Transfer
-                                </a> --}}
+                                </a>
 
                                 @php
                                     $isCloudProof = str_contains($order->payment_proof, 'http');

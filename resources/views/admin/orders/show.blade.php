@@ -330,57 +330,30 @@
                     <div class="payment-proof">
                         <div class="label">Gambar Bukti Transfer :</div>
                         @php
-                            $isDataUri = Str::startsWith($order->payment_proof, 'data:');
-                            $isBase64 = Str::startsWith($order->payment_proof, 'base64:');
-                            $isCloudinary = Str::contains($order->payment_proof, 'cloudinary.com') || Str::contains($order->payment_proof, 'res.cloudinary.com');
-                            
-                            if ($isBase64) {
-                                // Base64 fallback - convert ke data URI
-                                $base64Data = substr($order->payment_proof, 7); // Remove 'base64:' prefix
-                                $proofUrl = 'data:image/jpeg;base64,' . $base64Data;
-                                $fileExists = true;
-                            } elseif ($isDataUri) {
-                                $proofUrl = $order->payment_proof;
-                                $fileExists = true;
-                            } elseif ($isCloudinary) {
-                                // File dari Cloudinary (untuk Vercel)
-                                $proofUrl = $order->payment_proof;
-                                $fileExists = true;
-                            } elseif ($order->payment_proof) {
-                                // File dari local storage (fallback untuk local development)
-                                $proofUrl = asset('storage/' . $order->payment_proof);
-                                $fileExists = \Illuminate\Support\Facades\Storage::disk('public')->exists($order->payment_proof);
-                            } else {
-                                $proofUrl = '';
-                                $fileExists = false;
-                            }
+                            $isCloudProof = str_contains($order->payment_proof, 'http');
+                            $relativeProof = ltrim(str_replace('storage/', '', $order->payment_proof), '/');
+                            $proofUrl = $isCloudProof ? $order->payment_proof : asset('storage/' . $relativeProof);
+                            $storagePath = $isCloudProof ? null : storage_path('app/public/' . $relativeProof);
+                            $publicPath = $isCloudProof ? null : public_path('storage/' . $relativeProof);
+                            $fileExists = $isCloudProof ? true : (file_exists($storagePath) || file_exists($publicPath));
                         @endphp
 
-                        @if ($isDataUri || $isBase64)
-                            <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
-                                <img src="{{ $proofUrl }}" alt="Bukti Pembayaran" class="proof-image">
-                            </a>
-                            @if ($isBase64)
-                                <div class="note" style="color: #f59e0b; margin-top: 8px;">
-                                    ⚠ Bukti pembayaran disimpan sementara (base64). User disarankan untuk upload ulang.
-                                </div>
-                            @endif
-                        @else
-                            <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
-                                <img src="{{ $proofUrl }}" alt="Bukti Pembayaran"
-                                    onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><strong>⚠ Gambar tidak dapat dimuat</strong><br><small>{{ $proofUrl }}</small></div>';"
-                                    class="proof-image">
-                            </a>
-                        @endif
+                        <a href="{{ $proofUrl }}" target="_blank" class="proof-link">
+                            <img src="{{ $proofUrl }}" alt="Bukti Pembayaran"
+                                onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><strong>⚠ Gambar tidak dapat dimuat</strong><br><small>{{ $proofUrl }}</small></div>';"
+                                class="proof-image">
+                        </a>
                         <div class="note">Klik gambar untuk melihat ukuran penuh</div>
 
-                        @if (!$isDataUri && !$fileExists)
+                        @if (!$fileExists)
                             <div class="debug-info">
                                 <strong>⚠ Debug Info:</strong><br>
                                 <small>Path DB: {{ $order->payment_proof }}</small><br>
                                 <small>URL: <a href="{{ $proofUrl }}"
                                         target="_blank">{{ $proofUrl }}</a></small><br>
-                                <small>Storage Disk: public</small>
+                                @if ($storagePath)
+                                    <small>Storage: {{ $storagePath }}</small>
+                                @endif
                             </div>
                         @endif
                     </div>
@@ -433,6 +406,14 @@
         <div class="btn-group">
             <button type="submit" class="btn-submit">Perbarui</button>
         </div>
+    </form>
+
+    <form method="POST" action="{{ route('admin.orders.destroy', $order->id) }}" class="status-form-pesanan"
+        style="margin-top: 1.5rem;"
+        onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini? Tindakan tidak dapat dibatalkan.');">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn-submit" style="background:#dc2626;">Hapus Pesanan</button>
     </form>
 
     <script>

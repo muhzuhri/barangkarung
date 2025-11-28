@@ -6,11 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 use App\Models\OrderItem;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use Cloudinary\Api\Upload\UploadApi;
-
 class OrderController extends Controller
 {
     /**
@@ -111,84 +106,14 @@ class OrderController extends Controller
             'payment_proof' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048', // 2MB
         ]);
 
-        $file = $request->file('payment_proof');
-
-        // Cek apakah di Vercel atau Cloudinary tersedia
-        $isVercel = env('VERCEL') === '1' || env('APP_ENV') === 'production';
-        $cloudinaryUrl = env('CLOUDINARY_URL') ?: config('cloudinary.cloud_url');
-        
-        // Di Vercel atau jika Cloudinary tersedia, gunakan Cloudinary
-        if ($isVercel || ($cloudinaryUrl && !empty($cloudinaryUrl))) {
-            try {
-                // Upload ke Cloudinary - coba berbagai cara
-                $proofPath = null;
-                
-                // Method 1: Cloudinary facade
-                try {
-                    $uploadedFile = Cloudinary::upload($file->getRealPath(), [
-                        'folder' => 'barangkarung/payments',
-                        'resource_type' => 'image',
-                    ]);
-                    
-                    // Coba berbagai cara untuk mendapatkan URL
-                    if (is_object($uploadedFile)) {
-                        if (method_exists($uploadedFile, 'getSecurePath')) {
-                            try {
-                                $proofPath = $uploadedFile->getSecurePath();
-                            } catch (\Exception $e) {}
-                        }
-                        
-                        if (!$proofPath) {
-                            try {
-                                $json = json_encode($uploadedFile);
-                                $array = json_decode($json, true);
-                                $proofPath = $array['secure_url'] ?? null;
-                            } catch (\Exception $e) {}
-                        }
-                        
-                        if (!$proofPath && property_exists($uploadedFile, 'secure_url')) {
-                            try {
-                                $proofPath = $uploadedFile->secure_url;
-                            } catch (\Exception $e) {}
-                        }
-                    } elseif (is_array($uploadedFile)) {
-                        $proofPath = $uploadedFile['secure_url'] ?? null;
-                    }
-                    
-                    if (!$proofPath) {
-                        $proofPath = getCloudinarySecureUrl($uploadedFile);
-                    }
-                } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::error("Cloudinary facade failed: " . $e->getMessage());
-                }
-                
-                // Method 2: UploadApi langsung
-                if (!$proofPath) {
-                    try {
-                        $uploadApi = new UploadApi();
-                        $result = $uploadApi->upload($file->getRealPath(), [
-                            'folder' => 'barangkarung/payments',
-                            'resource_type' => 'image',
-                        ]);
-                        $proofPath = $result['secure_url'] ?? null;
-                    } catch (\Exception $e) {
-                        \Illuminate\Support\Facades\Log::error("UploadApi failed: " . $e->getMessage());
-                    }
-                }
-                
-                if (!$proofPath) {
-                    throw new \Exception('Gagal mendapatkan URL dari Cloudinary response');
-                }
-            } catch (\Exception $e) {
-                return back()->with('error', 'Gagal mengupload bukti pembayaran ke Cloudinary: ' . $e->getMessage());
-            }
-        } else {
-            // Hanya untuk local development, gunakan local storage
-            try {
-                $proofPath = $file->store('payments', 'public');
-            } catch (\Exception $e) {
-                return back()->with('error', 'Gagal menyimpan bukti pembayaran: ' . $e->getMessage());
-            }
+        try {
+            $proofPath = uploadImageWithCloudinaryFallback(
+                $request->file('payment_proof'),
+                'barangkarung/payments',
+                'payments'
+            );
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Gagal mengupload bukti pembayaran: ' . $e->getMessage());
         }
         
         $order->update([
