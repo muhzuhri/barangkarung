@@ -1,0 +1,154 @@
+/* ===========================
+   GLOBAL STYLE
+=========================== */
+.order-detail {
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 0 16px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.order-detail h1 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* ===========================
+   CARD STYLE
+=========================== */
+.detail-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid #e5e7eb;
+}
+
+/* ===========================
+   GRID DETAIL INFO
+=========================== */
+.detail-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 20px;
+}
+
+.detail-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.detail-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+/* Buat bagian yang 1 kolom (full-width) */
+.detail-row div[style*="grid-column"] {
+    grid-column: 1 / -1 !important;
+}
+
+/* ===========================
+   TABLE ITEM PESANAN
+=========================== */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+}
+
+.items-table th {
+    background: #f3f4f6;
+    padding: 10px;
+    text-align: left;
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.items-table td {
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.9rem;
+}
+
+.items-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* ===========================
+   TOTAL ROW
+=========================== */
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 1.1rem;
+}
+
+/* ===========================
+   BUTTON
+=========================== */
+.btn-detail {
+    background: #3b82f6;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: 0.2s;
+}
+
+.btn-detail:hover {
+    background: #2563eb;
+}
+
+/* ===========================
+   RESPONSIVE MOBILE (≤650px)
+=========================== */
+@media (max-width: 650px) {
+
+    .order-detail h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Grid jadi 1 kolom */
+    .detail-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* Table scroll */
+    .items-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .total-row {
+        flex-direction: column;
+        gap: 6px;
+        text-align: right;
+    }
+
+    /* Buttons full width */
+    .btn-detail {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    /* Card padding lebih kecil */
+    .detail-card {
+        padding: 16px;
+    }
+}

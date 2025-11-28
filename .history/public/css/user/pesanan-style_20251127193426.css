@@ -1,0 +1,128 @@
+/* ====================== SECTION CONTAINER PESANAN ====================== */
+.orders-container {
+    padding: 45px 50px;
+    margin: 30px 32px;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.10);
+}
+
+.orders-container h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 40px;
+    border-bottom: 3px solid #060606;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* ORDER CARD */
+.order-card {
+    background-color: #fafafa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid #eee;
+    transition: 0.3s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);}
+
+/* HEADER */
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.order-id span {
+    color: #00bcd4;
+    font-weight: 600;
+}
+
+.order-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.order-status {
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.order-status.delivered {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.order-status.pending {
+    background-color: #fff3e0;
+    color: #ef6c00;
+}
+
+/* BODY */
+.order-body {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.order-body img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.order-details h3 {
+    font-size: 1.1rem;
+    color: #222;
+    margin-bottom: 5px;
+}
+
+.order-details p {
+    color: #555;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+/* FOOTER */
+.order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}
+
+.order-footer p {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.btn-detail {
+    background-color: #00bcd4;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.btn-detail:hover {
+    background-color: #0097a7;
+}
+

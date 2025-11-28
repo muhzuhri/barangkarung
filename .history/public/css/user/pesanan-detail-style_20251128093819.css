@@ -1,0 +1,211 @@
+/* ================================================
+    WRAPPER UTAMA
+=================================================== */
+.order-detail {
+    padding: 45px 50px;
+    margin: 30px 32px;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.10);
+}
+
+.order-detail h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 34px;
+    color: #111827;
+    letter-spacing: 0.5px;
+}
+
+/* ================================================
+    DETAIL CARD BOX
+=================================================== */
+.detail-card {
+    background: #ffffff;
+    padding: 30px 32px;
+    border-radius: 20px;
+    margin-bottom: 32px;
+    border: 1px solid #e3e8ef;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.detail-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+/* ================================================
+    GRID DETAIL INFORMASI
+=================================================== */
+.detail-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px 34px;
+}
+
+.detail-label {
+    font-size: 0.88rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.detail-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1.5;
+    letter-spacing: 0.2px;
+}
+
+/* Full width row */
+.detail-row div[style*="grid-column"] {
+    grid-column: 1 / -1;
+}
+
+/* ================================================
+   TABEL ITEM PESANAN
+=================================================== */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 0.95rem;
+    overflow: hidden;
+    border-radius: 14px;
+}
+
+.items-table thead {
+    background: #f1f5f9;
+}
+
+.items-table th {
+    padding: 14px 14px;
+    font-weight: 700;
+    color: #374151;
+    border-bottom: 1px solid #e2e8f0;
+    letter-spacing: 0.4px;
+}
+
+.items-table td {
+    padding: 14px 14px;
+    color: #1f2937;
+    border-bottom: 1px solid #edf0f4;
+}
+
+.items-table tbody tr:hover {
+    background: #f8fafc;
+    transition: 0.2s;
+}
+
+/* ================================================
+   TOTAL INFO
+=================================================== */
+.total-row {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #111827;
+    gap: 12px;
+}
+
+/* ================================================
+   BUTTONS
+=================================================== */
+.btn-detail {
+    display: inline-block;
+    background: #2563eb;
+    color: #fff;
+    padding: 11px 28px;
+    border-radius: 12px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+
+.btn-detail:hover {
+    background: #1e40af;
+}
+
+.btn-kembali {
+    display: inline-block;
+    background: #f3f4f6;
+    color: #374151;
+    padding: 11px 28px;
+    border-radius: 12px;
+    margin-left: 12px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+
+.btn-kembali:hover {
+    background: #e5e7eb;
+}
+
+/* ================================================
+   TRACKING INFO
+=================================================== */
+.traking-row {
+    font-size: 0.96rem;
+    color: #374151;
+    line-height: 1.65;
+}
+
+.traking-row a {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* ================================================
+   RESPONSIVE MOBILE 
+=================================================== */
+@media (max-width: 780px) {
+
+    .order-detail {
+        padding: 20px 16px;
+        margin: 18px;
+    }
+
+    .detail-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .detail-value {
+        font-size: 1rem;
+    }
+
+    .items-table th,
+    .items-table td {
+        padding: 10px 8px;
+        font-size: 0.88rem;
+    }
+
+    .total-row {
+        justify-content: space-between;
+        font-size: 1.05rem;
+        margin-top: 20px;
+    }
+
+    .btn-detail,
+    .btn-kembali {
+        width: 100%;
+        margin-left: 0;
+        padding: 13px;
+        text-align: center;
+        font-size: 1rem;
+        margin-top: 10px;
+    }
+}

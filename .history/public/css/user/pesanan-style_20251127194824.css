@@ -1,0 +1,155 @@
+/* ====================== SECTION CONTAINER PESANAN ====================== */
+.orders-container {
+    padding: 45px 50px;
+    margin: 30px 32px;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.10);
+}
+
+/* ============================
+    PAGE TITLE
+============================ */
+.orders-container h1 {
+    text-align: center;
+    font-size: 1.7rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: #010101; /* gray-800 */
+    margin-bottom: 30px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #0f172a; /* slate-900 */
+    display: inline-block;
+}
+
+/* ============================
+    ORDER CARD
+============================ */
+.order-card {
+    background-color: #f9fcff;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 28px;
+    border: 1px solid #e5e7eb;
+    transition: 0.25s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.order-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.04);
+}
+
+/* ============================
+    ORDER HEADER
+============================ */
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.order-id span {
+    color: #0284c7; /* sky-600 */
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: ;
+}
+
+.order-date {
+    color: #6b7280; /* gray-500 */
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+/* STATUS BADGE */
+.order-status {
+    padding: 6px 16px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    text-transform: capitalize;
+    letter-spacing: 0.3px;
+}
+
+.order-status.delivered {
+    background-color: #ddffdf;
+    color: #2e7d32;
+}
+
+.order-status.pending {
+    background-color: #fff4d2;
+    color: #f57c00;
+}
+
+/* ============================
+    ORDER BODY
+============================ */
+.order-body {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 22px 0;
+}
+
+.order-body img {
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+/* PRODUCT DETAILS */
+.order-details h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 5px;
+}
+
+.order-details p {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+/* ============================
+    TOTAL & BUTTON
+============================ */
+.order-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 12px;
+}
+
+.order-total p {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* BUTTON DETAIL */
+.btn-detail {
+    background-color: #0284c7; /* sky-600 */
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.btn-detail:hover {
+    background-color: #0369a1; /* sky-700 */
+}
+
+
