@@ -1,0 +1,264 @@
+/* ================================================
+    WRAPPER UTAMA
+=================================================== */
+.order-detail {
+    padding: 45px 50px;
+    margin: 30px 32px;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.10);
+}
+
+.order-detail h1 {
+    text-align: center;
+    font-size: 1.7rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: #010101; /* gray-800 */
+    margin-bottom: 22px;
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+/* ================================================
+    DETAIL CARD BOX
+=================================================== */
+.detail-card {
+    background: #ffffff;
+    padding: 30px 32px;
+    border-radius: 15px;
+    margin-bottom: 32px;
+    border: 1px solid #e3e8ef;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.04);
+}
+
+/* ==========================
+    GRID WRAPPER
+========================== */
+.detail-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px 32px;
+    margin-top: 18px;
+}
+
+/* ==========================
+    ITEM STYLE
+========================== */
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item.full {
+    grid-column: 1 / -1;
+}
+
+/* ==========================
+    LABEL & VALUE
+========================== */
+.detail-label {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.detail-value {
+    font-size: 1.08rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #1f2937;
+    line-height: 1.45;
+}
+
+/* ==========================
+    LINK (Resi / Bukti Transfer)
+========================== */
+.resi-link {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: underline;
+    font-size: 0.95rem;
+}
+
+.resi-link:hover {
+    color: #1e40af;
+}
+/* ================================================
+    TABEL ITEM PESANAN
+=================================================== */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 0.95rem;
+    overflow: hidden;
+    border-radius: 14px;
+}
+
+.items-table thead {
+    background: #f1f5f9;
+}
+
+.items-table th {
+    padding: 14px 14px;
+    font-weight: 700;
+    color: #374151;
+    border-bottom: 1px solid #e2e8f0;
+    letter-spacing: 0.4px;
+}
+
+.items-table td {
+    padding: 14px 14px;
+    color: #1f2937;
+    border-bottom: 1px solid #edf0f4;
+}
+
+.items-table tbody tr:hover {
+    background: #f8fafc;
+    transition: 0.2s;
+}
+
+/* ================================================
+    TOTAL INFO
+=================================================== */
+.total-row {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #111827;
+    gap: 12px;
+}
+
+/* ================================================
+    BUTTONS
+=================================================== */
+.btn-detail {
+    display: inline-block;
+    background: #2563eb;
+    color: #fff;
+    padding: 11px 28px;
+    border-radius: 12px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+
+.btn-detail:hover {
+    background: #1e40af;
+}
+
+.btn-kembali {
+    display: inline-block;
+    background: #f3f4f6;
+    color: #374151;
+    padding: 11px 28px;
+    border-radius: 12px;
+    margin-left: 12px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+
+.btn-kembali:hover {
+    background: #e5e7eb;
+}
+
+/* ================================================
+    TRACKING INFO
+=================================================== */
+.traking-row {
+    font-size: 0.96rem;
+    color: #374151;
+    line-height: 1.65;
+}
+
+.traking-row a {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* ================================================
+    RESPONSIVE MODE – MOBILE (max-width: 650px)
+=================================================== */
+@media (max-width: 650px) {
+
+    /* WRAPPER */
+    .order-detail {
+        padding: 28px 22px;
+        margin: 18px 14px;
+    }
+
+    .order-detail h1 {
+        font-size: 1.35rem;
+        margin-bottom: 22px;
+    }
+
+    /* DETAIL CARD */
+    .detail-card {
+        padding: 22px 20px;
+        margin-bottom: 22px;
+    }
+
+    /* GRID DETAIL MENJADI 1 KOLOM */
+    .detail-row {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    /* ITEM VALUE & LABEL */
+    .detail-label {
+        font-size: 0.8rem;
+    }
+
+    .detail-value {
+        font-size: 1rem;
+    }
+
+    /* TABEL ITEM → SCROLLABLE */
+    .items-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .items-table th,
+    .items-table td {
+        padding: 12px;
+        font-size: 0.88rem;
+    }
+
+    /* TOTAL INFO */
+    .total-row {
+        font-size: 1.05rem;
+        justify-content: space-between;
+        padding: 0 4px;
+    }
+
+    /* BUTTON STACK */
+    .btn-detail,
+    .btn-kembali {
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+        margin-top: 12px;
+    }
+
+    /* TRACKING TEXT */
+    .traking-row {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+}
+

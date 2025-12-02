@@ -1,0 +1,283 @@
+/* ====================== SECTION CONTAINER PESANAN ====================== */
+.orders-container {
+    padding: 45px 50px;
+    margin: 30px 32px;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.10);
+}
+
+/* ============================
+    PAGE TITLE
+============================ */
+.orders-container h1 {
+    text-align: center;
+    font-size: 1.7rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: #010101; /* gray-800 */
+    margin-bottom: 30px;
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+/* ============================
+    ORDER CARD
+============================ */
+.order-card {
+    background-color: #fbfcfe;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 28px;
+    border: 1px solid #e5e7eb;
+    transition: 0.25s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.order-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.04);
+}
+
+/* ============================
+    ORDER HEADER
+============================ */
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.order-id {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: #374151; /* gray-700 */
+}
+
+.order-id span {
+    color: #2049d0;
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+}
+
+.order-date {
+    color: #6b7280; /* gray-500 */
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.8px;
+    margin-top: 5px;
+}
+
+/* STATUS BADGE */
+.order-status {
+    padding: 6px 16px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: capitalize;
+    letter-spacing: 0.3px;
+}
+
+/* SELESAI */
+.order-status.delivered {
+    background-color: #ddffdf; /* hijau muda */
+    color: #207224;
+}
+
+/* PENDING */
+.order-status.pending {
+    background-color: #ffecb3; /* kuning muda */
+    color: #af5800;
+}
+
+/* SEDANG DIPROSES */
+.order-status.processing {
+    background-color: #dbe8ff; /* biru muda */
+    color: #244c9c;
+}
+
+/* DIKIRIM */
+.order-status.shipping {
+    background-color: #e3f8ff; /* cyan muda */
+    color: #0b7285;
+}
+
+/* DIBATALKAN */
+.order-status.cancelled {
+    background-color: #ffe0e0; /* merah muda */
+    color: #a52121;
+}
+
+/* ============================
+    ORDER BODY
+============================ */
+.order-body {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 22px 0;
+}
+
+.order-body img {
+    background: white;
+    width: 125px;
+    height: 125px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+/* PRODUCT DETAILS */
+.order-details h3 {
+    color: #111827;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    margin-bottom: 5px; 
+}
+
+.order-details p {
+    color: #6b7280;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+}
+
+/* ============================
+    TOTAL & BUTTON
+============================ */
+.order-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 12px;
+}
+
+.order-total p {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #1f2937;
+}
+
+/* BUTTON DETAIL */
+.btn-detail {
+    background-color: #2c53d3;
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    transition: 0.25s;
+}
+
+.btn-detail:hover {
+    background-color: #1a3fb9;
+}
+
+/* ================================================
+   RESPONSIVE MOBILE (Max-width: 650px)
+================================================ */
+
+@media (max-width: 650px) {
+
+    /* Container utama */
+    .orders-container {
+        padding: 24px 18px;
+        margin: 15px;
+        border-radius: 10px;
+    }
+
+    .orders-container h1 {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+    }
+
+    /* Kartu pesanan */
+    .order-card {
+        padding: 18px;
+        border-radius: 12px;
+    }
+
+    /* Header pesanan */
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .order-id {
+        font-size: 0.95rem;
+    }
+
+    .order-id span {
+        font-size: 1rem;
+    }
+
+    .order-date {
+        font-size: 0.85rem;
+        margin-top: 2px;
+    }
+
+    .order-status {
+        margin-top: 6px;
+        font-size: 0.85rem;
+        padding: 5px 12px;
+        border-radius: 14px;
+    }
+
+    /* Body */
+    .order-body {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 18px 0;
+    }
+
+    .order-body img {
+        width: 100%;
+        max-width: 260px;
+        height: auto;
+        border-radius: 12px;
+    }
+
+    /* Detail produk */
+    .order-details h3 {
+        font-size: 1.05rem;
+    }
+
+    .order-details p {
+        font-size: 0.85rem;
+    }
+
+    /* Total dan tombol */
+    .order-total {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 8px;
+    }
+
+    .order-total p {
+        font-size: 0.95rem;
+    }
+
+    .btn-detail {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        align-self: flex-start;
+        border-radius: 8px;
+    }
+}
+

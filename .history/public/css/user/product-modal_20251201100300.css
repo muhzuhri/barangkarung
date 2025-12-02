@@ -1,0 +1,447 @@
+/* =====================================
+   PRODUCT DETAIL MODAL — Modern Version
+===================================== */
+
+.product-modal {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.product-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Overlay */
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    transition: opacity 0.3s ease;
+}
+
+/* Content */
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.85);
+    background: #ffffff;
+    border-radius: 22px;
+    max-width: 820px;
+    width: 92%;
+    max-height: 92vh;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    transition: transform 0.35s ease;
+}
+
+.product-modal.show .modal-content {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Close Button */
+.modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.12);
+    color: #333;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.modal-close:hover {
+    background: rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
+}
+
+/* Body Layout */
+.modal-body {
+    display: flex;
+    min-height: 500px;
+}
+
+/* Image Section */
+.product-image-section {
+    flex: 1;
+    background: #f5f6f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 35px;
+}
+
+.product-image-section img {
+    max-width: 100%;
+    max-height: 420px;
+    object-fit: contain;
+    border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* Details Section */
+.product-details-section {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.product-details-section h3 {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+    color: #252555;
+    line-height: 1.25;
+}
+
+.product-brand {
+    font-size: 15px;
+    color: #777;
+    margin-top: -8px;
+}
+
+/* Price Section */
+.product-price-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.current-price {
+    font-size: 25px;
+    font-weight: 700;
+    color: #e63946;
+}
+
+.original-price {
+    font-size: 17px;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.discount-badge {
+    background: linear-gradient(135deg, #ff4d4d, #d63031);
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Description */
+.product-description {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.6;
+    margin-top: 4px;
+}
+
+/* Size Selection */
+.size-selection,
+.quantity-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.size-selection label,
+.quantity-selection label {
+    font-weight: 600;
+    font-size: 16px;
+    color: #24246b;
+}
+
+/* Size Buttons */
+.size-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.size-btn {
+    background: #f4f5f8;
+    border: 2px solid #e3e6ec;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    min-width: 46px;
+    text-align: center;
+    transition: all 0.25s ease;
+}
+
+.size-btn:hover {
+    background: #eef0ff;
+    border-color: #6c5ce7;
+}
+
+.size-btn.selected {
+    background: linear-gradient(135deg, #6c5ce7, #8e44ad);
+    color: #fff;
+    border-color: #6c5ce7;
+}
+
+/* Quantity Controls */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.qty-btn {
+    background: #f4f5f8;
+    border: 2px solid #e3e6ec;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+}
+
+.qty-btn:hover {
+    background: #6c5ce7;
+    color: #fff;
+    border-color: #6c5ce7;
+}
+
+.qty-display {
+    font-size: 18px;
+    font-weight: 700;
+    min-width: 30px;
+    text-align: center;
+    color: #24246b;
+}
+
+/* Add to Cart Button */
+.add-to-cart-modal-btn {
+    background: black;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.add-to-cart-modal-btn:hover {
+    transform: translateY(-3px);
+}
+
+.add-to-cart-modal-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Text inside button */
+.btn-text {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.btn-price {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* =====================================
+    RESPONSIVE MOBILE (≤ 768px)
+===================================== */
+@media (max-width: 768px) {
+
+    /* Konten modal sedikit lebih besar */
+    .modal-content {
+        width: %;
+        max-height: 96vh;
+        border-radius: 18px;
+    }
+
+    /* Layout jadi kolom */
+    .modal-body {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    /* Section Gambar */
+    .product-image-section {
+        padding: 20px;
+        min-height: 220px;
+    }
+
+    .product-image-section img {
+        max-height: 260px;
+        border-radius: 12px;
+    }
+
+    /* Section Detail */
+    .product-details-section {
+        padding: 22px;
+        gap: 16px;
+    }
+
+    .product-details-section h3 {
+        font-size: 22px;
+        line-height: 1.3;
+    }
+
+    .product-brand {
+        font-size: 14px;
+    }
+
+    /* Harga */
+    .current-price {
+        font-size: 22px;
+    }
+
+    .original-price {
+        font-size: 16px;
+    }
+
+    .discount-badge {
+        font-size: 12px;
+        padding: 4px 12px;
+    }
+
+    /* Size Options */
+    .size-options {
+        justify-content: flex-start;
+        gap: 8px;
+    }
+
+    .size-btn {
+        padding: 9px 12px;
+        min-width: 40px;
+        font-size: 14px;
+    }
+
+    /* Quantity */
+    .quantity-controls {
+        justify-content: flex-start;
+        gap: 12px;
+    }
+
+    .qty-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 17px;
+    }
+
+    .qty-display {
+        font-size: 17px;
+        min-width: 28px;
+    }
+
+    /* Tombol Add-To-Cart */
+    .add-to-cart-modal-btn {
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-size: 15px;
+        margin-top: 10px;
+    }
+
+    .btn-text {
+        font-size: 15px;
+    }
+
+    .btn-price {
+        font-size: 17px;
+    }
+
+    /* Close button mengecil */
+    .modal-close {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+        top: 10px;
+        right: 10px;
+    }
+}
+
+/* =====================================
+    EXTRA SMALL DEVICES (≤ 480px)
+===================================== */
+@media (max-width: 480px) {
+
+    .modal-content {
+        width: 98%;
+        border-radius: 16px;
+    }
+
+    .product-details-section {
+        padding: 18px;
+    }
+
+    .product-details-section h3 {
+        font-size: 20px;
+    }
+
+    .product-description {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    /* Tombol lebih compact */
+    .size-btn,
+    .qty-btn {
+        border-radius: 8px;
+    }
+
+    .add-to-cart-modal-btn {
+        padding: 13px 18px;
+        font-size: 14px;
+    }
+
+    .btn-price {
+        font-size: 16px;
+    }
+}
+
+
+/* Elegant Modal Entrance Animation */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.85) translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) translateY(0);
+    }
+}
+
+.product-modal.show .modal-content {
+    animation: modalSlideIn 0.45s ease-out;
+}

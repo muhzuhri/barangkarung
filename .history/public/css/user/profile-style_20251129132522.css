@@ -1,0 +1,83 @@
+/* ===== DATA PENGGUNA ===== */
+.data-pengguna {
+    padding: 45px 50px;
+    margin: 30px 32px;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.10);
+}
+
+.data-pengguna h2 {
+    font-size: 23px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    color: #111;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #585858;
+    padding-bottom: 10px;
+}
+
+.data-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 40px;
+}
+
+.data-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.data-group label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #222;
+    margin-bottom: 6px;
+}
+
+.data-group input,
+.data-group select,
+.data-group textarea {
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #111827;
+    outline: none;
+}
+
+.data-group input:focus,
+.data-group select:focus,
+.data-group textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+/* Gender radio modern */
+.radio-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.radio-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    user-select: none;
+}
+
+.radio-item input[type="radio"] {
+    accent-color: #667eea;
+}
+
+.radio-item:hover {
+    border-color: #d1d5db;
+}
