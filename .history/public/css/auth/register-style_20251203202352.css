@@ -447,125 +447,88 @@ body {
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
     body {
-        padding: 0;
-        background: #f5f6fa;
+        padding: 10px;
     }
 
-    /* CARD UTAMA */
     .register-card {
         flex-direction: column;
         max-width: 100%;
-        width: 100%;
-        border-radius: 0;
-        box-shadow: none;
+        border-radius: 15px;
     }
 
-    /* FORM SECTION */
     .form-section {
-        padding: 28px 22px;
+        padding: 40px 30px;
         order: 2;
     }
 
-    .form-header h1 {
-        font-size: 24px;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-
-    /* BRAND SECTION */
     .brand-section {
-        padding: 26px 22px;
+        padding: 40px 30px;
         order: 1;
-        text-align: center;
     }
 
-    .logo-img {
-        width: 70px;
-        height: 70px;
-        margin-bottom: 15px;
+    .form-header h1 {
+        font-size: 28px;
     }
 
     .brand-content h2 {
-        font-size: 20px;
-        margin-bottom: 10px;
+        font-size: 24px;
     }
 
-    .brand-content p {
-        font-size: 14px;
-        line-height: 1.4;
-        margin-bottom: 18px;
+    .logo-img {
+        width: 80px;
+        height: 80px;
     }
 
-    /* FITUR BRAND */
     .brand-features {
         flex-direction: row;
-        justify-content: center;
-        gap: 12px;
         flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
     }
 
     .feature-item {
         font-size: 12px;
-        padding: 6px 10px;
-        border-radius: 8px;
     }
 
-    /* ============================
-       FORM COLUMNS DI MOBILE
-    ============================ */
+    /* ===== RESPONSIVE FORM COLUMNS ===== */
     .form-columns {
         grid-template-columns: 1fr;
-        gap: 16px;
-        margin-top: 15px;
+        gap: 20px;
     }
 
-    input,
-    select {
-        padding: 10px 14px;
-        font-size: 14px;
-        border-radius: 10px;
+    .password-columns {
+        grid-template-columns: 1fr;
+        gap: 15px;
     }
 
-    /* ============================
-       PASSWORD SECTION
-    ============================ */
     .password-section {
-        padding: 18px 16px;
-        margin: 20px 0;
+        padding: 20px;
+        margin: 25px 0 20px;
         border-radius: 12px;
     }
 
     .section-title {
-        font-size: 15px;
-        margin-bottom: 18px;
+        font-size: 16px;
+        margin-bottom: 22px;
     }
 
     .section-title::after {
-        width: 36px;
+        width: 40px;
         height: 3px;
         bottom: -6px;
     }
 
     .password-columns {
-        grid-template-columns: 1fr;
-        gap: 14px;
+        grid-template-columns: 1fr; /* Kolom jadi 1 */
+        gap: 15px;
     }
 
-    .password-section input {
-        padding: 10px 12px;
+    .password-section input,
+    .password-section select {
         font-size: 14px;
-    }
-
-    /* BUTTON SUBMIT */
-    .register-btn {
-        width: 100%;
-        padding: 12px;
-        font-size: 15px;
-        border-radius: 10px;
-        margin-top: 10px;
+        padding: 10px 12px;
     }
 }
-
 
 /* ===== LOADING STATES ===== */
 .btn-register:disabled {
