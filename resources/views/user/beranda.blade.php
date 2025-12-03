@@ -31,7 +31,7 @@
 
         <!-- ===== NAVBAR ===== -->
         <x-navbar />
-
+        <x-chat />
         <!-- ===== CHATBOT ===== -->
         <chat-bot></chat-bot>
 

@@ -23,6 +23,7 @@
 <body>
     <!-- ===== SECTION NAVBAR ===== -->
     <x-navbar />
+    <x-chat />
 
     <main class="order-detail">
         <h1>Detail Pesanan Produk</h1>

@@ -24,6 +24,7 @@
 <body>
     <!-- ===== SECTION NAVBAR ===== -->
     <x-navbar />
+    <x-chat />
 
     <!-- ===== SECTION IMAGE SLIDER / BERANDA ===== -->
     <section class="hero-slider">

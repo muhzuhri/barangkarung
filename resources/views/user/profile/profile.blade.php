@@ -21,7 +21,7 @@
 <body>
     <!-- ===== NAVBAR ===== -->
     <x-navbar />
-
+    <x-chat />
     <!-- ===== PROFILE DATA DIRI ===== -->
     <section class="data-pengguna">
         <h2>Data Pengguna</h2>

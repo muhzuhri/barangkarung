@@ -22,6 +22,7 @@
 <body>
     <!-- ===== SECTION NAVBAR ===== -->
     <x-navbar />
+    <x-chat />
 
     <!-- ===== SECTION PESANAN ===== -->
     <main class="orders-container">

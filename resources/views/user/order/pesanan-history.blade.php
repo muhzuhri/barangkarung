@@ -20,6 +20,7 @@
 
 <body>
 	<x-navbar />
+    <x-chat />
 
 	<main class="orders-container">
 		<h1>Riwayat Pesanan</h1>
