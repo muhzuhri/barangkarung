@@ -495,7 +495,7 @@ body {
 }
 
 /* ============================================
-    RESPONSIVE — TABLET & MOBILE (max-width: 768px)
+   RESPONSIVE — TABLET & MOBILE (max-width: 768px)
 ============================================ */
 @media (max-width: 768px) {
 
@@ -607,7 +607,7 @@ body {
 }
 
 /* ============================================
-    RESPONSIVE — SMALL MOBILE (max-width: 480px)
+   RESPONSIVE — SMALL MOBILE (max-width: 480px)
 ============================================ */
 @media (max-width: 480px) {
 

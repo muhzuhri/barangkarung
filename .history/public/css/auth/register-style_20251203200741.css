@@ -444,6 +444,93 @@ body {
     color: rgba(255, 255, 255, 0.8);
 }
 
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .register-card {
+        flex-direction: column;
+        max-width: 100%;
+        border-radius: 15px;
+    }
+
+    .form-section {
+        padding: 40px 30px;
+        order: 2;
+    }
+
+    .brand-section {
+        padding: 40px 30px;
+        order: 1;
+    }
+
+    .form-header h1 {
+        font-size: 28px;
+    }
+
+    .brand-content h2 {
+        font-size: 24px;
+    }
+
+    .logo-img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .brand-features {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .feature-item {
+        font-size: 12px;
+    }
+
+    /* ===== RESPONSIVE FORM COLUMNS ===== */
+    .form-columns {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .password-columns {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .password-section {
+        padding: 20px;
+        margin: 25px 0 20px;
+        border-radius: 12px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        margin-bottom: 22px;
+    }
+
+    .section-title::after {
+        width: 40px;
+        height: 3px;
+        bottom: -6px;
+    }
+
+    .password-columns {
+        grid-template-columns: 1fr; /* Kolom jadi 1 */
+        gap: 15px;
+    }
+
+    .password-section input,
+    .password-section select {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+}
+
+
 /* ===== LOADING STATES ===== */
 .btn-register:disabled {
     opacity: 0.7;
@@ -491,145 +578,5 @@ body {
     .register-card {
         box-shadow: none;
         border: 1px solid #ddd;
-    }
-}
-
-/* ============================================
-    RESPONSIVE — TABLET & MOBILE (max-width: 768px)
-============================================ */
-@media (max-width: 768px) {
-
-    body {
-        padding: 15px;
-        align-items: unset;
-        justify-content: unset;
-    }
-
-    .register-card {
-        flex-direction: column;
-        min-height: auto;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-
-    /* ----- Brand Section pindah ke atas ----- */
-    .brand-section {
-        order: -1;
-        padding: 40px 20px;
-        height: auto;
-    }
-
-    .logo-img {
-        width: 100px;
-        height: 100px;
-    }
-
-    .brand-content h2 {
-        font-size: 22px;
-    }
-
-    .brand-tagline {
-        font-size: 14px;
-    }
-
-    .feature-item {
-        font-size: 13px;
-    }
-
-    /* ----- Form Section ----- */
-    .form-section {
-        padding: 35px 25px;
-    }
-
-    .form-header h1 {
-        font-size: 26px;
-    }
-
-    .form-header p {
-        font-size: 14px;
-    }
-
-    /* ----- Form kolom jadi 1 ----- */
-    .form-columns {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .form-group {
-        margin-bottom: 18px;
-    }
-
-    /* ----- Password Section ----- */
-    .password-section {
-        padding: 20px;
-        margin: 25px 0 20px;
-        border-radius: 12px;
-    }
-
-    .section-title {
-        font-size: 16px;
-        margin-bottom: 20px;
-    }
-
-    .section-title::after {
-        width: 40px;
-        bottom: -6px;
-    }
-
-    .password-columns {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-    /* ----- Input Field ----- */
-    .input-group {
-        height: 50px;
-        padding: 0 15px;
-    }
-
-    .input-group input,
-    .input-group select {
-        font-size: 14px;
-    }
-
-    /* ----- Register Button ----- */
-    .btn-register {
-        padding: 14px;
-        font-size: 15px;
-        margin: 25px 0 10px;
-    }
-
-    /* ----- Login Link ----- */
-    .login-link p {
-        font-size: 13px;
-    }
-}
-
-/* ============================================
-    RESPONSIVE — SMALL MOBILE (max-width: 480px)
-============================================ */
-@media (max-width: 480px) {
-
-    .brand-content h2 {
-        font-size: 20px;
-    }
-
-    .logo-img {
-        width: 80px;
-        height: 80px;
-    }
-
-    .form-section {
-        padding: 25px 18px;
-    }
-
-    .input-group {
-        height: 48px;
-    }
-
-    .btn-register {
-        font-size: 14px;
-        padding: 12px;
     }
 }
