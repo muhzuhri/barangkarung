@@ -503,30 +503,7 @@ body {
 
     .password-section {
         padding: 20px;
-        margin: 25px 0 20px;
-        border-radius: 12px;
-    }
-
-    .section-title {
-        font-size: 16px;
-        margin-bottom: 22px;
-    }
-
-    .section-title::after {
-        width: 40px;
-        height: 3px;
-        bottom: -6px;
-    }
-
-    .password-columns {
-        grid-template-columns: 1fr; /* Kolom jadi 1 */
-        gap: 15px;
-    }
-
-    .password-section input,
-    .password-section select {
-        font-size: 14px;
-        padding: 10px 12px;
+        margin: 30px 0 20px;
     }
 }
 

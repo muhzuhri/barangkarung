@@ -496,11 +496,6 @@ body {
         gap: 20px;
     }
 
-    .password-columns {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
     .password-section {
         padding: 20px;
         margin: 25px 0 20px;
