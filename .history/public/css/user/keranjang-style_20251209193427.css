@@ -81,9 +81,9 @@
 .qty-btn {
     background: #ebecef;
     border: solid 1px #d1d5db;
-    padding: 3px 11px;
+    padding: =px 8px;
     font-size: 20px;
-    border-radius: 8px;
+    border-radius: 9px;
     cursor: pointer;
     transition: 0.2s;
     color: #111;
@@ -295,11 +295,11 @@
     /* ===== QTY RESPONSIVE ===== */
     .item-qty {
         flex-direction: column;
-        gap: 6px;
+        gap: 4px;
     }
 
     .qty-btn {
-        padding: 3px 10px;
+        padding: 5px 10px;
         font-size: 16px;
         border-radius: 8px;
     }
@@ -320,10 +320,10 @@
     .checkout-bar {
         padding: 28px 16px;
         display: flex;
-        flex-direction: row; /* <<< ubah: baris */
+        flex-direction: row;     /* <<< ubah: baris */
         justify-content: space-between;
         border-radius: 20px 20px 0 0;
-        align-items: center; /* <<< sejajar vertical */
+        align-items: center;     /* <<< sejajar vertical */
         gap: 10px;
     }
 

@@ -371,3 +371,125 @@ body {
     }
 }
 
+/* ============================
+   HAMBURGER TOGGLE
+============================ */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+/* Show hamburger only on mobile */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+    }
+
+    .admin-info .admin-dropdown {
+        display: none;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
+        margin-left: 10px;
+    }
+}
+
+/* ============================
+   MOBILE MENU OVERLAY
+============================ */
+.mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(3px);
+    display: none;
+    z-index: 9999;
+}
+
+.mobile-menu.show {
+    display: block;
+}
+
+.mobile-menu-content {
+    width: 80%;
+    max-width: 320px;
+    height: 100%;
+    background: #fff;
+    padding: 20px;
+    animation: slideIn 0.3s ease;
+}
+
+/* Animasi sliding */
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+/* ============================
+   MOBILE HEADER
+============================ */
+.mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.close-mobile-menu {
+    background: none;
+    border: none;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+/* ============================
+   NAV LINKS
+============================ */
+.mobile-nav-links {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 25px;
+}
+
+.mobile-nav-links li {
+    margin-bottom: 12px;
+}
+
+.mobile-nav-links a {
+    font-size: 16px;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    padding: 8px 0;
+}
+
+/* ============================
+   ADMIN DROPDOWN INSIDE MOBILE
+============================ */
+.mobile-admin-section .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 15px;
+    color: #333;
+    text-decoration: none;
+}
+
+.mobile-admin-section .dropdown-item .icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #ddd;
+    margin: 12px 0;
+}
